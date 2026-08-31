@@ -1,0 +1,1689 @@
+{
+ "schema": "candidate-bench/1",
+ "label": "frost-ctrl-b1",
+ "utc": "2026-08-30T06:42:52+00:00",
+ "argv": [
+  "--profile",
+  "d256-24x4-446k",
+  "--layers",
+  "1",
+  "--iters",
+  "10",
+  "--quant-iters",
+  "2",
+  "--control",
+  "cudnn-frost-bf16",
+  "--control-iters",
+  "5",
+  "--control-warmup",
+  "2",
+  "--seed",
+  "20260861",
+  "--label",
+  "frost-ctrl-b1"
+ ],
+ "workload_profile": "d256-24x4-446k",
+ "workload_cases_sha256": "2621651e58b75ef11d6b63f94d18632e5862f16321e3f48d5042fd883867beb0",
+ "measurement": {
+  "timing_backend": "cuda_events",
+  "l2_policy": "warm",
+  "graph_mode": "eager",
+  "process_model": "single",
+  "control": "cudnn-frost-bf16"
+ },
+ "config": {
+  "layers": 1,
+  "warmup": 3,
+  "iters": 10,
+  "quant_iters": 2,
+  "seed": 20260861,
+  "smoke": false,
+  "control": "cudnn-frost-bf16",
+  "control_warmup": 2,
+  "control_iters": 5,
+  "control_q_chunk": 256,
+  "control_kv_chunk": 4096,
+  "bootstrap": 10000
+ },
+ "env": {
+  "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "capability": "12.0",
+  "sm_count": 188,
+  "total_mem_gib": 94.97,
+  "free_mem_gib_at_start": 94.43,
+  "torch": "2.13.0+cu129",
+  "cuda": "12.9",
+  "python": "3.12.3",
+  "source_build_id": "7b7533642f44531b9b09bb95d18dde943b7a19cccbf427115e696814209a8799",
+  "nvidia_smi": {
+   "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+   "driver_version": "595.91.07",
+   "uuid": "card-B",
+   "power.limit": "600.00 W",
+   "power.draw": "102.02 W",
+   "clocks.sm": "2422 MHz",
+   "clocks.max.sm": "2430 MHz",
+   "temperature.gpu": "58",
+   "persistence_mode": "Enabled"
+  },
+  "cublas_workspace_config": ":4096:8"
+ },
+ "geometry": {
+  "head_dim": 256,
+  "kv_dtype": "bfloat16",
+  "kv_heads": 4,
+  "layers": 16,
+  "mask": "bottom_right_causal",
+  "mode": "extend",
+  "page_size": 1,
+  "q_heads": 24,
+  "total_layers": 64
+ },
+ "cases": [
+  {
+   "chunk": 0,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 0,
+   "k_len": 32768,
+   "flops": 13194542186496.0,
+   "preprocessing": {
+    "samples_ms": [
+     9.9209,
+     9.832
+    ],
+    "median_ms": 9.8765,
+    "min_ms": 9.832,
+    "p5_ms": 9.832,
+    "p95_ms": 9.832,
+    "iters": 2
+   },
+   "core": {
+    "samples_ms": [
+     22.9307,
+     22.9417,
+     22.9234,
+     22.9402,
+     22.9446,
+     22.9212,
+     22.9228,
+     22.9235,
+     22.9261,
+     22.9212
+    ],
+    "median_ms": 22.9248,
+    "min_ms": 22.9212,
+    "p5_ms": 22.9212,
+    "p95_ms": 22.9417,
+    "iters": 10,
+    "tflops_median": 575.6,
+    "tflops_min_time": 575.6
+   },
+   "inclusive": {
+    "samples_ms": [
+     32.7712,
+     32.7852
+    ],
+    "median_ms": 32.7782,
+    "min_ms": 32.7712,
+    "p5_ms": 32.7712,
+    "p95_ms": 32.7712,
+    "iters": 2
+   },
+   "peak_alloc_gib": 2.917,
+   "control": {
+    "kind": "cudnn-frost-bf16",
+    "interleave": "ABBA",
+    "paired_against": "core (eager, cuda_events)",
+    "impl": "cudnn.sdpa.fwd.SdpaFwdDslSm120 (FROST DSL), bf16 BHSD dense, causal_bottom_right, default tiles/scheduler",
+    "peak_performance_control": true,
+    "excluded_from_timing": "gather to dense BHSD + per-shape template compile",
+    "note": "dense: no paged-KV support in this engine; pre-gathered inputs",
+    "available": true,
+    "candidate": {
+     "samples_ms": [
+      22.9427,
+      22.933,
+      22.9277,
+      22.9297,
+      22.9289,
+      22.9356,
+      22.9285,
+      22.9307,
+      22.9269,
+      22.9295,
+      22.9617,
+      22.9543,
+      22.946,
+      22.9476,
+      22.9396,
+      22.9351,
+      22.9386,
+      22.9356,
+      22.9312,
+      22.9412
+     ],
+     "median_ms": 22.9353,
+     "min_ms": 22.9269,
+     "p5_ms": 22.9269,
+     "p95_ms": 22.9543,
+     "iters": 20
+    },
+    "control": {
+     "samples_ms": [
+      47.5487,
+      47.5225,
+      47.7156,
+      48.3902,
+      48.8437,
+      49.0054,
+      49.0186,
+      49.1624,
+      49.1379,
+      49.1151
+     ],
+     "median_ms": 48.9245,
+     "min_ms": 47.5225,
+     "p5_ms": 47.5225,
+     "p95_ms": 49.1379,
+     "iters": 10
+    },
+    "speedup_median": 2.1332
+   }
+  },
+  {
+   "chunk": 1,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 32768,
+   "k_len": 65536,
+   "flops": 39582821253120.0,
+   "preprocessing": {
+    "samples_ms": [
+     12.6171,
+     12.6036
+    ],
+    "median_ms": 12.6104,
+    "min_ms": 12.6036,
+    "p5_ms": 12.6036,
+    "p95_ms": 12.6036,
+    "iters": 2
+   },
+   "core": {
+    "samples_ms": [
+     66.5643,
+     66.5672,
+     66.5674,
+     66.5636,
+     66.5632,
+     66.5636,
+     66.5633,
+     66.5635,
+     66.5696,
+     66.5591
+    ],
+    "median_ms": 66.5636,
+    "min_ms": 66.5591,
+    "p5_ms": 66.5591,
+    "p95_ms": 66.5674,
+    "iters": 10,
+    "tflops_median": 594.7,
+    "tflops_min_time": 594.7
+   },
+   "inclusive": {
+    "samples_ms": [
+     79.1743,
+     79.1973
+    ],
+    "median_ms": 79.1858,
+    "min_ms": 79.1743,
+    "p5_ms": 79.1743,
+    "p95_ms": 79.1743,
+    "iters": 2
+   },
+   "peak_alloc_gib": 3.359,
+   "control": {
+    "kind": "cudnn-frost-bf16",
+    "interleave": "ABBA",
+    "paired_against": "core (eager, cuda_events)",
+    "impl": "cudnn.sdpa.fwd.SdpaFwdDslSm120 (FROST DSL), bf16 BHSD dense, causal_bottom_right, default tiles/scheduler",
+    "peak_performance_control": true,
+    "excluded_from_timing": "gather to dense BHSD + per-shape template compile",
+    "note": "dense: no paged-KV support in this engine; pre-gathered inputs",
+    "available": true,
+    "candidate": {
+     "samples_ms": [
+      66.6375,
+      66.6199,
+      66.5779,
+      66.5842,
+      66.6102,
+      66.5892,
+      66.5767,
+      66.5844,
+      66.5731,
+      66.5834,
+      66.6388,
+      66.5987,
+      66.6153,
+      66.594,
+      66.5975,
+      66.5786,
+      66.576,
+      66.5714,
+      66.574,
+      66.573
+     ],
+     "median_ms": 66.5843,
+     "min_ms": 66.5714,
+     "p5_ms": 66.5714,
+     "p95_ms": 66.6375,
+     "iters": 20
+    },
+    "control": {
+     "samples_ms": [
+      140.731,
+      143.1101,
+      144.3143,
+      144.396,
+      144.0879,
+      144.6041,
+      144.6293,
+      144.4682,
+      144.1549,
+      144.4478
+     ],
+     "median_ms": 144.3552,
+     "min_ms": 140.731,
+     "p5_ms": 140.731,
+     "p95_ms": 144.6041,
+     "iters": 10
+    },
+    "speedup_median": 2.168
+   }
+  },
+  {
+   "chunk": 2,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 65536,
+   "k_len": 98304,
+   "flops": 65971100319744.0,
+   "preprocessing": {
+    "samples_ms": [
+     15.3907,
+     15.3716
+    ],
+    "median_ms": 15.3812,
+    "min_ms": 15.3716,
+    "p5_ms": 15.3716,
+    "p95_ms": 15.3716,
+    "iters": 2
+   },
+   "core": {
+    "samples_ms": [
+     110.4054,
+     110.3987,
+     110.3937,
+     110.404,
+     110.428,
+     110.3989,
+     110.5019,
+     110.4126,
+     110.4276,
+     110.4155
+    ],
+    "median_ms": 110.409,
+    "min_ms": 110.3937,
+    "p5_ms": 110.3937,
+    "p95_ms": 110.428,
+    "iters": 10,
+    "tflops_median": 597.5,
+    "tflops_min_time": 597.6
+   },
+   "inclusive": {
+    "samples_ms": [
+     125.8767,
+     126.1339
+    ],
+    "median_ms": 126.0053,
+    "min_ms": 125.8767,
+    "p5_ms": 125.8767,
+    "p95_ms": 125.8767,
+    "iters": 2
+   },
+   "peak_alloc_gib": 3.801,
+   "control": {
+    "kind": "cudnn-frost-bf16",
+    "interleave": "ABBA",
+    "paired_against": "core (eager, cuda_events)",
+    "impl": "cudnn.sdpa.fwd.SdpaFwdDslSm120 (FROST DSL), bf16 BHSD dense, causal_bottom_right, default tiles/scheduler",
+    "peak_performance_control": true,
+    "excluded_from_timing": "gather to dense BHSD + per-shape template compile",
+    "note": "dense: no paged-KV support in this engine; pre-gathered inputs",
+    "available": true,
+    "candidate": {
+     "samples_ms": [
+      110.4675,
+      110.4522,
+      110.4005,
+      110.424,
+      110.4014,
+      110.4144,
+      110.3924,
+      110.4019,
+      110.3998,
+      110.403,
+      110.497,
+      110.4376,
+      110.4272,
+      110.4029,
+      110.4048,
+      110.3949,
+      110.4084,
+      110.4145,
+      110.3937,
+      110.4018
+     ],
+     "median_ms": 110.4039,
+     "min_ms": 110.3924,
+     "p5_ms": 110.3924,
+     "p95_ms": 110.4675,
+     "iters": 20
+    },
+    "control": {
+     "samples_ms": [
+      235.0107,
+      238.631,
+      239.211,
+      239.1644,
+      239.559,
+      239.2628,
+      239.6886,
+      239.535,
+      239.7838,
+      239.7621
+     ],
+     "median_ms": 239.3989,
+     "min_ms": 235.0107,
+     "p5_ms": 235.0107,
+     "p95_ms": 239.7621,
+     "iters": 10
+    },
+    "speedup_median": 2.1684
+   }
+  },
+  {
+   "chunk": 3,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 98304,
+   "k_len": 131072,
+   "flops": 92359379386368.0,
+   "preprocessing": {
+    "samples_ms": [
+     18.1583,
+     18.167
+    ],
+    "median_ms": 18.1627,
+    "min_ms": 18.1583,
+    "p5_ms": 18.1583,
+    "p95_ms": 18.1583,
+    "iters": 2
+   },
+   "core": {
+    "samples_ms": [
+     154.0101,
+     154.0168,
+     154.0108,
+     154.0149,
+     154.0273,
+     154.0147,
+     154.0032,
+     154.0303,
+     153.9978,
+     154.026
+    ],
+    "median_ms": 154.0148,
+    "min_ms": 153.9978,
+    "p5_ms": 153.9978,
+    "p95_ms": 154.0273,
+    "iters": 10,
+    "tflops_median": 599.7,
+    "tflops_min_time": 599.7
+   },
+   "inclusive": {
+    "samples_ms": [
+     172.1989,
+     172.233
+    ],
+    "median_ms": 172.2159,
+    "min_ms": 172.1989,
+    "p5_ms": 172.1989,
+    "p95_ms": 172.1989,
+    "iters": 2
+   },
+   "peak_alloc_gib": 4.243,
+   "control": {
+    "kind": "cudnn-frost-bf16",
+    "interleave": "ABBA",
+    "paired_against": "core (eager, cuda_events)",
+    "impl": "cudnn.sdpa.fwd.SdpaFwdDslSm120 (FROST DSL), bf16 BHSD dense, causal_bottom_right, default tiles/scheduler",
+    "peak_performance_control": true,
+    "excluded_from_timing": "gather to dense BHSD + per-shape template compile",
+    "note": "dense: no paged-KV support in this engine; pre-gathered inputs",
+    "available": true,
+    "candidate": {
+     "samples_ms": [
+      154.1047,
+      154.0318,
+      154.0362,
+      153.9977,
+      154.0108,
+      154.0021,
+      154.0107,
+      154.0175,
+      154.0046,
+      153.9946,
+      154.0691,
+      154.0469,
+      154.081,
+      154.0324,
+      154.082,
+      154.0938,
+      154.0783,
+      154.0249,
+      154.0024,
+      154.0134
+     ],
+     "median_ms": 154.0283,
+     "min_ms": 153.9946,
+     "p5_ms": 153.9946,
+     "p95_ms": 154.0938,
+     "iters": 20
+    },
+    "control": {
+     "samples_ms": [
+      330.6468,
+      335.3562,
+      335.8698,
+      335.2777,
+      334.8556,
+      335.6151,
+      336.0331,
+      335.8939,
+      334.7915,
+      335.3941
+     ],
+     "median_ms": 335.3752,
+     "min_ms": 330.6468,
+     "p5_ms": 330.6468,
+     "p95_ms": 335.8939,
+     "iters": 10
+    },
+    "speedup_median": 2.1774
+   }
+  },
+  {
+   "chunk": 4,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 131072,
+   "k_len": 163840,
+   "flops": 118747658452992.0,
+   "preprocessing": {
+    "samples_ms": [
+     20.8735,
+     20.8516
+    ],
+    "median_ms": 20.8626,
+    "min_ms": 20.8516,
+    "p5_ms": 20.8516,
+    "p95_ms": 20.8516,
+    "iters": 2
+   },
+   "core": {
+    "samples_ms": [
+     197.5158,
+     197.4704,
+     197.463,
+     197.4735,
+     197.4686,
+     197.5132,
+     197.4585,
+     197.4661,
+     197.5094,
+     197.4756
+    ],
+    "median_ms": 197.472,
+    "min_ms": 197.4585,
+    "p5_ms": 197.4585,
+    "p95_ms": 197.5132,
+    "iters": 10,
+    "tflops_median": 601.3,
+    "tflops_min_time": 601.4
+   },
+   "inclusive": {
+    "samples_ms": [
+     218.3771,
+     218.3351
+    ],
+    "median_ms": 218.3561,
+    "min_ms": 218.3351,
+    "p5_ms": 218.3351,
+    "p95_ms": 218.3351,
+    "iters": 2
+   },
+   "peak_alloc_gib": 4.683,
+   "control": {
+    "kind": "cudnn-frost-bf16",
+    "interleave": "ABBA",
+    "paired_against": "core (eager, cuda_events)",
+    "impl": "cudnn.sdpa.fwd.SdpaFwdDslSm120 (FROST DSL), bf16 BHSD dense, causal_bottom_right, default tiles/scheduler",
+    "peak_performance_control": true,
+    "excluded_from_timing": "gather to dense BHSD + per-shape template compile",
+    "note": "dense: no paged-KV support in this engine; pre-gathered inputs",
+    "available": true,
+    "candidate": {
+     "samples_ms": [
+      197.5353,
+      197.4819,
+      197.4606,
+      197.4703,
+      197.4643,
+      197.461,
+      197.497,
+      197.4744,
+      197.4542,
+      197.4994,
+      197.5583,
+      197.5076,
+      197.535,
+      197.5446,
+      197.5034,
+      197.5233,
+      197.4725,
+      197.4911,
+      197.4959,
+      197.5112
+     ],
+     "median_ms": 197.4964,
+     "min_ms": 197.4542,
+     "p5_ms": 197.4542,
+     "p95_ms": 197.5446,
+     "iters": 20
+    },
+    "control": {
+     "samples_ms": [
+      429.9255,
+      432.6132,
+      432.6907,
+      432.0026,
+      433.0641,
+      431.7179,
+      433.2125,
+      433.2442,
+      431.8173,
+      433.1109
+     ],
+     "median_ms": 432.6519,
+     "min_ms": 429.9255,
+     "p5_ms": 429.9255,
+     "p95_ms": 433.2125,
+     "iters": 10
+    },
+    "speedup_median": 2.1907
+   }
+  },
+  {
+   "chunk": 5,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 163840,
+   "k_len": 196608,
+   "flops": 145135937519616.0,
+   "preprocessing": {
+    "samples_ms": [
+     23.6326,
+     23.6219
+    ],
+    "median_ms": 23.6272,
+    "min_ms": 23.6219,
+    "p5_ms": 23.6219,
+    "p95_ms": 23.6219,
+    "iters": 2
+   },
+   "core": {
+    "samples_ms": [
+     240.9715,
+     240.9573,
+     241.0027,
+     241.0429,
+     241.058,
+     241.1455,
+     241.1929,
+     241.3283,
+     241.5336,
+     241.6762
+    ],
+    "median_ms": 241.1017,
+    "min_ms": 240.9573,
+    "p5_ms": 240.9573,
+    "p95_ms": 241.5336,
+    "iters": 10,
+    "tflops_median": 602.0,
+    "tflops_min_time": 602.3
+   },
+   "inclusive": {
+    "samples_ms": [
+     264.655,
+     264.6
+    ],
+    "median_ms": 264.6275,
+    "min_ms": 264.6,
+    "p5_ms": 264.6,
+    "p95_ms": 264.6,
+    "iters": 2
+   },
+   "peak_alloc_gib": 5.127,
+   "control": {
+    "kind": "cudnn-frost-bf16",
+    "interleave": "ABBA",
+    "paired_against": "core (eager, cuda_events)",
+    "impl": "cudnn.sdpa.fwd.SdpaFwdDslSm120 (FROST DSL), bf16 BHSD dense, causal_bottom_right, default tiles/scheduler",
+    "peak_performance_control": true,
+    "excluded_from_timing": "gather to dense BHSD + per-shape template compile",
+    "note": "dense: no paged-KV support in this engine; pre-gathered inputs",
+    "available": true,
+    "candidate": {
+     "samples_ms": [
+      241.0696,
+      240.9434,
+      240.9581,
+      240.9324,
+      240.9495,
+      240.9607,
+      240.9162,
+      240.9628,
+      240.937,
+      240.9661,
+      241.0599,
+      240.9823,
+      240.9644,
+      240.9792,
+      241.1705,
+      241.5022,
+      241.7659,
+      241.7346,
+      241.6837,
+      241.5769
+     ],
+     "median_ms": 240.9726,
+     "min_ms": 240.9162,
+     "p5_ms": 240.9162,
+     "p95_ms": 241.7346,
+     "iters": 20
+    },
+    "control": {
+     "samples_ms": [
+      529.6584,
+      530.6209,
+      530.2758,
+      531.2686,
+      529.4011,
+      531.938,
+      530.0786,
+      532.0193,
+      531.341,
+      531.8088
+     ],
+     "median_ms": 530.9448,
+     "min_ms": 529.4011,
+     "p5_ms": 529.4011,
+     "p95_ms": 531.938,
+     "iters": 10
+    },
+    "speedup_median": 2.2033
+   }
+  },
+  {
+   "chunk": 6,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 196608,
+   "k_len": 229376,
+   "flops": 171524216586240.0,
+   "preprocessing": {
+    "samples_ms": [
+     26.4298,
+     26.3784
+    ],
+    "median_ms": 26.4041,
+    "min_ms": 26.3784,
+    "p5_ms": 26.3784,
+    "p95_ms": 26.3784,
+    "iters": 2
+   },
+   "core": {
+    "samples_ms": [
+     284.428,
+     285.0095,
+     285.6587,
+     285.5841,
+     285.3394,
+     285.8401,
+     285.9521,
+     285.43,
+     285.6937,
+     285.9734
+    ],
+    "median_ms": 285.6214,
+    "min_ms": 284.428,
+    "p5_ms": 284.428,
+    "p95_ms": 285.9521,
+    "iters": 10,
+    "tflops_median": 600.5,
+    "tflops_min_time": 603.0
+   },
+   "inclusive": {
+    "samples_ms": [
+     310.8789,
+     310.8357
+    ],
+    "median_ms": 310.8573,
+    "min_ms": 310.8357,
+    "p5_ms": 310.8357,
+    "p95_ms": 310.8357,
+    "iters": 2
+   },
+   "peak_alloc_gib": 5.567,
+   "control": {
+    "kind": "cudnn-frost-bf16",
+    "interleave": "ABBA",
+    "paired_against": "core (eager, cuda_events)",
+    "impl": "cudnn.sdpa.fwd.SdpaFwdDslSm120 (FROST DSL), bf16 BHSD dense, causal_bottom_right, default tiles/scheduler",
+    "peak_performance_control": true,
+    "excluded_from_timing": "gather to dense BHSD + per-shape template compile",
+    "note": "dense: no paged-KV support in this engine; pre-gathered inputs",
+    "available": true,
+    "candidate": {
+     "samples_ms": [
+      284.5802,
+      284.4409,
+      284.4494,
+      284.4181,
+      284.4361,
+      284.8347,
+      285.0456,
+      284.843,
+      284.8694,
+      285.3206,
+      284.609,
+      285.0698,
+      285.8497,
+      285.8383,
+      285.7306,
+      285.5345,
+      285.9607,
+      285.9926,
+      285.6347,
+      285.9973
+     ],
+     "median_ms": 285.0577,
+     "min_ms": 284.4181,
+     "p5_ms": 284.4181,
+     "p95_ms": 285.9926,
+     "iters": 20
+    },
+    "control": {
+     "samples_ms": [
+      631.0939,
+      629.2756,
+      630.4972,
+      629.3119,
+      630.7127,
+      629.8693,
+      630.912,
+      630.0085,
+      630.5511,
+      630.5495
+     ],
+     "median_ms": 630.5233,
+     "min_ms": 629.2756,
+     "p5_ms": 629.2756,
+     "p95_ms": 630.912,
+     "iters": 10
+    },
+    "speedup_median": 2.2119
+   }
+  },
+  {
+   "chunk": 7,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 229376,
+   "k_len": 262144,
+   "flops": 197912495652864.0,
+   "preprocessing": {
+    "samples_ms": [
+     29.2076,
+     29.1265
+    ],
+    "median_ms": 29.1671,
+    "min_ms": 29.1265,
+    "p5_ms": 29.1265,
+    "p95_ms": 29.1265,
+    "iters": 2
+   },
+   "core": {
+    "samples_ms": [
+     330.0837,
+     329.9666,
+     330.0902,
+     330.2355,
+     330.1574,
+     330.2301,
+     330.3136,
+     330.4378,
+     330.2619,
+     330.1063
+    ],
+    "median_ms": 330.1938,
+    "min_ms": 329.9666,
+    "p5_ms": 329.9666,
+    "p95_ms": 330.3136,
+    "iters": 10,
+    "tflops_median": 599.4,
+    "tflops_min_time": 599.8
+   },
+   "inclusive": {
+    "samples_ms": [
+     357.0644,
+     357.0525
+    ],
+    "median_ms": 357.0584,
+    "min_ms": 357.0525,
+    "p5_ms": 357.0525,
+    "p95_ms": 357.0525,
+    "iters": 2
+   },
+   "peak_alloc_gib": 6.008,
+   "control": {
+    "kind": "cudnn-frost-bf16",
+    "interleave": "ABBA",
+    "paired_against": "core (eager, cuda_events)",
+    "impl": "cudnn.sdpa.fwd.SdpaFwdDslSm120 (FROST DSL), bf16 BHSD dense, causal_bottom_right, default tiles/scheduler",
+    "peak_performance_control": true,
+    "excluded_from_timing": "gather to dense BHSD + per-shape template compile",
+    "note": "dense: no paged-KV support in this engine; pre-gathered inputs",
+    "available": true,
+    "candidate": {
+     "samples_ms": [
+      327.9742,
+      327.95,
+      327.8359,
+      327.8062,
+      327.9206,
+      329.0271,
+      329.0463,
+      329.6257,
+      328.8908,
+      329.5652,
+      328.9091,
+      330.0854,
+      329.7307,
+      330.3369,
+      330.2857,
+      330.5384,
+      330.2758,
+      330.5118,
+      330.3254,
+      330.6133
+     ],
+     "median_ms": 329.5955,
+     "min_ms": 327.8062,
+     "p5_ms": 327.8062,
+     "p95_ms": 330.5384,
+     "iters": 20
+    },
+    "control": {
+     "samples_ms": [
+      729.5677,
+      730.0317,
+      728.7665,
+      730.6748,
+      729.2524,
+      729.3256,
+      730.1665,
+      730.0261,
+      728.962,
+      730.7548
+     ],
+     "median_ms": 729.7969,
+     "min_ms": 728.7665,
+     "p5_ms": 728.7665,
+     "p95_ms": 730.6748,
+     "iters": 10
+    },
+    "speedup_median": 2.2142
+   }
+  },
+  {
+   "chunk": 8,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 262144,
+   "k_len": 294912,
+   "flops": 224300774719488.0,
+   "preprocessing": {
+    "samples_ms": [
+     31.9293,
+     31.863
+    ],
+    "median_ms": 31.8961,
+    "min_ms": 31.863,
+    "p5_ms": 31.863,
+    "p95_ms": 31.863,
+    "iters": 2
+   },
+   "core": {
+    "samples_ms": [
+     374.6002,
+     374.0981,
+     374.5002,
+     374.5982,
+     374.5272,
+     374.4111,
+     374.8127,
+     374.7502,
+     374.6185,
+     374.5752
+    ],
+    "median_ms": 374.5867,
+    "min_ms": 374.0981,
+    "p5_ms": 374.0981,
+    "p95_ms": 374.7502,
+    "iters": 10,
+    "tflops_median": 598.8,
+    "tflops_min_time": 599.6
+   },
+   "inclusive": {
+    "samples_ms": [
+     403.3696,
+     403.2921
+    ],
+    "median_ms": 403.3309,
+    "min_ms": 403.2921,
+    "p5_ms": 403.2921,
+    "p95_ms": 403.2921,
+    "iters": 2
+   },
+   "peak_alloc_gib": 6.45,
+   "control": {
+    "kind": "cudnn-frost-bf16",
+    "interleave": "ABBA",
+    "paired_against": "core (eager, cuda_events)",
+    "impl": "cudnn.sdpa.fwd.SdpaFwdDslSm120 (FROST DSL), bf16 BHSD dense, causal_bottom_right, default tiles/scheduler",
+    "peak_performance_control": true,
+    "excluded_from_timing": "gather to dense BHSD + per-shape template compile",
+    "note": "dense: no paged-KV support in this engine; pre-gathered inputs",
+    "available": true,
+    "candidate": {
+     "samples_ms": [
+      371.508,
+      371.3539,
+      371.3499,
+      371.2992,
+      371.2758,
+      372.6815,
+      373.4234,
+      373.3982,
+      373.7593,
+      373.677,
+      371.5126,
+      372.3234,
+      374.4987,
+      374.6316,
+      374.3034,
+      374.5662,
+      374.7434,
+      374.6171,
+      374.428,
+      374.7918
+     ],
+     "median_ms": 373.5502,
+     "min_ms": 371.2758,
+     "p5_ms": 371.2758,
+     "p95_ms": 374.7434,
+     "iters": 20
+    },
+    "control": {
+     "samples_ms": [
+      828.8203,
+      829.2408,
+      827.7996,
+      827.7366,
+      828.1956,
+      828.3723,
+      829.3427,
+      828.2245,
+      828.9549,
+      829.875
+     ],
+     "median_ms": 828.5963,
+     "min_ms": 827.7366,
+     "p5_ms": 827.7366,
+     "p95_ms": 829.3427,
+     "iters": 10
+    },
+    "speedup_median": 2.2182
+   }
+  },
+  {
+   "chunk": 9,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 294912,
+   "k_len": 327680,
+   "flops": 250689053786112.0,
+   "preprocessing": {
+    "samples_ms": [
+     34.6855,
+     34.6651
+    ],
+    "median_ms": 34.6753,
+    "min_ms": 34.6651,
+    "p5_ms": 34.6651,
+    "p95_ms": 34.6651,
+    "iters": 2
+   },
+   "core": {
+    "samples_ms": [
+     418.5679,
+     418.6801,
+     418.8136,
+     418.6414,
+     418.8947,
+     418.8654,
+     418.9165,
+     418.7907,
+     418.805,
+     418.8597
+    ],
+    "median_ms": 418.8093,
+    "min_ms": 418.5679,
+    "p5_ms": 418.5679,
+    "p95_ms": 418.8947,
+    "iters": 10,
+    "tflops_median": 598.6,
+    "tflops_min_time": 598.9
+   },
+   "inclusive": {
+    "samples_ms": [
+     450.2739,
+     450.7365
+    ],
+    "median_ms": 450.5052,
+    "min_ms": 450.2739,
+    "p5_ms": 450.2739,
+    "p95_ms": 450.2739,
+    "iters": 2
+   },
+   "peak_alloc_gib": 6.892,
+   "control": {
+    "kind": "cudnn-frost-bf16",
+    "interleave": "ABBA",
+    "paired_against": "core (eager, cuda_events)",
+    "impl": "cudnn.sdpa.fwd.SdpaFwdDslSm120 (FROST DSL), bf16 BHSD dense, causal_bottom_right, default tiles/scheduler",
+    "peak_performance_control": true,
+    "excluded_from_timing": "gather to dense BHSD + per-shape template compile",
+    "note": "dense: no paged-KV support in this engine; pre-gathered inputs",
+    "available": true,
+    "candidate": {
+     "samples_ms": [
+      414.9332,
+      416.6501,
+      417.61,
+      417.5533,
+      417.7349,
+      417.8854,
+      417.8286,
+      417.7156,
+      417.9821,
+      418.1812,
+      417.0084,
+      418.0188,
+      418.5023,
+      418.7278,
+      418.9172,
+      419.0289,
+      419.0663,
+      419.0355,
+      419.1301,
+      419.0672
+     ],
+     "median_ms": 418.0005,
+     "min_ms": 414.9332,
+     "p5_ms": 414.9332,
+     "p95_ms": 419.0672,
+     "iters": 20
+    },
+    "control": {
+     "samples_ms": [
+      929.3954,
+      927.6175,
+      929.243,
+      927.0933,
+      928.1636,
+      928.7408,
+      928.5364,
+      929.1666,
+      929.4843,
+      929.3566
+     ],
+     "median_ms": 928.9537,
+     "min_ms": 927.0933,
+     "p5_ms": 927.0933,
+     "p95_ms": 929.3954,
+     "iters": 10
+    },
+    "speedup_median": 2.2224
+   }
+  },
+  {
+   "chunk": 10,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 327680,
+   "k_len": 360448,
+   "flops": 277077332852736.0,
+   "preprocessing": {
+    "samples_ms": [
+     37.4121,
+     37.3747
+    ],
+    "median_ms": 37.3934,
+    "min_ms": 37.3747,
+    "p5_ms": 37.3747,
+    "p95_ms": 37.3747,
+    "iters": 2
+   },
+   "core": {
+    "samples_ms": [
+     463.1656,
+     462.8687,
+     462.8456,
+     463.0532,
+     462.6548,
+     462.4353,
+     462.8626,
+     462.9772,
+     463.0062,
+     463.1762
+    ],
+    "median_ms": 462.9229,
+    "min_ms": 462.4353,
+    "p5_ms": 462.4353,
+    "p95_ms": 463.1656,
+    "iters": 10,
+    "tflops_median": 598.5,
+    "tflops_min_time": 599.2
+   },
+   "inclusive": {
+    "samples_ms": [
+     497.1955,
+     496.9859
+    ],
+    "median_ms": 497.0907,
+    "min_ms": 496.9859,
+    "p5_ms": 496.9859,
+    "p95_ms": 496.9859,
+    "iters": 2
+   },
+   "peak_alloc_gib": 7.333,
+   "control": {
+    "kind": "cudnn-frost-bf16",
+    "interleave": "ABBA",
+    "paired_against": "core (eager, cuda_events)",
+    "impl": "cudnn.sdpa.fwd.SdpaFwdDslSm120 (FROST DSL), bf16 BHSD dense, causal_bottom_right, default tiles/scheduler",
+    "peak_performance_control": true,
+    "excluded_from_timing": "gather to dense BHSD + per-shape template compile",
+    "note": "dense: no paged-KV support in this engine; pre-gathered inputs",
+    "available": true,
+    "candidate": {
+     "samples_ms": [
+      459.1105,
+      461.794,
+      461.6331,
+      461.7031,
+      461.8427,
+      461.9879,
+      462.0576,
+      461.8838,
+      462.0149,
+      461.8723,
+      461.2389,
+      462.7257,
+      462.3617,
+      462.4769,
+      462.5453,
+      462.8338,
+      463.0055,
+      462.8159,
+      462.8993,
+      462.7784
+     ],
+     "median_ms": 462.0362,
+     "min_ms": 459.1105,
+     "p5_ms": 459.1105,
+     "p95_ms": 462.8993,
+     "iters": 20
+    },
+    "control": {
+     "samples_ms": [
+      1029.5366,
+      1027.9672,
+      1027.4822,
+      1029.6075,
+      1028.4727,
+      1027.28,
+      1030.129,
+      1027.9281,
+      1030.1909,
+      1030.7556
+     ],
+     "median_ms": 1029.0046,
+     "min_ms": 1027.28,
+     "p5_ms": 1027.28,
+     "p95_ms": 1030.1909,
+     "iters": 10
+    },
+    "speedup_median": 2.2271
+   }
+  },
+  {
+   "chunk": 11,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 360448,
+   "k_len": 393216,
+   "flops": 303465611919360.0,
+   "preprocessing": {
+    "samples_ms": [
+     40.1269,
+     40.0735
+    ],
+    "median_ms": 40.1002,
+    "min_ms": 40.0735,
+    "p5_ms": 40.0735,
+    "p95_ms": 40.0735,
+    "iters": 2
+   },
+   "core": {
+    "samples_ms": [
+     506.6345,
+     506.9923,
+     506.9137,
+     506.5537,
+     507.0609,
+     506.9763,
+     506.5657,
+     506.9516,
+     507.1864,
+     506.8436
+    ],
+    "median_ms": 506.9326,
+    "min_ms": 506.5537,
+    "p5_ms": 506.5537,
+    "p95_ms": 507.0609,
+    "iters": 10,
+    "tflops_median": 598.6,
+    "tflops_min_time": 599.1
+   },
+   "inclusive": {
+    "samples_ms": [
+     543.6169,
+     543.5687
+    ],
+    "median_ms": 543.5928,
+    "min_ms": 543.5687,
+    "p5_ms": 543.5687,
+    "p95_ms": 543.5687,
+    "iters": 2
+   },
+   "peak_alloc_gib": 7.776,
+   "control": {
+    "kind": "cudnn-frost-bf16",
+    "interleave": "ABBA",
+    "paired_against": "core (eager, cuda_events)",
+    "impl": "cudnn.sdpa.fwd.SdpaFwdDslSm120 (FROST DSL), bf16 BHSD dense, causal_bottom_right, default tiles/scheduler",
+    "peak_performance_control": true,
+    "excluded_from_timing": "gather to dense BHSD + per-shape template compile",
+    "note": "dense: no paged-KV support in this engine; pre-gathered inputs",
+    "available": true,
+    "candidate": {
+     "samples_ms": [
+      503.3682,
+      505.7119,
+      505.9695,
+      505.3046,
+      506.0962,
+      506.1258,
+      505.5172,
+      506.2287,
+      506.2741,
+      506.4129,
+      504.2384,
+      506.8814,
+      506.9703,
+      506.4228,
+      507.1277,
+      507.0541,
+      506.9321,
+      507.3694,
+      507.4073,
+      507.3102
+     ],
+     "median_ms": 506.3435,
+     "min_ms": 503.3682,
+     "p5_ms": 503.3682,
+     "p95_ms": 507.3694,
+     "iters": 20
+    },
+    "control": {
+     "samples_ms": [
+      1129.017,
+      1127.8602,
+      1126.3307,
+      1127.8362,
+      1128.7412,
+      1126.1423,
+      1127.8042,
+      1127.5038,
+      1128.8374,
+      1128.9758
+     ],
+     "median_ms": 1127.8482,
+     "min_ms": 1126.1423,
+     "p5_ms": 1126.1423,
+     "p95_ms": 1128.9758,
+     "iters": 10
+    },
+    "speedup_median": 2.2274
+   }
+  },
+  {
+   "chunk": 12,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 393216,
+   "k_len": 425984,
+   "flops": 329853890985984.0,
+   "preprocessing": {
+    "samples_ms": [
+     42.8889,
+     42.8799
+    ],
+    "median_ms": 42.8844,
+    "min_ms": 42.8799,
+    "p5_ms": 42.8799,
+    "p95_ms": 42.8799,
+    "iters": 2
+   },
+   "core": {
+    "samples_ms": [
+     551.1636,
+     551.4956,
+     551.2171,
+     551.3669,
+     550.9644,
+     551.3324,
+     551.2671,
+     551.4553,
+     551.7112,
+     551.5939
+    ],
+    "median_ms": 551.3496,
+    "min_ms": 550.9644,
+    "p5_ms": 550.9644,
+    "p95_ms": 551.5939,
+    "iters": 10,
+    "tflops_median": 598.3,
+    "tflops_min_time": 598.7
+   },
+   "inclusive": {
+    "samples_ms": [
+     590.8154,
+     590.7543
+    ],
+    "median_ms": 590.7849,
+    "min_ms": 590.7543,
+    "p5_ms": 590.7543,
+    "p95_ms": 590.7543,
+    "iters": 2
+   },
+   "peak_alloc_gib": 8.217,
+   "control": {
+    "kind": "cudnn-frost-bf16",
+    "interleave": "ABBA",
+    "paired_against": "core (eager, cuda_events)",
+    "impl": "cudnn.sdpa.fwd.SdpaFwdDslSm120 (FROST DSL), bf16 BHSD dense, causal_bottom_right, default tiles/scheduler",
+    "peak_performance_control": true,
+    "excluded_from_timing": "gather to dense BHSD + per-shape template compile",
+    "note": "dense: no paged-KV support in this engine; pre-gathered inputs",
+    "available": true,
+    "candidate": {
+     "samples_ms": [
+      545.2603,
+      547.9736,
+      549.9869,
+      549.9922,
+      550.3249,
+      550.1225,
+      550.3284,
+      550.3115,
+      550.3137,
+      550.4648,
+      548.4326,
+      550.8674,
+      551.037,
+      551.0869,
+      551.2444,
+      551.1404,
+      551.3147,
+      550.6841,
+      551.0851,
+      551.2553
+     ],
+     "median_ms": 550.3966,
+     "min_ms": 545.2603,
+     "p5_ms": 545.2603,
+     "p95_ms": 551.2553,
+     "iters": 20
+    },
+    "control": {
+     "samples_ms": [
+      1230.1637,
+      1229.2932,
+      1230.1655,
+      1226.8334,
+      1230.3406,
+      1229.4567,
+      1228.72,
+      1231.7584,
+      1228.7798,
+      1230.4304
+     ],
+     "median_ms": 1229.8102,
+     "min_ms": 1226.8334,
+     "p5_ms": 1226.8334,
+     "p95_ms": 1230.4304,
+     "iters": 10
+    },
+    "speedup_median": 2.2344
+   }
+  },
+  {
+   "chunk": 13,
+   "layer_seed": 0,
+   "q_len": 20351,
+   "prefix_len": 425984,
+   "k_len": 446335,
+   "flops": 218143756124160.0,
+   "preprocessing": {
+    "samples_ms": [
+     42.5031,
+     42.4417
+    ],
+    "median_ms": 42.4724,
+    "min_ms": 42.4417,
+    "p5_ms": 42.4417,
+    "p95_ms": 42.4417,
+    "iters": 2
+   },
+   "core": {
+    "samples_ms": [
+     370.6928,
+     371.2065,
+     370.9821,
+     370.4784,
+     371.0009,
+     370.6945,
+     371.1264,
+     370.8326,
+     371.2171,
+     370.9281
+    ],
+    "median_ms": 370.9551,
+    "min_ms": 370.4784,
+    "p5_ms": 370.4784,
+    "p95_ms": 371.2065,
+    "iters": 10,
+    "tflops_median": 588.1,
+    "tflops_min_time": 588.8
+   },
+   "inclusive": {
+    "samples_ms": [
+     411.2343,
+     411.4045
+    ],
+    "median_ms": 411.3194,
+    "min_ms": 411.2343,
+    "p5_ms": 411.2343,
+    "p95_ms": 411.2343,
+    "iters": 2
+   },
+   "peak_alloc_gib": 7.781,
+   "control": {
+    "kind": "cudnn-frost-bf16",
+    "interleave": "ABBA",
+    "paired_against": "core (eager, cuda_events)",
+    "impl": "cudnn.sdpa.fwd.SdpaFwdDslSm120 (FROST DSL), bf16 BHSD dense, causal_bottom_right, default tiles/scheduler",
+    "peak_performance_control": true,
+    "excluded_from_timing": "gather to dense BHSD + per-shape template compile",
+    "note": "dense: no paged-KV support in this engine; pre-gathered inputs",
+    "available": true,
+    "candidate": {
+     "samples_ms": [
+      368.6378,
+      368.6892,
+      368.8149,
+      369.5971,
+      369.2459,
+      369.7032,
+      369.8699,
+      369.7614,
+      370.0644,
+      369.8575,
+      368.7859,
+      369.4992,
+      370.2699,
+      369.9392,
+      370.3015,
+      370.1707,
+      370.6384,
+      370.2977,
+      370.5688,
+      370.2725
+     ],
+     "median_ms": 369.8637,
+     "min_ms": 368.6378,
+     "p5_ms": 368.6378,
+     "p95_ms": 370.5688,
+     "iters": 20
+    },
+    "control": {
+     "samples_ms": [
+      821.9558,
+      819.0457,
+      818.8882,
+      818.2184,
+      819.5641,
+      819.6833,
+      818.6484,
+      819.2986,
+      818.8771,
+      819.9301
+     ],
+     "median_ms": 819.1721,
+     "min_ms": 818.2184,
+     "p5_ms": 818.2184,
+     "p95_ms": 819.9301,
+     "iters": 10
+    },
+    "speedup_median": 2.2148
+   }
+  }
+ ],
+ "schedule_aggregate": {
+  "preprocessing": {
+   "schedule_ms": 6168.2,
+   "measured_calls": 14,
+   "extrapolated_calls": 210
+  },
+  "core": {
+   "schedule_ms": 65501.7,
+   "measured_calls": 14,
+   "extrapolated_calls": 210,
+   "schedule_tflops": 598.0
+  },
+  "inclusive": {
+   "schedule_ms": 71323.3,
+   "measured_calls": 14,
+   "extrapolated_calls": 210,
+   "schedule_tflops_honest": 549.2
+  }
+ },
+ "control_aggregate": {
+  "kind": "cudnn-frost-bf16",
+  "interleave": "ABBA",
+  "available_cases": 14,
+  "total_cases": 14,
+  "unavailable_reason": null,
+  "peak_performance_control": true,
+  "paired_speedup": {
+   "cases": 14,
+   "geomean": 2.2006,
+   "ci95_low": 2.185,
+   "ci95_high": 2.2143,
+   "min": 2.1332,
+   "median": 2.213,
+   "max": 2.2344,
+   "resamples": 10000,
+   "resample_unit": "case",
+   "seed": 20260861
+  },
+  "candidate_across_cases": {
+   "median_ms": 307.3266,
+   "p5_ms": 22.9353,
+   "p95_ms": 506.3435,
+   "cases": 14
+  },
+  "control_across_cases": {
+   "median_ms": 680.1601,
+   "p5_ms": 48.9245,
+   "p95_ms": 1127.8482,
+   "cases": 14
+  }
+ }
+}

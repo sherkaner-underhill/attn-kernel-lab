@@ -1,0 +1,900 @@
+{
+ "schema": "candidate-bench/1",
+ "label": "fruit-newprep",
+ "utc": "2026-08-30T05:34:22+00:00",
+ "argv": [
+  "--profile",
+  "d256-24x4-446k",
+  "--layers",
+  "1",
+  "--iters",
+  "10",
+  "--quant-iters",
+  "5",
+  "--label",
+  "fruit-newprep"
+ ],
+ "workload_profile": "d256-24x4-446k",
+ "workload_cases_sha256": "2621651e58b75ef11d6b63f94d18632e5862f16321e3f48d5042fd883867beb0",
+ "measurement": {
+  "timing_backend": "cuda_events",
+  "l2_policy": "warm",
+  "graph_mode": "eager",
+  "process_model": "single"
+ },
+ "config": {
+  "layers": 1,
+  "warmup": 3,
+  "iters": 10,
+  "quant_iters": 5,
+  "seed": 20260829,
+  "smoke": false
+ },
+ "env": {
+  "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "capability": "12.0",
+  "sm_count": 188,
+  "total_mem_gib": 94.97,
+  "free_mem_gib_at_start": 94.43,
+  "torch": "2.13.0+cu129",
+  "cuda": "12.9",
+  "python": "3.12.3",
+  "source_build_id": "7b7533642f44531b9b09bb95d18dde943b7a19cccbf427115e696814209a8799",
+  "nvidia_smi": {
+   "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+   "driver_version": "595.91.07",
+   "uuid": "card-B",
+   "power.limit": "600.00 W",
+   "power.draw": "83.08 W",
+   "clocks.sm": "2302 MHz",
+   "clocks.max.sm": "2430 MHz",
+   "temperature.gpu": "28",
+   "persistence_mode": "Enabled"
+  },
+  "cublas_workspace_config": ":4096:8"
+ },
+ "geometry": {
+  "head_dim": 256,
+  "kv_dtype": "bfloat16",
+  "kv_heads": 4,
+  "layers": 16,
+  "mask": "bottom_right_causal",
+  "mode": "extend",
+  "page_size": 1,
+  "q_heads": 24,
+  "total_layers": 64
+ },
+ "cases": [
+  {
+   "chunk": 0,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 0,
+   "k_len": 32768,
+   "flops": 13194542186496.0,
+   "preprocessing": {
+    "samples_ms": [
+     10.0946,
+     10.0276,
+     10.0232,
+     10.0153,
+     10.0255
+    ],
+    "median_ms": 10.0255,
+    "min_ms": 10.0153,
+    "p5_ms": 10.0153,
+    "p95_ms": 10.0276,
+    "iters": 5
+   },
+   "core": {
+    "samples_ms": [
+     24.6457,
+     24.6588,
+     24.655,
+     24.2754,
+     22.9252,
+     22.9297,
+     22.9244,
+     22.9242,
+     22.9222,
+     22.9218
+    ],
+    "median_ms": 22.9274,
+    "min_ms": 22.9218,
+    "p5_ms": 22.9218,
+    "p95_ms": 24.655,
+    "iters": 10,
+    "tflops_median": 575.5,
+    "tflops_min_time": 575.6
+   },
+   "inclusive": {
+    "samples_ms": [
+     33.6485,
+     32.9654,
+     34.1204,
+     33.6832,
+     32.961
+    ],
+    "median_ms": 33.6485,
+    "min_ms": 32.961,
+    "p5_ms": 32.961,
+    "p95_ms": 33.6832,
+    "iters": 5
+   },
+   "peak_alloc_gib": 2.864
+  },
+  {
+   "chunk": 1,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 32768,
+   "k_len": 65536,
+   "flops": 39582821253120.0,
+   "preprocessing": {
+    "samples_ms": [
+     12.8932,
+     12.8484,
+     12.8514,
+     12.8692,
+     12.8861
+    ],
+    "median_ms": 12.8692,
+    "min_ms": 12.8484,
+    "p5_ms": 12.8484,
+    "p95_ms": 12.8861,
+    "iters": 5
+   },
+   "core": {
+    "samples_ms": [
+     66.5717,
+     66.5673,
+     66.5659,
+     66.5682,
+     66.5693,
+     66.5673,
+     66.5653,
+     66.5957,
+     66.5671,
+     66.5652
+    ],
+    "median_ms": 66.5673,
+    "min_ms": 66.5652,
+    "p5_ms": 66.5652,
+    "p95_ms": 66.5717,
+    "iters": 10,
+    "tflops_median": 594.6,
+    "tflops_min_time": 594.6
+   },
+   "inclusive": {
+    "samples_ms": [
+     79.2158,
+     79.2592,
+     79.2003,
+     79.1957,
+     79.1807
+    ],
+    "median_ms": 79.2003,
+    "min_ms": 79.1807,
+    "p5_ms": 79.1807,
+    "p95_ms": 79.2158,
+    "iters": 5
+   },
+   "peak_alloc_gib": 3.055
+  },
+  {
+   "chunk": 2,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 65536,
+   "k_len": 98304,
+   "flops": 65971100319744.0,
+   "preprocessing": {
+    "samples_ms": [
+     15.7106,
+     15.6658,
+     15.6796,
+     15.6989,
+     15.7285
+    ],
+    "median_ms": 15.6989,
+    "min_ms": 15.6658,
+    "p5_ms": 15.6658,
+    "p95_ms": 15.7106,
+    "iters": 5
+   },
+   "core": {
+    "samples_ms": [
+     110.4084,
+     110.4106,
+     110.4073,
+     110.4098,
+     110.4047,
+     110.4165,
+     110.4018,
+     110.403,
+     110.4231,
+     110.4122
+    ],
+    "median_ms": 110.4091,
+    "min_ms": 110.4018,
+    "p5_ms": 110.4018,
+    "p95_ms": 110.4165,
+    "iters": 10,
+    "tflops_median": 597.5,
+    "tflops_min_time": 597.6
+   },
+   "inclusive": {
+    "samples_ms": [
+     125.8543,
+     125.9819,
+     125.895,
+     125.8962,
+     125.8348
+    ],
+    "median_ms": 125.895,
+    "min_ms": 125.8348,
+    "p5_ms": 125.8348,
+    "p95_ms": 125.8962,
+    "iters": 5
+   },
+   "peak_alloc_gib": 3.247
+  },
+  {
+   "chunk": 3,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 98304,
+   "k_len": 131072,
+   "flops": 92359379386368.0,
+   "preprocessing": {
+    "samples_ms": [
+     18.491,
+     18.506,
+     18.4901,
+     18.5032,
+     18.5003
+    ],
+    "median_ms": 18.5003,
+    "min_ms": 18.4901,
+    "p5_ms": 18.4901,
+    "p95_ms": 18.5032,
+    "iters": 5
+   },
+   "core": {
+    "samples_ms": [
+     154.0272,
+     154.0056,
+     154.0088,
+     154.0111,
+     154.0318,
+     154.0461,
+     154.0317,
+     154.0702,
+     154.0268,
+     154.0219
+    ],
+    "median_ms": 154.027,
+    "min_ms": 154.0056,
+    "p5_ms": 154.0056,
+    "p95_ms": 154.0461,
+    "iters": 10,
+    "tflops_median": 599.6,
+    "tflops_min_time": 599.7
+   },
+   "inclusive": {
+    "samples_ms": [
+     172.1745,
+     172.141,
+     172.1331,
+     172.1714,
+     172.2135
+    ],
+    "median_ms": 172.1714,
+    "min_ms": 172.1331,
+    "p5_ms": 172.1331,
+    "p95_ms": 172.1745,
+    "iters": 5
+   },
+   "peak_alloc_gib": 3.439
+  },
+  {
+   "chunk": 4,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 131072,
+   "k_len": 163840,
+   "flops": 118747658452992.0,
+   "preprocessing": {
+    "samples_ms": [
+     21.314,
+     21.264,
+     21.3174,
+     21.2815,
+     21.2891
+    ],
+    "median_ms": 21.2891,
+    "min_ms": 21.264,
+    "p5_ms": 21.264,
+    "p95_ms": 21.314,
+    "iters": 5
+   },
+   "core": {
+    "samples_ms": [
+     197.5657,
+     197.5251,
+     197.5995,
+     197.5281,
+     197.4981,
+     197.5101,
+     197.5366,
+     197.5467,
+     197.601,
+     197.5348
+    ],
+    "median_ms": 197.5357,
+    "min_ms": 197.4981,
+    "p5_ms": 197.4981,
+    "p95_ms": 197.5995,
+    "iters": 10,
+    "tflops_median": 601.1,
+    "tflops_min_time": 601.3
+   },
+   "inclusive": {
+    "samples_ms": [
+     218.4608,
+     218.4987,
+     218.4357,
+     218.4326,
+     218.4483
+    ],
+    "median_ms": 218.4483,
+    "min_ms": 218.4326,
+    "p5_ms": 218.4326,
+    "p95_ms": 218.4608,
+    "iters": 5
+   },
+   "peak_alloc_gib": 3.631
+  },
+  {
+   "chunk": 5,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 163840,
+   "k_len": 196608,
+   "flops": 145135937519616.0,
+   "preprocessing": {
+    "samples_ms": [
+     24.0949,
+     24.0847,
+     24.0717,
+     24.0422,
+     24.0552
+    ],
+    "median_ms": 24.0717,
+    "min_ms": 24.0422,
+    "p5_ms": 24.0422,
+    "p95_ms": 24.0847,
+    "iters": 5
+   },
+   "core": {
+    "samples_ms": [
+     240.9176,
+     240.9254,
+     240.9668,
+     240.8941,
+     240.9426,
+     240.941,
+     240.9331,
+     240.9208,
+     240.9205,
+     240.9552
+    ],
+    "median_ms": 240.9292,
+    "min_ms": 240.8941,
+    "p5_ms": 240.8941,
+    "p95_ms": 240.9552,
+    "iters": 10,
+    "tflops_median": 602.4,
+    "tflops_min_time": 602.5
+   },
+   "inclusive": {
+    "samples_ms": [
+     264.5576,
+     264.5866,
+     264.7409,
+     264.6049,
+     264.6707
+    ],
+    "median_ms": 264.6049,
+    "min_ms": 264.5576,
+    "p5_ms": 264.5576,
+    "p95_ms": 264.6707,
+    "iters": 5
+   },
+   "peak_alloc_gib": 3.824
+  },
+  {
+   "chunk": 6,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 196608,
+   "k_len": 229376,
+   "flops": 171524216586240.0,
+   "preprocessing": {
+    "samples_ms": [
+     26.8852,
+     26.8424,
+     26.4276,
+     26.4506,
+     26.4335
+    ],
+    "median_ms": 26.4506,
+    "min_ms": 26.4276,
+    "p5_ms": 26.4276,
+    "p95_ms": 26.8424,
+    "iters": 5
+   },
+   "core": {
+    "samples_ms": [
+     284.4467,
+     284.4141,
+     284.38,
+     284.4047,
+     284.3818,
+     284.4057,
+     284.3938,
+     284.3901,
+     284.3793,
+     284.3715
+    ],
+    "median_ms": 284.392,
+    "min_ms": 284.3715,
+    "p5_ms": 284.3715,
+    "p95_ms": 284.4141,
+    "iters": 10,
+    "tflops_median": 603.1,
+    "tflops_min_time": 603.2
+   },
+   "inclusive": {
+    "samples_ms": [
+     310.7647,
+     310.7966,
+     310.7448,
+     310.6977,
+     310.7464
+    ],
+    "median_ms": 310.7464,
+    "min_ms": 310.6977,
+    "p5_ms": 310.6977,
+    "p95_ms": 310.7647,
+    "iters": 5
+   },
+   "peak_alloc_gib": 4.013
+  },
+  {
+   "chunk": 7,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 229376,
+   "k_len": 262144,
+   "flops": 197912495652864.0,
+   "preprocessing": {
+    "samples_ms": [
+     29.3703,
+     29.1982,
+     29.1104,
+     29.1,
+     29.0974
+    ],
+    "median_ms": 29.1104,
+    "min_ms": 29.0974,
+    "p5_ms": 29.0974,
+    "p95_ms": 29.1982,
+    "iters": 5
+   },
+   "core": {
+    "samples_ms": [
+     327.8713,
+     327.8674,
+     327.8352,
+     327.8401,
+     327.8417,
+     327.8709,
+     327.8885,
+     327.8098,
+     327.832,
+     327.8492
+    ],
+    "median_ms": 327.8455,
+    "min_ms": 327.8098,
+    "p5_ms": 327.8098,
+    "p95_ms": 327.8713,
+    "iters": 10,
+    "tflops_median": 603.7,
+    "tflops_min_time": 603.7
+   },
+   "inclusive": {
+    "samples_ms": [
+     356.934,
+     356.9623,
+     356.9719,
+     356.9227,
+     356.9029
+    ],
+    "median_ms": 356.934,
+    "min_ms": 356.9029,
+    "p5_ms": 356.9029,
+    "p95_ms": 356.9623,
+    "iters": 5
+   },
+   "peak_alloc_gib": 4.206
+  },
+  {
+   "chunk": 8,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 262144,
+   "k_len": 294912,
+   "flops": 224300774719488.0,
+   "preprocessing": {
+    "samples_ms": [
+     31.7963,
+     31.7861,
+     31.7922,
+     31.7777,
+     31.7713
+    ],
+    "median_ms": 31.7861,
+    "min_ms": 31.7713,
+    "p5_ms": 31.7713,
+    "p95_ms": 31.7922,
+    "iters": 5
+   },
+   "core": {
+    "samples_ms": [
+     371.2929,
+     371.3267,
+     371.3213,
+     371.3209,
+     371.2923,
+     371.291,
+     371.2843,
+     371.3053,
+     371.3241,
+     371.3314
+    ],
+    "median_ms": 371.3131,
+    "min_ms": 371.2843,
+    "p5_ms": 371.2843,
+    "p95_ms": 371.3267,
+    "iters": 10,
+    "tflops_median": 604.1,
+    "tflops_min_time": 604.1
+   },
+   "inclusive": {
+    "samples_ms": [
+     403.0704,
+     403.1197,
+     403.0871,
+     403.0871,
+     403.0923
+    ],
+    "median_ms": 403.0871,
+    "min_ms": 403.0704,
+    "p5_ms": 403.0704,
+    "p95_ms": 403.0923,
+    "iters": 5
+   },
+   "peak_alloc_gib": 4.396
+  },
+  {
+   "chunk": 9,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 294912,
+   "k_len": 327680,
+   "flops": 250689053786112.0,
+   "preprocessing": {
+    "samples_ms": [
+     34.581,
+     34.5729,
+     34.5644,
+     34.5628,
+     34.5551
+    ],
+    "median_ms": 34.5644,
+    "min_ms": 34.5551,
+    "p5_ms": 34.5551,
+    "p95_ms": 34.5729,
+    "iters": 5
+   },
+   "core": {
+    "samples_ms": [
+     414.7462,
+     414.7498,
+     414.7008,
+     414.7527,
+     414.7531,
+     414.7279,
+     414.7332,
+     414.7032,
+     414.6831,
+     414.7444
+    ],
+    "median_ms": 414.7388,
+    "min_ms": 414.6831,
+    "p5_ms": 414.6831,
+    "p95_ms": 414.7527,
+    "iters": 10,
+    "tflops_median": 604.5,
+    "tflops_min_time": 604.5
+   },
+   "inclusive": {
+    "samples_ms": [
+     449.2802,
+     449.2753,
+     449.2927,
+     449.2888,
+     449.3142
+    ],
+    "median_ms": 449.2888,
+    "min_ms": 449.2753,
+    "p5_ms": 449.2753,
+    "p95_ms": 449.2927,
+    "iters": 5
+   },
+   "peak_alloc_gib": 4.588
+  },
+  {
+   "chunk": 10,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 327680,
+   "k_len": 360448,
+   "flops": 277077332852736.0,
+   "preprocessing": {
+    "samples_ms": [
+     37.3467,
+     37.3533,
+     37.2958,
+     37.3111,
+     37.3246
+    ],
+    "median_ms": 37.3246,
+    "min_ms": 37.2958,
+    "p5_ms": 37.2958,
+    "p95_ms": 37.3467,
+    "iters": 5
+   },
+   "core": {
+    "samples_ms": [
+     458.2344,
+     458.257,
+     458.2137,
+     458.1977,
+     458.2166,
+     458.2079,
+     458.2041,
+     458.2505,
+     458.1967,
+     458.1951
+    ],
+    "median_ms": 458.2108,
+    "min_ms": 458.1951,
+    "p5_ms": 458.1951,
+    "p95_ms": 458.2505,
+    "iters": 10,
+    "tflops_median": 604.7,
+    "tflops_min_time": 604.7
+   },
+   "inclusive": {
+    "samples_ms": [
+     495.5563,
+     495.5936,
+     495.5714,
+     495.4864,
+     495.5175
+    ],
+    "median_ms": 495.5563,
+    "min_ms": 495.4864,
+    "p5_ms": 495.4864,
+    "p95_ms": 495.5714,
+    "iters": 5
+   },
+   "peak_alloc_gib": 4.781
+  },
+  {
+   "chunk": 11,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 360448,
+   "k_len": 393216,
+   "flops": 303465611919360.0,
+   "preprocessing": {
+    "samples_ms": [
+     40.1108,
+     40.0522,
+     40.0884,
+     40.0308,
+     40.0673
+    ],
+    "median_ms": 40.0673,
+    "min_ms": 40.0308,
+    "p5_ms": 40.0308,
+    "p95_ms": 40.0884,
+    "iters": 5
+   },
+   "core": {
+    "samples_ms": [
+     501.6547,
+     501.6182,
+     501.634,
+     501.6475,
+     501.6083,
+     501.6468,
+     501.6573,
+     501.6376,
+     501.6532,
+     501.6127
+    ],
+    "median_ms": 501.6422,
+    "min_ms": 501.6083,
+    "p5_ms": 501.6083,
+    "p95_ms": 501.6547,
+    "iters": 10,
+    "tflops_median": 604.9,
+    "tflops_min_time": 605.0
+   },
+   "inclusive": {
+    "samples_ms": [
+     541.7159,
+     541.7239,
+     541.9156,
+     541.7181,
+     541.7058
+    ],
+    "median_ms": 541.7181,
+    "min_ms": 541.7058,
+    "p5_ms": 541.7058,
+    "p95_ms": 541.7239,
+    "iters": 5
+   },
+   "peak_alloc_gib": 4.973
+  },
+  {
+   "chunk": 12,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 393216,
+   "k_len": 425984,
+   "flops": 329853890985984.0,
+   "preprocessing": {
+    "samples_ms": [
+     42.8202,
+     42.8418,
+     42.8123,
+     42.8092,
+     42.846
+    ],
+    "median_ms": 42.8202,
+    "min_ms": 42.8092,
+    "p5_ms": 42.8092,
+    "p95_ms": 42.8418,
+    "iters": 5
+   },
+   "core": {
+    "samples_ms": [
+     545.2399,
+     545.2531,
+     545.2697,
+     545.2589,
+     545.1807,
+     545.2273,
+     545.2023,
+     545.3344,
+     545.215,
+     545.2861
+    ],
+    "median_ms": 545.2465,
+    "min_ms": 545.1807,
+    "p5_ms": 545.1807,
+    "p95_ms": 545.2861,
+    "iters": 10,
+    "tflops_median": 605.0,
+    "tflops_min_time": 605.0
+   },
+   "inclusive": {
+    "samples_ms": [
+     588.0266,
+     588.0813,
+     588.0616,
+     588.1318,
+     588.106
+    ],
+    "median_ms": 588.0813,
+    "min_ms": 588.0266,
+    "p5_ms": 588.0266,
+    "p95_ms": 588.106,
+    "iters": 5
+   },
+   "peak_alloc_gib": 5.164
+  },
+  {
+   "chunk": 13,
+   "layer_seed": 0,
+   "q_len": 20351,
+   "prefix_len": 425984,
+   "k_len": 446335,
+   "flops": 218143756124160.0,
+   "preprocessing": {
+    "samples_ms": [
+     42.4837,
+     42.4257,
+     42.4308,
+     42.4159,
+     42.46
+    ],
+    "median_ms": 42.4308,
+    "min_ms": 42.4159,
+    "p5_ms": 42.4159,
+    "p95_ms": 42.46,
+    "iters": 5
+   },
+   "core": {
+    "samples_ms": [
+     368.6665,
+     368.6734,
+     368.6607,
+     368.6326,
+     368.6962,
+     368.7213,
+     368.6599,
+     368.6366,
+     368.7074,
+     368.678
+    ],
+    "median_ms": 368.67,
+    "min_ms": 368.6326,
+    "p5_ms": 368.6326,
+    "p95_ms": 368.7074,
+    "iters": 10,
+    "tflops_median": 591.7,
+    "tflops_min_time": 591.8
+   },
+   "inclusive": {
+    "samples_ms": [
+     411.0655,
+     411.074,
+     411.0615,
+     411.0311,
+     411.0756
+    ],
+    "median_ms": 411.0655,
+    "min_ms": 411.0311,
+    "p5_ms": 411.0311,
+    "p95_ms": 411.074,
+    "iters": 5
+   },
+   "peak_alloc_gib": 4.499
+  }
+ ],
+ "schedule_aggregate": {
+  "preprocessing": {
+   "schedule_ms": 6192.1,
+   "measured_calls": 14,
+   "extrapolated_calls": 210
+  },
+  "core": {
+   "schedule_ms": 65031.3,
+   "measured_calls": 14,
+   "extrapolated_calls": 210,
+   "schedule_tflops": 602.3
+  },
+  "inclusive": {
+   "schedule_ms": 71207.1,
+   "measured_calls": 14,
+   "extrapolated_calls": 210,
+   "schedule_tflops_honest": 550.0
+  }
+ }
+}

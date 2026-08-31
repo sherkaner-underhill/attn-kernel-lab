@@ -1,0 +1,144 @@
+{
+ "schema": "candidate-bench/1",
+ "label": "smoke-compat-sm89",
+ "utc": "2026-08-30T01:57:59+00:00",
+ "argv": [
+  "--smoke",
+  "--lane",
+  "upstream-comparability",
+  "--label",
+  "smoke-compat-sm89"
+ ],
+ "workload_profile": "d256-24x4-446k",
+ "workload_cases_sha256": "2621651e58b75ef11d6b63f94d18632e5862f16321e3f48d5042fd883867beb0",
+ "measurement": {
+  "timing_backend": "cuda_events",
+  "l2_policy": "warm",
+  "graph_mode": "cuda_graph",
+  "process_model": "single",
+  "lane": "upstream_comparability",
+  "graph_iters_within_graph": 1,
+  "graph_warmup_replays": 2,
+  "graph_timed_replays": 5,
+  "quantization": "excluded (prequantized inputs, preallocated out)",
+  "clock_requested_mhz": null
+ },
+ "config": {
+  "layers": 1,
+  "warmup": 1,
+  "iters": 3,
+  "quant_iters": 2,
+  "seed": 20260829,
+  "smoke": true,
+  "lane": "upstream-comparability",
+  "graph_warmup_replays": 2,
+  "graph_timed_replays": 5,
+  "request_clock_mhz": null
+ },
+ "env": {
+  "device_name": "NVIDIA GeForce RTX 4090",
+  "capability": "8.9",
+  "sm_count": 128,
+  "total_mem_gib": 23.99,
+  "free_mem_gib_at_start": 22.45,
+  "torch": "2.13.0+cu129",
+  "cuda": "12.9",
+  "python": "3.12.14",
+  "source_build_id": "9868ac284ec71f56098d6637b925468741749c3b176e5e7087e32a87296d9e4b",
+  "nvidia_smi": {
+   "name": "NVIDIA GeForce RTX 4090",
+   "driver_version": "595.79",
+   "uuid": "local-dev-gpu",
+   "power.limit": "450.00 W",
+   "power.draw": "118.50 W",
+   "clocks.sm": "2715 MHz",
+   "clocks.max.sm": "3120 MHz",
+   "temperature.gpu": "40",
+   "persistence_mode": "Enabled"
+  },
+  "cublas_workspace_config": ":4096:8"
+ },
+ "geometry": {
+  "head_dim": 256,
+  "kv_dtype": "bfloat16",
+  "kv_heads": 4,
+  "layers": 16,
+  "mask": "bottom_right_causal",
+  "mode": "extend",
+  "page_size": 1,
+  "q_heads": 24,
+  "total_layers": 64
+ },
+ "cases": [
+  {
+   "chunk": 0,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 0,
+   "k_len": 32768,
+   "flops": 13194542186496.0,
+   "upstream_comparability": {
+    "samples_ms": [
+     41.6309,
+     41.9226,
+     41.6378,
+     41.8673,
+     41.9297
+    ],
+    "median_ms": 41.8673,
+    "min_ms": 41.6309,
+    "p5_ms": 41.6309,
+    "p95_ms": 41.9226,
+    "iters": 5,
+    "tflops_median": 315.2,
+    "tflops_min_time": 316.9
+   },
+   "peak_alloc_gib": 2.478,
+   "lane": "upstream_comparability",
+   "clocks_mhz": {
+    "requested_mhz": null,
+    "observed_before_mhz": 2535,
+    "observed_after_mhz": 2535
+   }
+  },
+  {
+   "chunk": 1,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 32768,
+   "k_len": 65536,
+   "flops": 39582821253120.0,
+   "upstream_comparability": {
+    "samples_ms": [
+     124.1086,
+     123.3898,
+     123.0885,
+     123.3641,
+     123.6828
+    ],
+    "median_ms": 123.3898,
+    "min_ms": 123.0885,
+    "p5_ms": 123.0885,
+    "p95_ms": 123.6828,
+    "iters": 5,
+    "tflops_median": 320.8,
+    "tflops_min_time": 321.6
+   },
+   "peak_alloc_gib": 3.041,
+   "lane": "upstream_comparability",
+   "clocks_mhz": {
+    "requested_mhz": null,
+    "observed_before_mhz": 2715,
+    "observed_after_mhz": 2685
+   }
+  }
+ ],
+ "schedule_aggregate": {
+  "upstream_comparability": {
+   "schedule_ms": 2644.1,
+   "measured_calls": 2,
+   "extrapolated_calls": 30,
+   "schedule_tflops": 319.4
+  }
+ }
+}

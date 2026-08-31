@@ -1,0 +1,296 @@
+{
+ "schema": "candidate-bench/1",
+ "label": "smoke-control-sm89",
+ "utc": "2026-08-30T01:57:54+00:00",
+ "argv": [
+  "--smoke",
+  "--control",
+  "sdpa-bf16",
+  "--emit-repro",
+  "--label",
+  "smoke-control-sm89"
+ ],
+ "workload_profile": "d256-24x4-446k",
+ "workload_cases_sha256": "2621651e58b75ef11d6b63f94d18632e5862f16321e3f48d5042fd883867beb0",
+ "measurement": {
+  "timing_backend": "cuda_events",
+  "l2_policy": "warm",
+  "graph_mode": "eager",
+  "process_model": "single",
+  "control": "sdpa-bf16"
+ },
+ "config": {
+  "layers": 1,
+  "warmup": 1,
+  "iters": 3,
+  "quant_iters": 2,
+  "seed": 20260829,
+  "smoke": true,
+  "control": "sdpa-bf16",
+  "control_warmup": 1,
+  "control_iters": 2,
+  "control_q_chunk": 256,
+  "control_kv_chunk": 4096,
+  "bootstrap": 10000
+ },
+ "env": {
+  "device_name": "NVIDIA GeForce RTX 4090",
+  "capability": "8.9",
+  "sm_count": 128,
+  "total_mem_gib": 23.99,
+  "free_mem_gib_at_start": 22.45,
+  "torch": "2.13.0+cu129",
+  "cuda": "12.9",
+  "python": "3.12.14",
+  "source_build_id": "9868ac284ec71f56098d6637b925468741749c3b176e5e7087e32a87296d9e4b",
+  "nvidia_smi": {
+   "name": "NVIDIA GeForce RTX 4090",
+   "driver_version": "595.79",
+   "uuid": "local-dev-gpu",
+   "power.limit": "450.00 W",
+   "power.draw": "25.89 W",
+   "clocks.sm": "210 MHz",
+   "clocks.max.sm": "3120 MHz",
+   "temperature.gpu": "33",
+   "persistence_mode": "Enabled"
+  },
+  "cublas_workspace_config": ":4096:8"
+ },
+ "geometry": {
+  "head_dim": 256,
+  "kv_dtype": "bfloat16",
+  "kv_heads": 4,
+  "layers": 16,
+  "mask": "bottom_right_causal",
+  "mode": "extend",
+  "page_size": 1,
+  "q_heads": 24,
+  "total_layers": 64
+ },
+ "cases": [
+  {
+   "chunk": 0,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 0,
+   "k_len": 32768,
+   "flops": 13194542186496.0,
+   "preprocessing": {
+    "samples_ms": [
+     19.4458,
+     19.3769
+    ],
+    "median_ms": 19.4113,
+    "min_ms": 19.3769,
+    "p5_ms": 19.3769,
+    "p95_ms": 19.3769,
+    "iters": 2
+   },
+   "core": {
+    "samples_ms": [
+     41.3522,
+     41.7147,
+     42.1414
+    ],
+    "median_ms": 41.7147,
+    "min_ms": 41.3522,
+    "p5_ms": 41.3522,
+    "p95_ms": 41.7147,
+    "iters": 3,
+    "tflops_median": 316.3,
+    "tflops_min_time": 319.1
+   },
+   "inclusive": {
+    "samples_ms": [
+     61.8444,
+     61.1564
+    ],
+    "median_ms": 61.5004,
+    "min_ms": 61.1564,
+    "p5_ms": 61.1564,
+    "p95_ms": 61.1564,
+    "iters": 2
+   },
+   "peak_alloc_gib": 2.853,
+   "control": {
+    "kind": "sdpa-bf16",
+    "interleave": "ABBA",
+    "paired_against": "core (eager, cuda_events)",
+    "available": true,
+    "impl": "chunked streaming bmm + fp32 online softmax, bf16 operands",
+    "peak_performance_control": false,
+    "interpretation": "functional denominator only: a stock-PyTorch composition with no fusion. It bounds what the candidate is computing, not what a tuned BF16 kernel would cost.",
+    "excluded_from_timing": "kv gather (pool -> contiguous position order)",
+    "q_chunk": 256,
+    "kv_chunk": 4096,
+    "candidate": {
+     "samples_ms": [
+      42.0516,
+      41.7741,
+      41.6099,
+      41.4278,
+      41.4215,
+      42.4417
+     ],
+     "median_ms": 41.692,
+     "min_ms": 41.4215,
+     "p5_ms": 41.4215,
+     "p95_ms": 42.0516,
+     "iters": 6
+    },
+    "control": {
+     "samples_ms": [
+      753.3251,
+      750.507,
+      751.3735,
+      752.394
+     ],
+     "median_ms": 751.8837,
+     "min_ms": 750.507,
+     "p5_ms": 750.507,
+     "p95_ms": 752.394,
+     "iters": 4
+    },
+    "speedup_median": 18.0342
+   }
+  },
+  {
+   "chunk": 1,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 32768,
+   "k_len": 65536,
+   "flops": 39582821253120.0,
+   "preprocessing": {
+    "samples_ms": [
+     25.7024,
+     25.5732
+    ],
+    "median_ms": 25.6378,
+    "min_ms": 25.5732,
+    "p5_ms": 25.5732,
+    "p95_ms": 25.5732,
+    "iters": 2
+   },
+   "core": {
+    "samples_ms": [
+     123.2444,
+     122.9486,
+     124.4508
+    ],
+    "median_ms": 123.2444,
+    "min_ms": 122.9486,
+    "p5_ms": 122.9486,
+    "p95_ms": 123.2444,
+    "iters": 3,
+    "tflops_median": 321.2,
+    "tflops_min_time": 321.9
+   },
+   "inclusive": {
+    "samples_ms": [
+     148.9435,
+     149.9381
+    ],
+    "median_ms": 149.4408,
+    "min_ms": 148.9435,
+    "p5_ms": 148.9435,
+    "p95_ms": 148.9435,
+    "iters": 2
+   },
+   "peak_alloc_gib": 3.041,
+   "control": {
+    "kind": "sdpa-bf16",
+    "interleave": "ABBA",
+    "paired_against": "core (eager, cuda_events)",
+    "available": true,
+    "impl": "chunked streaming bmm + fp32 online softmax, bf16 operands",
+    "peak_performance_control": false,
+    "interpretation": "functional denominator only: a stock-PyTorch composition with no fusion. It bounds what the candidate is computing, not what a tuned BF16 kernel would cost.",
+    "excluded_from_timing": "kv gather (pool -> contiguous position order)",
+    "q_chunk": 256,
+    "kv_chunk": 4096,
+    "candidate": {
+     "samples_ms": [
+      122.8289,
+      123.4893,
+      123.4995,
+      124.3576,
+      123.8365,
+      123.1862
+     ],
+     "median_ms": 123.4944,
+     "min_ms": 122.8289,
+     "p5_ms": 122.8289,
+     "p95_ms": 123.8365,
+     "iters": 6
+    },
+    "control": {
+     "samples_ms": [
+      2221.4387,
+      2219.7144,
+      2218.071,
+      2218.8135
+     ],
+     "median_ms": 2219.2639,
+     "min_ms": 2218.071,
+     "p5_ms": 2218.071,
+     "p95_ms": 2219.7144,
+     "iters": 4
+    },
+    "speedup_median": 17.9706
+   }
+  }
+ ],
+ "schedule_aggregate": {
+  "preprocessing": {
+   "schedule_ms": 720.8,
+   "measured_calls": 2,
+   "extrapolated_calls": 30
+  },
+  "core": {
+   "schedule_ms": 2639.3,
+   "measured_calls": 2,
+   "extrapolated_calls": 30,
+   "schedule_tflops": 319.9
+  },
+  "inclusive": {
+   "schedule_ms": 3375.1,
+   "measured_calls": 2,
+   "extrapolated_calls": 30,
+   "schedule_tflops_honest": 250.2
+  }
+ },
+ "control_aggregate": {
+  "kind": "sdpa-bf16",
+  "interleave": "ABBA",
+  "available_cases": 2,
+  "total_cases": 2,
+  "unavailable_reason": null,
+  "peak_performance_control": false,
+  "paired_speedup": {
+   "cases": 2,
+   "geomean": 18.0024,
+   "ci95_low": 17.9706,
+   "ci95_high": 18.0342,
+   "min": 17.9706,
+   "median": 18.0024,
+   "max": 18.0342,
+   "resamples": 10000,
+   "resample_unit": "case",
+   "seed": 20260829
+  },
+  "candidate_across_cases": {
+   "median_ms": 82.5932,
+   "p5_ms": 41.692,
+   "p95_ms": 41.692,
+   "cases": 2
+  },
+  "control_across_cases": {
+   "median_ms": 1485.5738,
+   "p5_ms": 751.8837,
+   "p95_ms": 751.8837,
+   "cases": 2
+  }
+ },
+ "repro_command": "python bench/candidate_bench.py --profile d256-24x4-446k --label smoke-control-sm89 --layers 1 --warmup 1 --iters 3 --quant-iters 2 --seed 20260829 --lane default --control sdpa-bf16 --chunks 0,1 --control-warmup 1 --control-iters 2 --control-q-chunk 256 --control-kv-chunk 4096 --bootstrap 10000 --emit-repro"
+}

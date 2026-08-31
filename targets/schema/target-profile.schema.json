@@ -1,0 +1,291 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://attn-kernel-lab/schema/target-profile/1",
+  "title": "Target profile",
+  "description": "One GPU target the lab may build for, qualify on, or plan for. A performance qualification is a fact about (implementation, target profile, workload profile) and never generalises across any of the three.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "status",
+    "authority",
+    "access",
+    "device",
+    "capabilities",
+    "toolchain",
+    "verification"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^sm[0-9]{2,3}-[a-z0-9-]+$",
+      "description": "Stable identifier. Appears in every qualification record; never reused for different hardware."
+    },
+    "status": {
+      "enum": [
+        "active",
+        "planned",
+        "retired"
+      ]
+    },
+    "authority": {
+      "enum": [
+        "production",
+        "development",
+        "none"
+      ],
+      "description": "production: may qualify a release for production use. development: correctness and diagnosis only; a performance number from this target is NEVER a promotion input. none: registered but not usable."
+    },
+    "access": {
+      "enum": [
+        "local",
+        "rented",
+        "none"
+      ]
+    },
+    "protected": {
+      "type": "boolean",
+      "description": "True when performance qualification is bound to this exact SKU/power envelope and does not extend to nominally-similar variants (workstation, Max-Q, different board partner)."
+    },
+    "device": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "raw_model",
+        "compute_capability",
+        "arch_family",
+        "sm_count",
+        "memory_gib"
+      ],
+      "properties": {
+        "raw_model": {
+          "type": "string"
+        },
+        "compute_capability": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "arch_family": {
+          "enum": [
+            "ada",
+            "hopper",
+            "blackwell-consumer",
+            "blackwell-datacenter"
+          ]
+        },
+        "sm_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "memory_gib": {
+          "type": "number",
+          "minimum": 1
+        },
+        "power_limit_w": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      }
+    },
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mma_families",
+        "max_shared_memory_per_block_bytes",
+        "implementation_family"
+      ],
+      "properties": {
+        "implementation_family": {
+          "enum": [
+            "mma_sync",
+            "wgmma",
+            "tcgen05"
+          ],
+          "description": "Which mainloop implementation this target belongs to. Targets in different families need different implementations of the same operator contract, not a port."
+        },
+        "mma_families": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "mma_sync_e4m3",
+              "mma_sync_int8",
+              "mma_sync_bf16",
+              "mxf8f6f4",
+              "mxf4",
+              "wgmma_e4m3",
+              "wgmma_bf16"
+            ]
+          }
+        },
+        "max_shared_memory_per_block_bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "tma": {
+          "type": "boolean"
+        },
+        "measured_instruction_rates": {
+          "type": "object",
+          "description": "Output of the per-target instruction-rate probe. Absent until the probe has been run on this target; never estimated.",
+          "additionalProperties": {
+            "type": "number"
+          }
+        },
+        "max_shared_memory_per_multiprocessor_bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "l2_cache_bytes": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "toolchain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "gencode"
+      ],
+      "properties": {
+        "gencode": {
+          "type": "string"
+        },
+        "cuda": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "driver": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "torch": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "cross_compile_verified": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Architectures nvcc on THIS machine can emit architecture-specific code for, confirmed by tools/probe_target.py --compile-gate. Cross-compilation needs no device, which is what lets a development target gate production-architecture code on every commit."
+        }
+      }
+    },
+    "workload_limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_workload_profiles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Workload profile ids this target can physically run. A target that cannot hold a profile's working set must say so here rather than discovering it at run time."
+        },
+        "excluded_workload_profiles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reason": {
+          "type": "string"
+        }
+      }
+    },
+    "promotion_thresholds": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Gate seeds for THIS target. Run-to-run variance differs by target and by access mode; one threshold table per target, recalibrated after the first rigorous baseline campaign on it.",
+      "properties": {
+        "min_inclusive_improvement_pct": {
+          "type": "number"
+        },
+        "min_paired_ci95_lower_pct": {
+          "type": "number"
+        },
+        "max_single_workload_regression_pct": {
+          "type": "number"
+        },
+        "max_extra_peak_memory_mib": {
+          "type": "number"
+        },
+        "min_independent_blocks": {
+          "type": "integer"
+        },
+        "second_allocation_required": {
+          "type": "boolean"
+        },
+        "calibrated": {
+          "type": "boolean",
+          "description": "False while these are policy seeds carried over from another target rather than measured variance on this one."
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state"
+      ],
+      "properties": {
+        "state": {
+          "enum": [
+            "measured",
+            "declared",
+            "unverified"
+          ],
+          "description": "measured: every device/capability field read from the device. declared: taken from vendor documentation, not yet confirmed on hardware. unverified: hardware never accessed."
+        },
+        "date": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "must_verify": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

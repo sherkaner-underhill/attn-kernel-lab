@@ -1,0 +1,67 @@
+{
+ "schema_version": 1,
+ "kind": "kernel_performance",
+ "artifact_manifest_sha256": "791df7130c38123d355387fb503aa2a53f3b13691d15ef187682b559e0161d1f",
+ "release_id": "d256-int8-fp8-v0.3.0",
+ "verdict": "pass",
+ "recorded_utc": "2026-08-31T20:45:10+00:00",
+ "approver": {
+  "identity": "session review",
+  "review": "allocation-2 confirmation"
+ },
+ "target": "sm120-rtxpro6000-server",
+ "workload_profile": "d256-24x4-446k",
+ "workload_cases_sha256": "2621651e58b75ef11d6b63f94d18632e5862f16321e3f48d5042fd883867beb0",
+ "environment": {
+  "gpu_uuid_or_run_id": "card-B",
+  "driver": "595.91.07",
+  "cuda": "12.9",
+  "container_digest": "sha256:e35dfb0beaf6b1fb6619ae0dac9474b5cdda24b81cee7202316e371301425e46",
+  "power_limit_w": 600.0,
+  "observed_clock_mhz": 2302.0,
+  "observed_temperature_c": 28.0
+ },
+ "measurement": {
+  "timing_backend": "cuda_events",
+  "l2_policy": "warm",
+  "graph_mode": "eager",
+  "lane": "schedule_replay",
+  "warmups": 3,
+  "independent_blocks": 1,
+  "interleaving": "none within this run; cross-allocation comparison is the point",
+  "median_ms": 65197.5,
+  "peak_memory_mib": 5228.544,
+  "raw_samples_sha256": "beba71de6ed152535eaa84860a554164211a1084838f0aef80575150898d4a6f",
+  "baseline_ref": "first-allocation record: kernel-performance-37db8eb526e3 (66.71 s / 587.1 TF/s)"
+ },
+ "gates": [
+  {
+   "name": "second-allocation confirmation: distinct physical system and GPU die",
+   "result": "pass",
+   "evidence_sha256": "f7a4d0752612c715fc0998416e9ba2ebf0371257eee97344acb7d0f507508282"
+  },
+  {
+   "name": "correctness gate on the second card (149 tests incl. all 72 bit-exact goldens)",
+   "result": "pass",
+   "evidence_sha256": "f7a4d0752612c715fc0998416e9ba2ebf0371257eee97344acb7d0f507508282"
+  },
+  {
+   "name": "full 224-call schedule replay reproduced",
+   "result": "pass",
+   "evidence_sha256": "beba71de6ed152535eaa84860a554164211a1084838f0aef80575150898d4a6f"
+  },
+  {
+   "name": "control ratio reproduced (2 blocks, flashinfer-bf16)",
+   "result": "pass",
+   "evidence_sha256": "c57a61155fd5199fec4d1b43137e1bb9f6b6539ad06bae07dbbe054b8a77e5bf"
+  }
+ ],
+ "notes": [
+  "Regenerated for public release against a renamed workload profile and a scrubbed source tree; the underlying measurements are unchanged.",
+  "Independent-allocation confirmation: core 65.20 s (600.7 TF/s), preprocessing 8.21 s, and inclusive 73.07 s (536.1 TF/s honest).",
+  "Across the two allocations, absolute core throughput spans 587.1-600.7 TF/s; quote the range rather than a single-card point value.",
+  "The independent control ratio is 1.95x [1.92, 1.96].",
+  "All 72 bit-exact goldens pass on a second physical die: within the pinned target/toolchain pair, bit-exactness is hardware-instance independent.",
+  "First-allocation inclusive reference: 74.23 s (527.7 TF/s honest)."
+ ]
+}

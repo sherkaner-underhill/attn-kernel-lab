@@ -1,0 +1,5 @@
+# CPU-only tooling dependencies. Nothing here requires a GPU, CUDA, or PyTorch;
+# the GPU tiers install their own pinned stack (see docs/TARGETS.md).
+PyYAML>=6.0
+jsonschema>=4.0
+pytest>=7.0

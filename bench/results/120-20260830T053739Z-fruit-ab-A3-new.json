@@ -1,0 +1,308 @@
+{
+ "schema": "candidate-bench/1",
+ "label": "fruit-ab-A3-new",
+ "utc": "2026-08-30T05:37:39+00:00",
+ "argv": [
+  "--profile",
+  "d256-24x4-446k",
+  "--layers",
+  "1",
+  "--chunks",
+  "0,6,12",
+  "--iters",
+  "30",
+  "--quant-iters",
+  "2",
+  "--seed",
+  "20260850",
+  "--label",
+  "fruit-ab-A3-new"
+ ],
+ "workload_profile": "d256-24x4-446k",
+ "workload_cases_sha256": "2621651e58b75ef11d6b63f94d18632e5862f16321e3f48d5042fd883867beb0",
+ "measurement": {
+  "timing_backend": "cuda_events",
+  "l2_policy": "warm",
+  "graph_mode": "eager",
+  "process_model": "single"
+ },
+ "config": {
+  "layers": 1,
+  "warmup": 3,
+  "iters": 30,
+  "quant_iters": 2,
+  "seed": 20260850,
+  "smoke": false
+ },
+ "env": {
+  "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "capability": "12.0",
+  "sm_count": 188,
+  "total_mem_gib": 94.97,
+  "free_mem_gib_at_start": 94.43,
+  "torch": "2.13.0+cu129",
+  "cuda": "12.9",
+  "python": "3.12.3",
+  "source_build_id": "7b7533642f44531b9b09bb95d18dde943b7a19cccbf427115e696814209a8799",
+  "nvidia_smi": {
+   "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+   "driver_version": "595.91.07",
+   "uuid": "card-B",
+   "power.limit": "600.00 W",
+   "power.draw": "99.97 W",
+   "clocks.sm": "2422 MHz",
+   "clocks.max.sm": "2430 MHz",
+   "temperature.gpu": "56",
+   "persistence_mode": "Enabled"
+  },
+  "cublas_workspace_config": ":4096:8"
+ },
+ "geometry": {
+  "head_dim": 256,
+  "kv_dtype": "bfloat16",
+  "kv_heads": 4,
+  "layers": 16,
+  "mask": "bottom_right_causal",
+  "mode": "extend",
+  "page_size": 1,
+  "q_heads": 24,
+  "total_layers": 64
+ },
+ "cases": [
+  {
+   "chunk": 0,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 0,
+   "k_len": 32768,
+   "flops": 13194542186496.0,
+   "preprocessing": {
+    "samples_ms": [
+     9.9208,
+     9.847
+    ],
+    "median_ms": 9.8839,
+    "min_ms": 9.847,
+    "p5_ms": 9.847,
+    "p95_ms": 9.847,
+    "iters": 2
+   },
+   "core": {
+    "samples_ms": [
+     22.9398,
+     22.9407,
+     22.9255,
+     22.9213,
+     22.9212,
+     22.9208,
+     22.9189,
+     22.9194,
+     22.9225,
+     22.9229,
+     22.9182,
+     22.9217,
+     22.9187,
+     22.9187,
+     22.9192,
+     22.9213,
+     22.9226,
+     22.9206,
+     22.921,
+     22.9234,
+     22.9228,
+     22.9339,
+     22.9208,
+     22.9205,
+     22.9206,
+     22.9208,
+     22.9212,
+     22.919,
+     22.9228,
+     22.9226
+    ],
+    "median_ms": 22.9212,
+    "min_ms": 22.9182,
+    "p5_ms": 22.9187,
+    "p95_ms": 22.9339,
+    "iters": 30,
+    "tflops_median": 575.6,
+    "tflops_min_time": 575.7
+   },
+   "inclusive": {
+    "samples_ms": [
+     32.7891,
+     32.876
+    ],
+    "median_ms": 32.8325,
+    "min_ms": 32.7891,
+    "p5_ms": 32.7891,
+    "p95_ms": 32.7891,
+    "iters": 2
+   },
+   "peak_alloc_gib": 2.864
+  },
+  {
+   "chunk": 6,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 196608,
+   "k_len": 229376,
+   "flops": 171524216586240.0,
+   "preprocessing": {
+    "samples_ms": [
+     26.4084,
+     26.3657
+    ],
+    "median_ms": 26.387,
+    "min_ms": 26.3657,
+    "p5_ms": 26.3657,
+    "p95_ms": 26.3657,
+    "iters": 2
+   },
+   "core": {
+    "samples_ms": [
+     284.4218,
+     284.4332,
+     284.4428,
+     284.454,
+     284.4026,
+     284.4435,
+     284.4538,
+     284.4356,
+     284.4278,
+     284.5712,
+     284.9692,
+     285.1336,
+     285.0135,
+     285.0027,
+     285.3434,
+     285.4018,
+     285.0644,
+     285.3124,
+     285.4505,
+     285.4456,
+     285.0747,
+     284.6963,
+     285.5398,
+     285.4385,
+     285.0863,
+     285.6837,
+     285.6436,
+     285.3781,
+     285.4229,
+     285.7402
+    ],
+    "median_ms": 285.0696,
+    "min_ms": 284.4026,
+    "p5_ms": 284.4218,
+    "p95_ms": 285.6436,
+    "iters": 30,
+    "tflops_median": 601.7,
+    "tflops_min_time": 603.1
+   },
+   "inclusive": {
+    "samples_ms": [
+     310.8717,
+     310.8537
+    ],
+    "median_ms": 310.8627,
+    "min_ms": 310.8537,
+    "p5_ms": 310.8537,
+    "p95_ms": 310.8537,
+    "iters": 2
+   },
+   "peak_alloc_gib": 4.015
+  },
+  {
+   "chunk": 12,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 393216,
+   "k_len": 425984,
+   "flops": 329853890985984.0,
+   "preprocessing": {
+    "samples_ms": [
+     42.8772,
+     42.8447
+    ],
+    "median_ms": 42.861,
+    "min_ms": 42.8447,
+    "p5_ms": 42.8447,
+    "p95_ms": 42.8447,
+    "iters": 2
+   },
+   "core": {
+    "samples_ms": [
+     545.5209,
+     545.8487,
+     546.7379,
+     547.0682,
+     546.1432,
+     547.1149,
+     547.2868,
+     546.6938,
+     547.5453,
+     547.6008,
+     547.7601,
+     547.9781,
+     547.6213,
+     547.9775,
+     548.2572,
+     548.3588,
+     548.4443,
+     548.4492,
+     548.879,
+     548.7926,
+     548.7141,
+     548.605,
+     549.3524,
+     549.2746,
+     549.1953,
+     549.3856,
+     549.299,
+     549.4807,
+     549.5607,
+     549.6384
+    ],
+    "median_ms": 548.308,
+    "min_ms": 545.5209,
+    "p5_ms": 545.8487,
+    "p95_ms": 549.4807,
+    "iters": 30,
+    "tflops_median": 601.6,
+    "tflops_min_time": 604.7
+   },
+   "inclusive": {
+    "samples_ms": [
+     588.2681,
+     588.1614
+    ],
+    "median_ms": 588.2148,
+    "min_ms": 588.1614,
+    "p5_ms": 588.1614,
+    "p95_ms": 588.1614,
+    "iters": 2
+   },
+   "peak_alloc_gib": 5.165
+  }
+ ],
+ "schedule_aggregate": {
+  "preprocessing": {
+   "schedule_ms": 1266.1,
+   "measured_calls": 3,
+   "extrapolated_calls": 45
+  },
+  "core": {
+   "schedule_ms": 13700.8,
+   "measured_calls": 3,
+   "extrapolated_calls": 45,
+   "schedule_tflops": 600.9
+  },
+  "inclusive": {
+   "schedule_ms": 14910.6,
+   "measured_calls": 3,
+   "extrapolated_calls": 45,
+   "schedule_tflops_honest": 552.2
+  }
+ }
+}

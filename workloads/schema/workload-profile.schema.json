@@ -1,0 +1,216 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://attn-kernel-lab/schema/workload-profile/1",
+  "title": "Workload profile",
+  "description": "One named attention workload: a model's head geometry plus an explicit request schedule. The schedule is DATA, derived deterministically and hashed; it is never loop arithmetic inside benchmark code. Extending the lab to another model means adding a profile here, not editing a harness.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "status",
+    "origin",
+    "geometry",
+    "schedule",
+    "expected_calls"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "status": {
+      "enum": [
+        "protected",
+        "generalization",
+        "draft",
+        "retired"
+      ]
+    },
+    "protected": {
+      "type": "boolean",
+      "description": "True for a schedule that reproduces an accepted production run. A protected profile's parameters may only change through a reviewed change that names the reason and preserves the old record."
+    },
+    "origin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model",
+        "description"
+      ],
+      "properties": {
+        "model": {
+          "type": "string"
+        },
+        "model_revision": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "description": {
+          "type": "string"
+        },
+        "application_repo": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "application_commit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "unresolved": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Discrepancies that must be settled against the accepted application run before this profile may back a promotion. A non-empty list blocks `protected` status from being trusted."
+        },
+        "resolved": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Discrepancies that WERE listed in `unresolved` and have been settled, each entry recording the verdict, the evidence, and any residual check delegated to a gate. Append-only: a resolution is part of the profile's history, not clutter to delete."
+        }
+      }
+    },
+    "geometry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "head_dim",
+        "q_heads",
+        "kv_heads",
+        "page_size",
+        "mask",
+        "mode",
+        "layers"
+      ],
+      "properties": {
+        "head_dim": {
+          "type": "integer"
+        },
+        "q_heads": {
+          "type": "integer"
+        },
+        "kv_heads": {
+          "type": "integer"
+        },
+        "page_size": {
+          "type": "integer"
+        },
+        "mask": {
+          "enum": [
+            "bottom_right_causal",
+            "noncausal"
+          ]
+        },
+        "mode": {
+          "enum": [
+            "extend",
+            "decode"
+          ]
+        },
+        "layers": {
+          "type": "integer",
+          "description": "Number of layers running THIS attention operator. For a hybrid model this is the dense-attention layer count, not the total depth."
+        },
+        "total_layers": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "kv_dtype": {
+          "type": "string"
+        }
+      }
+    },
+    "schedule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "generator",
+        "params",
+        "cases_sha256"
+      ],
+      "properties": {
+        "generator": {
+          "enum": [
+            "chunked_prefill"
+          ],
+          "description": "Deterministic rule that expands `params` into the explicit case list. tools/gen_workload.py is the only sanctioned expander."
+        },
+        "params": {
+          "type": "object"
+        },
+        "cases_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "SHA-256 of the canonical expanded case list. Written into every result and manifest. Null only before first generation."
+        },
+        "cases_path": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "expected_calls": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "per_request"
+      ],
+      "properties": {
+        "per_request": {
+          "type": "integer",
+          "description": "Operator invocations for one uncached request: chunks x layers. Asserted by the integration dispatch counters (Gate S0)."
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "flops": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Logically-attended-pair FLOPs. Masked rectangular attention makes this easy to misstate; a square-causal formula is always wrong here.",
+      "properties": {
+        "formula": {
+          "type": "string"
+        },
+        "basis": {
+          "enum": [
+            "logically_attended_pairs",
+            "physically_issued_work"
+          ]
+        },
+        "total_pflop": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

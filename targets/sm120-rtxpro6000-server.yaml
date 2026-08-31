@@ -1,0 +1,80 @@
+# SPDX-License-Identifier: Apache-2.0
+schema_version: 1
+id: sm120-rtxpro6000-server
+status: active
+authority: production
+access: rented
+protected: true
+
+device:
+  raw_model: NVIDIA RTX PRO 6000 Blackwell Server Edition
+  compute_capability: [12, 0]
+  arch_family: blackwell-consumer
+  sm_count: 188
+  memory_gib: 94.97
+  power_limit_w: null   # must be recorded per allocation; varies by host
+
+capabilities:
+  implementation_family: mma_sync
+  mma_families:
+    - mma_sync_e4m3
+    - mma_sync_int8
+    - mma_sync_bf16
+    - mxf8f6f4
+    - mxf4
+  max_shared_memory_per_block_bytes: 101376
+  tma: false
+  # Register-resident issue-rate probe, 2026-08-28, allocation 1,
+  # 8 independent accumulators, 1504 CTAs, best of 5, NaN-free operands.
+  measured_instruction_rates:
+    mma_sync_e4m3_m16n8k32_tflops: 934.4
+    mxf8f6f4_unity_ue8m0_tflops: 934.2
+    mma_sync_int8_m16n8k32_tops: 934.5
+    mxf4_e2m1_m16n8k64_tflops: 1868.4
+    cublaslt_fp8_gemm_roof_tflops: 680.0
+
+toolchain:
+  gencode: "-gencode=arch=compute_120a,code=sm_120a"
+  cuda: "12.9"
+  driver: null
+  torch: "2.13.0+cu129"
+  notes:
+    - "A bare -arch=sm_120a executable build silently lowers to sm_120, after
+       which ptxas REJECTS the block-scaled MMA. Always use the explicit
+       -gencode form above. Measured 2026-08-28."
+
+workload_limits:
+  max_workload_profiles:
+    - d256-24x4-446k
+  excluded_workload_profiles: []
+  reason: >-
+    94.97 GiB holds the 446k D256 paged pool plus the model at
+    mem-fraction-static 0.87. 0.88 OOMs intermittently; the margin is
+    structurally thin, not workspace-caused.
+
+promotion_thresholds:
+  min_inclusive_improvement_pct: 3.0
+  min_paired_ci95_lower_pct: 1.0
+  max_single_workload_regression_pct: 5.0
+  max_extra_peak_memory_mib: 512
+  min_independent_blocks: 10
+  second_allocation_required: true
+  calibrated: false
+
+verification:
+  state: measured
+  date: "2026-08-28"
+  source: >-
+    Environment metadata from the originating application repository and the
+    public probes under probes/mxfp8/.
+  must_verify:
+    - "max_shared_memory_per_block_bytes: read from cudaDeviceGetAttribute
+       rather than inferred from the ~101 KB/SM figure in the package README."
+    - "power_limit_w and observed clocks: per rented allocation, every session."
+
+notes:
+  - "The protected performance target. A qualification here does not extend to
+     workstation or Max-Q SM120 variants, or to a different power envelope."
+  - "The only registered target with FP4. The measured 2x same-dtype FP4 issue
+     rate is the only instruction path above the ~934 TF/s roof on any current
+     target."

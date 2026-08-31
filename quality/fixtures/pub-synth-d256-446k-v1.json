@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "fixture_set_id": "pub-synth-d256-446k-v1",
+  "lane": "public_synth",
+  "redistributable": true,
+  "fixture_set_sha256": "d4dec352859c28fcdf736d2a9a3e3e93da4bba5c67ccc245dcc09a271ac387fd",
+  "provenance": {
+    "generator": "quality/q1_public.py + quality/metrics.py",
+    "generator_sha256": "5519b13d35accf5602b70f96ddefe41e01f3ffb90339a1ff9f84baf0f234df8b",
+    "donor_instrument": "probes/quality/pertensor_vs_finegrained.py",
+    "donor_sha256": "2bae8fe81d2120330a7619798bcf6062d345cf1dc3b4849254837060ab2f7d2c",
+    "media": "NONE: seeded synthetic tensors with no restricted inputs, real activations, or model weights. Reproducible from the seeds recorded per case.",
+    "model": null,
+    "engine": null,
+    "workload_profile": "d256-24x4-446k",
+    "workload_relationship": "GEOMETRY ONLY. The depth 446,335 and the 24:4 / D256 / page-size-1 shape are taken from that workload profile so the depth axis is comparable with the production numbers. No input example or schedule from that workload is used, and this is not a run of it.",
+    "distributions": {
+      "gaussian": {
+        "seed": 20260830,
+        "doc": "Q,K,V ~ N(0,1) iid. Baseline: no structure for any transform to exploit."
+      },
+      "heavy_t3": {
+        "seed": 20260831,
+        "doc": "Q,K,V ~ Student-t(df=3) scaled to unit variance, built as z0*sqrt(1/(z1^2+z2^2+z3^2)) so it is deterministic under a seeded generator. Kurtosis is infinite; per-element outliers are the case a fine-grained (per-row / per-64-tile) amax is supposed to contain."
+      },
+      "rope_like": {
+        "seed": 20260832,
+        "doc": "K = randn + 5*channel_bias, channel_bias a fixed randn[256] shared by every position and every KV head; Q,V ~ N(0,1). A large shared per-channel offset is what RoPE'd keys carry, and is the case K mean-centering exists for (contract 3.3). The offset is constant across KV columns, so softmax shift-invariance makes centering exact."
+      },
+      "v_outlier": {
+        "seed": 20260833,
+        "outlier_channels": [
+          11,
+          67,
+          150,
+          233
+        ],
+        "doc": "V has 4 fixed channels multiplied by 50 (zero-mean, huge variance); Q,K ~ N(0,1). The 'a few channels burn the FP8 range' case that per-tile V scales address. HONESTY NOTE: V mean-centering targets large channel MEANS, not large channel VARIANCE -- see v_massive."
+      },
+      "v_massive": {
+        "seed": 20260834,
+        "outlier_channels": [
+          11,
+          67,
+          150,
+          233
+        ],
+        "doc": "EXTRA (beyond the four requested). V has 4 fixed channels offset by +50: a massive-activation channel, large magnitude and consistent sign; Q,K ~ N(0,1). This is the case V mean-centering actually exists for (contract 3.4), separated from v_outlier on purpose so the centering claim is tested against the right distribution. It is also the only cell whose output norm is dominated by a channel mean, which is the regime real activations live in -- so it calibrates how far the zero-mean cells' absolute levels are from a real-capture number."
+      }
+    },
+    "notes": [
+      "Synthetic fixtures are weaker evidence than a real capture and the plan says so; they are chosen here because the public lane must be redistributable and must contain nothing derived from restricted inputs. Each distribution isolates a failure mode one of the operator's transforms exists for, which is a sharper test than the torch.randn the upstream bar is set at, and not a substitute for Lane P.",
+      "K and V are drawn in fixed 32,768-row blocks with per-block seeds, so a shallow case's context is a bit-exact prefix of a deep one's and depth is the only thing that varies along the depth axis."
+    ]
+  },
+  "geometry": {
+    "head_dim": 256,
+    "q_heads": 24,
+    "kv_heads": 4,
+    "page_size": 1,
+    "mask": "bottom_right_causal",
+    "mode": "extend",
+    "q_len": 128,
+    "sm_scale": 0.0625,
+    "kv_dtype": "bfloat16",
+    "gen_chunk_rows": 32768
+  },
+  "slice_semantics": {
+    "layer": "fixture_case",
+    "row": "query_row",
+    "note": "This lane has no model, so its layer axis is the fixture case, not a model layer. The worst-layer mandate is preserved -- the worst case in the population is reported and never averaged away -- but a worst-layer number here is a statement about a distribution, not about layer 31 of anything. The private lane sets layer=model_layer over all sixteen full-attention layers."
+  },
+  "cases": [
+    {
+      "layer": 0,
+      "name": "gaussian",
+      "distribution": "gaussian",
+      "depth": 446335,
+      "prefix": 446207,
+      "seed": 20260830,
+      "doc": "Q,K,V ~ N(0,1) iid. Baseline: no structure for any transform to exploit.",
+      "q_sha256": "990eeea99206ecf7e87183867ee70eda591e87a8a9b04560f4fd683911326c0c",
+      "k_sha256": "7b607e471db2833779eeafc94572f2ebcdd49473a247a8b3bea9174ef26d58c6",
+      "v_sha256": "1b7e54ac092ab6a8d61094997d292126280570415b5ba796dfa6ad436e0c458b"
+    },
+    {
+      "layer": 1,
+      "name": "heavy_t3",
+      "distribution": "heavy_t3",
+      "depth": 446335,
+      "prefix": 446207,
+      "seed": 20260831,
+      "doc": "Q,K,V ~ Student-t(df=3) scaled to unit variance, built as z0*sqrt(1/(z1^2+z2^2+z3^2)) so it is deterministic under a seeded generator. Kurtosis is infinite; per-element outliers are the case a fine-grained (per-row / per-64-tile) amax is supposed to contain.",
+      "q_sha256": "e49c67b4ab514be501e8f0dc439b8c908ec4867b998926993938dc3f20958c1d",
+      "k_sha256": "076fc8d5fd1088b91973eb502f4e5c63143abdbd282d6edb34c2d7788cd1f0dd",
+      "v_sha256": "6c0c241d62d0d7ad191761db141cdf1dab12a304e8aeb219ec3b11390af865a2"
+    },
+    {
+      "layer": 2,
+      "name": "rope_like",
+      "distribution": "rope_like",
+      "depth": 446335,
+      "prefix": 446207,
+      "seed": 20260832,
+      "doc": "K = randn + 5*channel_bias, channel_bias a fixed randn[256] shared by every position and every KV head; Q,V ~ N(0,1). A large shared per-channel offset is what RoPE'd keys carry, and is the case K mean-centering exists for (contract 3.3). The offset is constant across KV columns, so softmax shift-invariance makes centering exact.",
+      "q_sha256": "bd632bb59b5885b6c481a2f4ea21b248968f0507bb93acd80bfaef29bcad48b4",
+      "k_sha256": "8ec166f1cd61ccf19593bff7803ad94864ea3c3b7cf639c149e30601f898d815",
+      "v_sha256": "95b435b32bf9423dcfa2f66e19e9937d70234f9c96872475735e438ea97cfc2f"
+    },
+    {
+      "layer": 3,
+      "name": "v_outlier",
+      "distribution": "v_outlier",
+      "depth": 446335,
+      "prefix": 446207,
+      "seed": 20260833,
+      "doc": "V has 4 fixed channels multiplied by 50 (zero-mean, huge variance); Q,K ~ N(0,1). The 'a few channels burn the FP8 range' case that per-tile V scales address. HONESTY NOTE: V mean-centering targets large channel MEANS, not large channel VARIANCE -- see v_massive.",
+      "q_sha256": "1c62d057ebd125e26aef6927a3e9696b6602cf35f42fe7844e33f44db804b3f4",
+      "k_sha256": "b2463375aee35ba4995ab6768ca89ede2e5544f6e73cc2a2ed387a1abdbb3587",
+      "v_sha256": "e2f18c252fbc3e21f4f83771e6111c2872da070c628a13194219ba6bd682f134"
+    },
+    {
+      "layer": 4,
+      "name": "v_massive",
+      "distribution": "v_massive",
+      "depth": 446335,
+      "prefix": 446207,
+      "seed": 20260834,
+      "doc": "EXTRA (beyond the four requested). V has 4 fixed channels offset by +50: a massive-activation channel, large magnitude and consistent sign; Q,K ~ N(0,1). This is the case V mean-centering actually exists for (contract 3.4), separated from v_outlier on purpose so the centering claim is tested against the right distribution. It is also the only cell whose output norm is dominated by a channel mean, which is the regime real activations live in -- so it calibrates how far the zero-mean cells' absolute levels are from a real-capture number.",
+      "q_sha256": "227ff0da56ce0abb8ca1b2834e2bf8f293ad773b7751412fb49b8a49af981a3c",
+      "k_sha256": "72f1bcf51e54ac36b8a65e5fdd1e0845320d8c6802181895c7dedaa61ebad67f",
+      "v_sha256": "381d6e138e93887ce5473bb35d2b40a2523700a967ae4ea8b7b557584d0cf3d2"
+    }
+  ],
+  "notes": [
+    "Depth 446,335 tokens per case; q_len 128 query rows as the tail of the context, which is the extend geometry the operator declares."
+  ]
+}

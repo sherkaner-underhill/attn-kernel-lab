@@ -1,0 +1,107 @@
+{
+ "schema_version": 1,
+ "release_id": "d256-int8-fp8-v0.3.0",
+ "operator_contract_version": 1,
+ "layout_version": 1,
+ "package_api_version": 1,
+ "binary_abi": "jit-cp312-torch2.13.0-cu129",
+ "source": {
+  "repository": "attn-kernel-lab",
+  "candidate_commit": "public-snapshot-2026-08-31",
+  "digest_paths": [
+   "src",
+   "tests/kernel"
+  ],
+  "source_tree_sha256": "5eafda400dd6a9d3fd69a2956d9afecf37ade8e31c70fafc2031c625af86a1ae",
+  "dirty": false
+ },
+ "artifacts": {
+  "variant_id": "jit-src-sm120a",
+  "wheel_sha256": "9df2efa339d01f4279b858778626ecad2a7ff94e99cd96820da13035068e116c",
+  "cubin_sha256": null,
+  "stable_locator": "snapshot:public-snapshot-2026-08-31",
+  "build_container_digest": "sha256:e35dfb0beaf6b1fb6619ae0dac9474b5cdda24b81cee7202316e371301425e46",
+  "build_id": "9df2efa339d01f4279b858778626ecad2a7ff94e99cd96820da13035068e116c"
+ },
+ "toolchain": {
+  "driver_floor": "595.91.07",
+  "cuda": "12.9",
+  "compiler": "nvcc 12.9.86 (cuda_12.9.r12.9/compiler.36037853_0)",
+  "pytorch": "2.13.0+cu129",
+  "flashinfer": null
+ },
+ "targets": {
+  "supported": [
+   "sm120-rtxpro6000-server",
+   "sm89-rtx4090-local"
+  ],
+  "qualified": [
+   {
+    "target": "sm120-rtxpro6000-server",
+    "workload_profile": "d256-24x4-446k",
+    "attestation_sha256": "37db8eb526e37867a961452efb7ff066bc91eb29e4c9b52387e94734ee276605"
+   }
+  ],
+  "excluded": [
+   {
+    "target": "sm90-h200-sxm",
+    "reason": "wgmma family; no implementation exists (planned target)"
+   }
+  ]
+ },
+ "contract": {
+  "head_dim": [
+   256
+  ],
+  "q_heads": [
+   16,
+   24,
+   32
+  ],
+  "kv_heads": [
+   4
+  ],
+  "page_size": [
+   1
+  ],
+  "modes": [
+   "extend"
+  ],
+  "masks": [
+   "bottom_right_causal"
+  ],
+  "qk_compute": "int8",
+  "pv_compute": "fp8_e4m3",
+  "qk_mma_accumulator": "int32",
+  "pv_mma_accumulator": "fp32",
+  "online_softmax_state": "fp32",
+  "returns_lse": true,
+  "quantization_spec_sha256": "02c0d25bd22157764cc0de97a7f7771e72bb8107bdc808f87786248da3a988eb",
+  "workspace_limit_bytes": null,
+  "cuda_graph": "supported"
+ },
+ "evidence": {
+  "workload_suite_sha256": "2621651e58b75ef11d6b63f94d18632e5862f16321e3f48d5042fd883867beb0",
+  "reference_sha256": null,
+  "correctness_summary_sha256": "41a4ff3fea5e5539f34fcaf3a2bb304913c558b3f5d14b45dfff76a67edbb4b9",
+  "benchmark_summary_sha256": "3681feba1c5e324b6d3b8e69f0746bec021e819b81f0b8676d058648c04e54c3",
+  "profiler_artifact_sha256": null,
+  "baseline_refs": [
+   "legacy/baselines/rtxpro6000_62b8117.json (pre-rescale-skip, pool-wrap defect)",
+   "attestations bind pre-qualification manifest digest 791df7130c38123d355387fb503aa2a53f3b13691d15ef187682b559e0161d1f"
+  ]
+ },
+ "limitations": [
+  "JIT source build, not a wheel: wheel_sha256/build_id carry the source build identity; reproducible wheel packaging is an open follow-up.",
+  "head_dim 256 only; page_size 1 pools only; unquantized (bf16/fp16) KV pool only.",
+  "EXTEND mode only.",
+  "Quantized prefix is suffix-dependent (contract section 6.1): no append-only transformed cache at this contract version.",
+  "Timing lanes: cuda_events/warm-L2/eager (plus the graph-replay comparability lane where the bound benchmark JSON includes it); cold-L2 and CUPTI lanes not run.",
+  "CUDA Graph support requires a capacity-reserved workspace and caller-owned output buffers; grow-on-demand workspaces remain eager-only. The bound performance measurement in this record used the eager lane.",
+  "sm89 support is correctness-validated only (48/48); never performance-qualified by construction (development authority)."
+ ],
+ "notes": [
+  "Regenerated for public release against a renamed workload profile and a scrubbed source tree; the underlying measurements are unchanged.",
+  "Public history begins at this dated snapshot; no earlier public Git commit exists for the source tree."
+ ]
+}

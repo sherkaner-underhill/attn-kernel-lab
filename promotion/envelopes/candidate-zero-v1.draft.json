@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "kind": "fidelity_envelope",
+  "envelope_id": "candidate-zero-v1",
+  "status": "draft",
+  "calibrated": false,
+  "boundary": "attention_output",
+  "recorded_utc": "2026-08-31T22:19:14Z",
+  "supersedes": null,
+  "supersede_reason": null,
+  "subject": {
+    "impl": "attn_kernel_lab.ops.prefill_extend",
+    "release_id": null,
+    "artifact_manifest_sha256": null,
+    "source_build_id": "5e1693dc172a24e8cfd48408409c9558cf83c853ee847142b81d6a6fe3ad5cb6",
+    "loaded_from": "jit",
+    "mode": "declared_default_v1",
+    "env_switches": {
+      "qk_i8": true,
+      "rotate": true,
+      "center_k": true,
+      "return_lse": false,
+      "SGLANG_FP8_PREFILL_QK": null,
+      "SGLANG_FP8_PREFILL_K_CENTER": null,
+      "SGLANG_FP8_PREFILL_BF16_HEADS": null,
+      "SGLANG_FP8_PREFILL_ZERO_WS": null,
+      "SGLANG_FP8_PREFILL_MIN_TOKENS": null
+    }
+  },
+  "fixture_sets": [
+    {
+      "id": "pub-synth-d256-446k-v1",
+      "fixture_set_sha256": "d4dec352859c28fcdf736d2a9a3e3e93da4bba5c67ccc245dcc09a271ac387fd",
+      "lane": "public_synth"
+    }
+  ],
+  "source_scorecards": [
+    {
+      "scorecard_id": "candidate-zero-pub-synth-446k-attention-output",
+      "scorecard_sha256": "3946631c5a33363cd95db260c2b24dd3a5d0c25a6b1e4366f1556a38ee3f3da0",
+      "path": "quality/scorecards/candidate-zero-pub-synth-446k-attention-output.json"
+    }
+  ],
+  "decision_rule": {
+    "aggregate_tolerance_pct": 10.0,
+    "worst_slice_tolerance_pct": 0.0,
+    "worst_slice_enforced": false,
+    "hard_fails": [
+      "nan_count > 0 or inf_count > 0 (the stale-V 0 x NaN poisoning class, an actual historical bug).",
+      "cos_sim worst-head < 0.99. A floor, not a target: SageAttention's catastrophic INT8-PV case is 56.40% worst-layer cosine and their accepted configurations sit above 99%.",
+      "An Oracle A contract failure, which is an implementation defect and is never waivable as quantization error.",
+      "Any boot-gate or dispatch-counter deviation, for the engine-bound rungs."
+    ]
+  },
+  "metrics": {
+    "row_rel_l2": {
+      "direction": "lower_is_better",
+      "ratio_basis": "direct",
+      "mean_value": 0.035115159455248936,
+      "mean_control": 0.005321322873983259,
+      "mean_ratio": 6.598952983464354,
+      "worst_layer_ratio": 4.849065711143043,
+      "worst_head_ratio": 11.608048682190715,
+      "worst_row_ratio": 6.093016832131541,
+      "worst_layer_value": 0.04733854656458484,
+      "worst_head_value": 0.05917434674548917,
+      "worst_row_value": 0.29931863451519103,
+      "ratio_band": null,
+      "saturated": false
+    },
+    "cos_sim": {
+      "direction": "higher_is_better",
+      "ratio_basis": "one_minus",
+      "mean_value": 0.9992151430174687,
+      "mean_control": 0.9999676417433383,
+      "mean_ratio": 24.255230766501885,
+      "worst_layer_ratio": 23.37434384641784,
+      "worst_head_ratio": 153.0668271946119,
+      "worst_row_ratio": 42.26577186194035,
+      "worst_layer_value": 0.9988823472886066,
+      "worst_head_value": 0.9981048779791065,
+      "worst_row_value": 0.9541904694391499,
+      "ratio_band": null,
+      "saturated": false
+    },
+    "rel_l1": {
+      "direction": "lower_is_better",
+      "ratio_basis": "direct",
+      "mean_value": 0.033107954665752976,
+      "mean_control": 0.004942402619863982,
+      "mean_ratio": 6.698757105034096,
+      "worst_layer_ratio": 4.830619140892688,
+      "worst_head_ratio": 4.849302949802051,
+      "worst_row_ratio": 6.089847643311927,
+      "worst_layer_value": 0.0471403988875837,
+      "worst_head_value": 0.04834332955749376,
+      "worst_row_value": 0.30213111117257735,
+      "ratio_band": null,
+      "saturated": false
+    },
+    "rmse": {
+      "direction": "lower_is_better",
+      "ratio_basis": "direct",
+      "mean_value": 0.006862771868319868,
+      "mean_control": 0.0021733684485102313,
+      "mean_ratio": 3.1576660979982756,
+      "worst_layer_ratio": 3.1603422619416253,
+      "worst_head_ratio": 3.1291330129809887,
+      "worst_row_ratio": 6.093016832131541,
+      "worst_layer_value": 0.03309202632496271,
+      "worst_head_value": 0.037149320106710695,
+      "worst_row_value": 0.18929591933628798,
+      "ratio_band": null,
+      "saturated": false
+    }
+  },
+  "notes": [
+    "DRAFT. This is candidate zero measured on the PUBLIC synthetic lane on a development-authority 4090. It is a place for the numbers to live and a proof that the harness runs at full depth; it is not the frozen non-inferiority band. Freezing needs a production-tier confirmation on the private real-activation lane and an explicit reviewed decision, exactly like publishing a release.",
+    "calibrated=false, so the worst-slice thresholds are reported and NOT enforced: the reproducibility band needs three independent fixture sets and only one exists. Same posture as promotion_thresholds.calibrated in the target profiles.",
+    "Sampling error is not the limiting uncertainty here -- the aggregate is a reduction over ~4x10^5 row observations per case. Content generalisation is: one synthetic fixture family, and its absolute levels do not transfer to real activations.",
+    "norm_ratio is deliberately absent from hard_fails. The plan's \u00a76.3 [0.98, 1.02] gate is withdrawn by the 2026-08-30 addendum, which found a systematic drift that never leaves the band; it is tracked as a reported trend line in the scorecard instead.",
+    "The 0.99 cosine floor stays defined on the worst HEAD, where the plan put it. The addendum made worst-ROW a mandatory reported slice; it did not move the floor there, and moving it would be wrong here: candidate zero's worst row is cosine 0.954 on synthetic Student-t(3) keys at 446k, which is the tail this fixture family was built to provoke and not a statement about real activations. Whether a real-capture worst row behaves like that is a Lane P question and is the single most important thing the production tier will answer."
+  ],
+  "not_claimed": [
+    "Not a model-quality statement. This is the attention-output boundary on captured or seeded activations. Downstream task outputs, logprobs and task accuracy are separate boundaries and are not measured here; a metric that moves here has not thereby been shown to move anything downstream.",
+    "Not real activations. Seeded synthetic distributions chosen to isolate the failure modes the operator's transforms exist for. Absolute levels do not transfer to a real capture; the private lane owns the production numbers.",
+    "Not a performance result. No timing appears in this record, and the RTX 4090 is a development-authority target that cannot author one.",
+    "Not 'quality-neutral' and not 'lossless', in any form. upstream/CLAIMS.md forbids that wording and this lane does not establish it.",
+    "Not a general-model claim. One contract version, one geometry, one synthetic input distribution, one candidate.",
+    "Not a run of the d256-24x4-446k workload. This fixture set borrows that workload's DEPTH so the depth axis is comparable; it does not replay its data, and the 4090 target excludes that workload for a memory reason this lane does not encounter."
+  ]
+}

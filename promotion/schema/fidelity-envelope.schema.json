@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://attn-kernel-lab/schema/fidelity-envelope/1",
+  "title": "Fidelity envelope",
+  "description": "The frozen non-inferiority band a later candidate is read against (plan §6.3). Treated like a release record: `promotion/envelopes/` is append-only, an envelope is never edited, and superseding one means adding a new record that names the reason. Two rules are structural rather than procedural. A `draft` envelope may not enforce anything -- it exists so a candidate-zero measurement has somewhere to live before the tier that owns the lane has confirmed it. And `worst_slice_enforced` may be true only on a `calibrated` envelope, because the worst-layer figure is compared against a reproducibility band built from three independent fixture sets, not against a widened threshold; until those exist the number is reported and a human decides.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "kind",
+    "envelope_id",
+    "status",
+    "calibrated",
+    "boundary",
+    "recorded_utc",
+    "subject",
+    "fixture_sets",
+    "source_scorecards",
+    "decision_rule",
+    "metrics",
+    "not_claimed"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "kind": { "const": "fidelity_envelope" },
+    "envelope_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9.-]*$" },
+    "status": {
+      "enum": ["draft", "frozen"],
+      "description": "`frozen` is an explicit reviewed decision, exactly like publishing a release. A better candidate never re-freezes an envelope automatically."
+    },
+    "calibrated": {
+      "type": "boolean",
+      "description": "False until the worst-layer reproducibility band has been established from three independent fixture sets. Matches the `promotion_thresholds.calibrated: false` posture already used in the target profiles."
+    },
+    "boundary": { "enum": ["attention_output", "residual_logit", "task"] },
+    "recorded_utc": { "type": "string" },
+    "supersedes": { "type": ["string", "null"] },
+    "supersede_reason": { "type": ["string", "null"] },
+    "approver": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["identity", "review"],
+      "properties": {
+        "identity": { "type": "string" },
+        "review": { "type": "string" }
+      },
+      "description": "Required to freeze. A draft carries none, which is the difference between a measurement and a commitment."
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["impl", "mode"],
+      "properties": {
+        "impl": { "type": "string" },
+        "release_id": { "type": ["string", "null"] },
+        "artifact_manifest_sha256": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+        "source_build_id": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+        "loaded_from": { "type": ["string", "null"] },
+        "mode": { "type": "string" },
+        "env_switches": { "type": "object", "additionalProperties": { "type": ["string", "boolean", "number", "null"] } }
+      }
+    },
+    "fixture_sets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "fixture_set_sha256", "lane"],
+        "properties": {
+          "id": { "type": "string" },
+          "fixture_set_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "lane": { "enum": ["public_synth", "public_open", "private_real"] }
+        }
+      }
+    },
+    "source_scorecards": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["scorecard_id", "scorecard_sha256"],
+        "properties": {
+          "scorecard_id": { "type": "string" },
+          "scorecard_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "path": { "type": "string" }
+        }
+      }
+    },
+    "decision_rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["aggregate_tolerance_pct", "worst_slice_tolerance_pct", "worst_slice_enforced", "hard_fails"],
+      "properties": {
+        "aggregate_tolerance_pct": {
+          "type": "number",
+          "minimum": 0,
+          "description": "ratio_m <= envelope.ratio_m * (1 + t/100). 10 is the plan's value: far smaller than any difference this project has ever acted on, while still absorbing capture jitter."
+        },
+        "worst_slice_tolerance_pct": { "type": "number", "minimum": 0, "maximum": 0 },
+        "worst_slice_enforced": { "type": "boolean" },
+        "hard_fails": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" },
+          "description": "Envelope-independent failures. Restated per envelope so a reader of one record sees the whole rule."
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["direction", "ratio_basis", "mean_ratio", "worst_layer_ratio", "worst_head_ratio", "worst_row_ratio"],
+        "properties": {
+          "direction": { "enum": ["lower_is_better", "higher_is_better"] },
+          "ratio_basis": { "enum": ["direct", "one_minus"] },
+          "mean_value": { "type": "number" },
+          "mean_control": { "type": "number" },
+          "mean_ratio": { "type": ["number", "null"] },
+          "worst_layer_ratio": { "type": ["number", "null"] },
+          "worst_head_ratio": { "type": ["number", "null"] },
+          "worst_row_ratio": { "type": ["number", "null"] },
+          "worst_layer_value": { "type": "number" },
+          "worst_head_value": { "type": "number" },
+          "worst_row_value": { "type": "number" },
+          "ratio_band": {
+            "type": ["array", "null"],
+            "minItems": 2,
+            "maxItems": 2,
+            "items": { "type": "number" },
+            "description": "[min, max] of the worst-slice ratio across independent fixture sets. Null until calibrated."
+          },
+          "saturated": { "type": "boolean" }
+        }
+      }
+    },
+    "notes": { "type": "array", "items": { "type": "string" } },
+    "not_claimed": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+  }
+}

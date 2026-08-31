@@ -1,0 +1,432 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://attn-kernel-lab/schema/qualification-attestation/1",
+  "title": "Qualification attestation",
+  "description": "An append-only contextual fact about one artifact. A qualification is a fact about (artifact, engine, target profile, workload profile) and generalises across none of them. Never mutates the artifact manifest.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "kind",
+    "artifact_manifest_sha256",
+    "release_id",
+    "verdict",
+    "recorded_utc",
+    "approver"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "kind": {
+      "enum": [
+        "correctness",
+        "kernel_performance",
+        "integration_smoke",
+        "application",
+        "production",
+        "upstream_readiness",
+        "fidelity"
+      ]
+    },
+    "artifact_manifest_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "release_id": {
+      "type": "string"
+    },
+    "verdict": {
+      "enum": [
+        "pass",
+        "fail"
+      ]
+    },
+    "recorded_utc": {
+      "type": "string"
+    },
+    "approver": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "identity",
+        "review"
+      ],
+      "properties": {
+        "identity": {
+          "type": "string"
+        },
+        "review": {
+          "type": "string",
+          "description": "PR or review reference. Trusted human review is required before an integration candidate is published."
+        }
+      }
+    },
+    "target": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Required for kernel_performance. A target whose profile has authority `development` MUST NOT appear here for a performance attestation."
+    },
+    "workload_profile": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "workload_cases_sha256": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "environment": {
+      "type": "object",
+      "description": "Per-allocation facts. Rented instances vary by host, power configuration, thermals, and neighbours; recording these is what makes a comparison legible later.",
+      "properties": {
+        "gpu_uuid_or_run_id": {
+          "type": "string"
+        },
+        "allocation_id": {
+          "type": "string"
+        },
+        "region": {
+          "type": "string"
+        },
+        "power_limit_w": {
+          "type": "number"
+        },
+        "observed_clock_mhz": {
+          "type": "number"
+        },
+        "observed_temperature_c": {
+          "type": "number"
+        },
+        "driver": {
+          "type": "string"
+        },
+        "cuda": {
+          "type": "string"
+        },
+        "container_digest": {
+          "type": "string"
+        }
+      }
+    },
+    "measurement": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "timing_backend": {
+          "enum": [
+            "cupti",
+            "cuda_events",
+            "host_wall"
+          ],
+          "description": "Recorded, never assumed. Results from different timing backends are not comparable, and a harness that silently falls back must fail the run instead."
+        },
+        "l2_policy": {
+          "enum": [
+            "warm",
+            "cold"
+          ]
+        },
+        "graph_mode": {
+          "enum": [
+            "eager",
+            "cuda_graph"
+          ]
+        },
+        "lane": {
+          "enum": [
+            "core",
+            "preprocessing",
+            "inclusive",
+            "schedule_replay",
+            "upstream_comparison"
+          ],
+          "description": "`inclusive` and `schedule_replay` are the only lanes with promotion authority."
+        },
+        "warmups": {
+          "type": "integer"
+        },
+        "independent_blocks": {
+          "type": "integer"
+        },
+        "interleaving": {
+          "type": "string"
+        },
+        "median_ms": {
+          "type": "number"
+        },
+        "p5_ms": {
+          "type": "number"
+        },
+        "p95_ms": {
+          "type": "number"
+        },
+        "paired_delta_pct": {
+          "type": "number"
+        },
+        "paired_ci95_lower_pct": {
+          "type": "number"
+        },
+        "paired_ci95_upper_pct": {
+          "type": "number"
+        },
+        "peak_memory_mib": {
+          "type": "number"
+        },
+        "raw_samples_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "baseline_ref": {
+          "type": "string"
+        }
+      }
+    },
+    "gates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "result"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "result": {
+            "enum": [
+              "pass",
+              "fail",
+              "skipped"
+            ]
+          },
+          "skip_reason": {
+            "type": "string",
+            "description": "Required when skipped. A skipped required gate makes the whole attestation fail; a warning must never turn an incomplete qualification into pass."
+          },
+          "evidence_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "engine_gate_id": {
+            "type": "string",
+            "description": "Gate id from the engine profile (e.g. S3). Must exist in that profile."
+          }
+        }
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "engine": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Required for integration_smoke, application, and production attestations. A gate result is per engine: an SGLang scheduler pass is not evidence about vLLM, and neither is its absence."
+    },
+    "engine_revision": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The exact engine revision the gates ran against. The lab records it; the consuming deployment owns the pin."
+    },
+    "fidelity": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Required for a `fidelity` attestation. A sibling of `measurement`, deliberately NOT a new `measurement.lane` value: `measurement` is about timing and its lane enum carries promotion authority semantics that must not be diluted. Nothing in this block licenses a performance claim or a `quality-neutral` wording of any kind.",
+      "required": [
+        "boundaries",
+        "scorecard_sha256",
+        "envelope_id",
+        "reference",
+        "control",
+        "fixture_sets",
+        "worst",
+        "boot_gate"
+      ],
+      "properties": {
+        "boundaries": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "enum": [
+              "attention_output",
+              "residual_logit",
+              "task"
+            ]
+          }
+        },
+        "scorecard_sha256": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "envelope_id": {
+          "type": "string"
+        },
+        "envelope_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "envelope_calibrated": {
+          "type": "boolean"
+        },
+        "envelope_status": {
+          "enum": [
+            "draft",
+            "frozen"
+          ]
+        },
+        "reference": {
+          "type": "object"
+        },
+        "control": {
+          "type": "object"
+        },
+        "fixture_sets": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "fixture_set_sha256",
+              "lane"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "fixture_set_sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "lane": {
+                "enum": [
+                  "public_synth",
+                  "public_open",
+                  "private_real"
+                ]
+              }
+            }
+          }
+        },
+        "worst": {
+          "type": "object",
+          "required": [
+            "worst_layer",
+            "worst_head",
+            "worst_row"
+          ],
+          "description": "Worst-layer, worst-head and worst-ROW values with their ratios. Required: an average-only fidelity record would have passed a kernel with a 56.40% worst layer, and a worst-head-only record would have passed one whose worst row had lost its direction entirely (addendum 2026-08-30).",
+          "properties": {
+            "metric": {
+              "type": "string"
+            },
+            "worst_layer": {
+              "type": "object"
+            },
+            "worst_head": {
+              "type": "object"
+            },
+            "worst_row": {
+              "type": "object"
+            }
+          }
+        },
+        "saturated_metrics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "spec_decode": {
+          "enum": [
+            "off",
+            "on",
+            "not_applicable"
+          ]
+        },
+        "boot_gate": {
+          "type": "object",
+          "required": [
+            "applicable"
+          ],
+          "description": "accept_len, capture parity, candidate EXTEND call count and fallback count for the boot the in-server boundaries were measured on. A scorecard from a collapsed boot is self-invalidating; that is the direct lesson of the downstream task score voided by the DFlash verify-mask bug. `applicable: false` is the engine-free Q1 lane, where there is no boot to gate.",
+            "properties": {
+              "applicable": {
+                "type": "boolean"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "accept_len": {
+                "type": "number"
+              },
+              "capture_parity": {
+                "type": "boolean"
+              },
+              "candidate_extend_calls": {
+                "type": "integer"
+              },
+              "fallback_calls": {
+                "type": "integer"
+              }
+            }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "fidelity"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "required": [
+          "fidelity"
+        ]
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "fidelity"
+        ]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "fidelity"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  cpu:
+    name: registry and tooling (no GPU)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements-dev.txt
+      - name: Compile
+        run: python -m compileall -q tools src tests
+      - name: Registry schemas and cross-record invariants
+        run: python tools/validate_registry.py --verbose
+      - name: Workload hashes are current
+        run: |
+          for profile in workloads/profiles/*.yaml; do
+            python tools/gen_workload.py "$profile" --check
+          done
+      - name: Tests
+        run: python -m pytest -q
+
+  # A GPU qualification job is deliberately absent. Performance qualification
+  # runs on a manually dispatched, protected workflow against a production
+  # target, and must not be reachable from an ordinary pull request. See
+  # docs/TARGETS.md.

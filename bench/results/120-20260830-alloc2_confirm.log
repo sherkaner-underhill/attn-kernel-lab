@@ -1,0 +1,27 @@
+=== [1] probe vs protected profile (different physical card) ===
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+
+targets/sm120-rtxpro6000-server.yaml: declared values match the device
+=== [2] correctness gate incl. the 72 goldens on a SECOND card ===
+.....                                                                    [100%]
+149 passed in 164.21s (0:02:44)
+=== [3] schedule replay, fully measured (the confirmation instrument) ===
+
+schedule aggregate over 14 chunk(s) x 16 layers (fully measured):
+  preprocessing : 8.21 s   <-- the disputed number
+  core          : 65.20 s   (600.7 TF/s)
+  inclusive     : 73.07 s   (536.1 TF/s honest)
+
+wrote bench/results/120-20260830T043716Z-alloc2-confirm-schedule.json
+sha256 3cc2a8b49e5254cec2dd17a0159f8e060e89057ff8cfedfaf0568f9881a9439c
+=== [4] two control blocks for the ratio ===
+  paired speedup (geomean)    : 1.95x  95% CI [1.92, 1.96]  min 1.85x / max 1.98x
+
+wrote bench/results/120-20260830T044221Z-alloc2-ctrl-b0.json
+sha256 6f8f6bc75adda27e86cc87f6562b61b2ff80ad9893cac313a2c36ea43cefa461
+  paired speedup (geomean)    : 1.95x  95% CI [1.93, 1.96]  min 1.87x / max 1.98x
+
+wrote bench/results/120-20260830T044730Z-alloc2-ctrl-b1.json
+sha256 6f164004fd5054bac5a2d2b967b2dca4adbdd21104e5dab651ba097f82e2c201
+2422 MHz, 60, 275.09 W
+ALLOC2_CONFIRM_DONE

@@ -1,0 +1,13 @@
+attn-kernel-lab
+Copyright 2026 attn-kernel-lab contributors
+
+Except for the file listed below, this repository is licensed under the Apache
+License, Version 2.0.
+
+probes/cudnn_frost/prefill_fp8qk_sm120.py is derived from NVIDIA
+cudnn-frontend 1.27's prefill_f16_sm120.py and is licensed under the MIT
+License. Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights
+reserved. The full permission notice is in
+licenses/cudnn-frontend-MIT.txt.
+
+See THIRD_PARTY_NOTICES.md for attribution and provenance details.

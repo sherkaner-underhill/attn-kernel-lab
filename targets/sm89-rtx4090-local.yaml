@@ -1,0 +1,86 @@
+# SPDX-License-Identifier: Apache-2.0
+schema_version: 1
+id: sm89-rtx4090-local
+status: active
+authority: development
+access: local
+protected: false
+
+device:
+  raw_model: NVIDIA GeForce RTX 4090
+  compute_capability: [8, 9]
+  arch_family: ada
+  sm_count: 128
+  memory_gib: 23.99
+  power_limit_w: 450
+
+capabilities:
+  implementation_family: mma_sync
+  mma_families:
+    - mma_sync_e4m3
+    - mma_sync_int8
+    - mma_sync_bf16
+  # Read from cudaDevAttrMaxSharedMemoryPerBlockOptin (97), NOT sharedMemPerBlock,
+  # which reports the 48 KiB default. The production wide path needs ~98 KiB
+  # (100352 B), so it fits under this ceiling with ~1 KiB to spare.
+  max_shared_memory_per_block_bytes: 101376
+  max_shared_memory_per_multiprocessor_bytes: 102400
+  l2_cache_bytes: 75497472
+  tma: false
+  # Absent by design: the instruction-rate probe has not been run here.
+  # Never estimate these from the SM120 numbers.
+
+toolchain:
+  gencode: "-gencode=arch=compute_89,code=sm_89"
+  cuda: "12.9"          # nvcc 12.9.86, mirroring the production-target pin
+  driver: "595.79"
+  torch: "2.13.0+cu129" # identical to the production pin
+  cross_compile_verified:
+    - sm_89
+    - sm_120a
+  notes:
+    - "Shares the mma.sync / ldmatrix / cp.async generation with SM120, so it is
+       the closest relative of the production target despite the larger version
+       number gap to SM90."
+    - "CONFIRMED 2026-08-29 on this machine: nvcc 12.9.86 assembles the SM120a
+       block-scaled MMA with no SM120 device present. This is a real CI
+       capability, not a substitute for running it."
+    - "The bare -arch=sm_120a trap REPRODUCES here: it lowers to sm_120 and ptxas
+       fails with \"Instruction 'mma with block scale' not supported on .target
+       'sm_120'\". Always use the explicit -gencode form. Verify with
+       tools/probe_target.py --compile-gate sm_120a [--bare-arch]."
+
+workload_limits:
+  max_workload_profiles: []
+  excluded_workload_profiles:
+    - d256-24x4-446k
+  reason: >-
+    24 GiB cannot hold a 446k-token D256 paged KV pool; BF16 K+V for
+    Hkv=4, D=256 across 16 full-attention layers alone is ~27.2 GiB.
+    Small- and medium-shape correctness work only.
+
+promotion_thresholds: {}   # intentionally empty: authority is `development`
+
+verification:
+  state: measured
+  date: "2026-08-29"
+  source: >-
+    tools/probe_target.py --check targets/sm89-rtx4090-local.yaml on the
+    development workstation. Every device field above was read from the device;
+    none is declared.
+  must_verify:
+    - "That the production wide path ACTUALLY builds at sm_89 within the 101376 B
+       ceiling. The ceiling is now measured and the ~98 KiB requirement fits with
+       ~1 KiB to spare, but a 1 KiB margin is thin enough that only a real
+       compilation settles it. A narrower BM64 variant may still be required."
+
+notes:
+  - "Development happens on sm120-rtxpro6000-server. This target is for the hours
+     between rented-target sessions, and for per-commit CI of the arch-independent gates."
+  - "Any timing produced here is diagnostic and must not appear in a promotion
+     decision. That rule is enforced by tools/validate_registry.py, not by
+     convention."
+  - "No FP4. Blackwell-only. FP4 work cannot be developed here at all."
+  - "Cannot satisfy the pinned bit-exact regression lane: those 72 cases are
+     SM120-and-toolchain specific by construction and must be skipped by target
+     capability here, never by widening a tolerance."

@@ -1,0 +1,264 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://attn-kernel-lab/schema/fidelity-scorecard/1",
+  "title": "Fidelity scorecard",
+  "description": "One boundary's fidelity result for one (subject, mode, fixture set). Three properties are enforced here rather than left to discipline. (1) Every gate metric MUST carry `mean`, `worst_layer`, `worst_head` and `worst_row`: the worst-layer mandate comes from SageAttention's 99.70% average against a 56.40% worst layer, and worst-ROW from the 2026-08-30 addendum, where a per-tensor scheme's depth collapse (cosine 0.894 -> 0.049) was invisible in the mean AND in the worst-head aggregate. (2) Every value is anchored to a control measured on the same tensors in the same process, so the record carries a ratio and never a bare absolute. (3) `norm_ratio` is structurally un-gateable (`gated` is `const false`), per addendum item 2: it drifts informatively with depth but never leaves [0.98, 1.02], so a gate on it would never fire and a trend line is what is worth keeping.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "kind",
+    "boundary",
+    "status",
+    "recorded_utc",
+    "subject",
+    "reference",
+    "controls",
+    "fixture_set",
+    "environment",
+    "metrics",
+    "not_claimed"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "kind": { "const": "fidelity_scorecard" },
+    "scorecard_id": {
+      "type": "string",
+      "description": "Stable name for this scorecard. Conventionally <subject>-<mode>-<fixture_set_id>-<boundary>."
+    },
+    "boundary": {
+      "enum": ["attention_output", "residual_logit", "task"],
+      "description": "Which of the plan's three boundaries this scorecard measures. Boundaries have different saturation risks and are never mixed in one record."
+    },
+    "status": {
+      "enum": ["draft", "final"],
+      "description": "`draft` until the tier that owns the lane has confirmed it. A public-lane 4090 result backing a private-lane envelope is `draft` by construction."
+    },
+    "recorded_utc": { "type": "string" },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["impl", "mode", "env_switches"],
+      "properties": {
+        "impl": {
+          "type": "string",
+          "description": "What was measured, in the harness's own vocabulary (e.g. `attn_kernel_lab.ops.prefill_extend`)."
+        },
+        "release_id": { "type": ["string", "null"] },
+        "artifact_manifest_sha256": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+        "source_build_id": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+        "loaded_from": {
+          "type": ["string", "null"],
+          "description": "Which artifact the operator actually loaded -- `jit`, `wheel`, or whatever the loader reports. A fidelity number is about the binary that ran, and the loader has a precedence order, so the record states which side of it won rather than inferring it from the source digest."
+        },
+        "mode": { "type": "string" },
+        "env_switches": {
+          "type": "object",
+          "description": "Every switch that changes numerics and survives into production. Contract §7 leaves their status open, which is exactly why they are recorded per scorecard: a mode-specific failure is diagnosed here first (plan §8).",
+          "additionalProperties": { "type": ["string", "boolean", "number", "null"] }
+        }
+      }
+    },
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "impl"],
+      "properties": {
+        "role": { "enum": ["fp32_reference", "stock_bf16"] },
+        "impl": { "type": "string" },
+        "note": { "type": "string" }
+      }
+    },
+    "controls": {
+      "type": "array",
+      "minItems": 1,
+      "description": "The anchors. At least one must be the implementation swap whose values populate every metric block's `control` field; the harness floor assertions ride here too.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role"],
+        "properties": {
+          "role": {
+            "enum": ["implementation_swap", "input_rounding", "stock_vs_stock", "harness_floor", "oracle"]
+          },
+          "impl": { "type": "string" },
+          "a": { "type": "string" },
+          "b": { "type": "string" },
+          "assertion": { "type": "string" },
+          "result": { "enum": ["pass", "fail", "not_run"] },
+          "value": { "type": ["number", "null"] },
+          "note": { "type": "string" },
+          "primary": {
+            "type": "boolean",
+            "description": "True on the single control whose per-slice values fill `control` in every metric block."
+          }
+        }
+      }
+    },
+    "fixture_set": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "fixture_set_sha256", "lane", "layers", "q_heads", "slice_semantics"],
+      "properties": {
+        "id": { "type": "string" },
+        "fixture_set_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "lane": { "enum": ["public_synth", "public_open", "private_real"] },
+        "layers": { "type": "integer", "minimum": 1 },
+        "q_heads": { "type": "integer", "minimum": 1 },
+        "kv_heads": { "type": "integer", "minimum": 1 },
+        "head_dim": { "type": "integer", "minimum": 1 },
+        "q_len": { "type": "integer", "minimum": 1 },
+        "depths": { "type": "array", "items": { "type": "integer" } },
+        "chunks": { "type": "array", "items": { "type": "integer" } },
+        "slice_semantics": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["layer", "row"],
+          "description": "What a `layer` and a `row` ARE in this fixture set. The public synthetic lane has no model, so its layer axis is the fixture case; the private lane's is the model's full-attention layer id. Saying so in the record is what stops a public worst-layer number from being read as a model-layer number.",
+          "properties": {
+            "layer": { "enum": ["model_layer", "fixture_case"] },
+            "row": { "enum": ["query_row"] },
+            "note": { "type": "string" }
+          }
+        }
+      }
+    },
+    "environment": {
+      "type": "object",
+      "required": ["device", "capability", "torch", "allow_tf32_matmul", "cublas_workspace_config"],
+      "description": "Determinism prerequisites of plan §4.2 are enforced here, not asserted in prose: a TF32-contaminated FP32 reference is not one, and the true-FP32 rotation is reproducible only under the contract §3.1 workspace pin.",
+      "properties": {
+        "device": { "type": "string" },
+        "capability": { "type": "string" },
+        "torch": { "type": "string" },
+        "cuda": { "type": ["string", "null"] },
+        "driver": { "type": ["string", "null"] },
+        "gpu_uuid_or_run_id": { "type": "string" },
+        "allow_tf32_matmul": { "const": false },
+        "cublas_workspace_config": { "const": ":4096:8" },
+        "observed_temperature_c": { "type": ["number", "null"] },
+        "quant_py_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "donor_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "harness_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "required": ["row_rel_l2", "cos_sim", "rel_l1", "rmse", "norm_ratio", "nan_count", "inf_count"],
+      "properties": {
+        "row_rel_l2": { "$ref": "#/$defs/gate_metric" },
+        "cos_sim": { "$ref": "#/$defs/gate_metric" },
+        "rel_l1": { "$ref": "#/$defs/gate_metric" },
+        "rmse": { "$ref": "#/$defs/gate_metric" },
+        "norm_ratio": { "$ref": "#/$defs/reported_metric" },
+        "nan_count": { "type": "integer", "minimum": 0 },
+        "inf_count": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": { "$ref": "#/$defs/gate_metric" }
+    },
+    "envelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["envelope_id", "comparison"],
+      "properties": {
+        "envelope_id": { "type": "string" },
+        "envelope_sha256": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+        "envelope_status": { "enum": ["draft", "frozen"] },
+        "comparison": { "enum": ["pass", "fail", "not_evaluated"] },
+        "violations": { "type": "array", "items": { "type": "string" } },
+        "note": { "type": "string" }
+      }
+    },
+    "notes": { "type": "array", "items": { "type": "string" } },
+    "not_claimed": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "description": "Required. A fidelity number that travels without its scope statement becomes a quality claim in one retelling; upstream/CLAIMS.md forbids `quality-neutral` in any form and this field is where that survives the copy-paste."
+    }
+  },
+  "$defs": {
+    "slice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "control", "ratio"],
+      "properties": {
+        "layer": { "type": "integer", "minimum": 0 },
+        "layer_name": { "type": "string" },
+        "head": { "type": "integer", "minimum": 0 },
+        "row": { "type": "integer", "minimum": 0 },
+        "value": { "type": "number" },
+        "control": { "type": "number" },
+        "ratio": { "type": ["number", "null"] },
+        "saturated": { "type": "boolean" }
+      }
+    },
+    "gate_metric": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "A metric admitted to the gate. All four aggregations are required: an average-only scorecard would have passed the 56.40%-worst-layer kernel, and a worst-head-only scorecard would have passed the cosine-0.049 worst row.",
+      "required": [
+        "direction",
+        "ratio_basis",
+        "mean",
+        "control",
+        "ratio",
+        "saturated",
+        "worst_layer",
+        "worst_head",
+        "worst_row",
+        "per_layer"
+      ],
+      "properties": {
+        "direction": { "enum": ["lower_is_better", "higher_is_better"] },
+        "ratio_basis": {
+          "enum": ["direct", "one_minus"],
+          "description": "How the ratio is formed. `direct` is value/control. `one_minus` anchors a similarity through its deficit, (1-value)/(1-control): the ratio of two cosines both near 1 is ~1 for any pair and would report a collapse as agreement."
+        },
+        "mean": { "type": "number" },
+        "control": { "type": "number" },
+        "ratio": { "type": ["number", "null"] },
+        "saturated": {
+          "type": "boolean",
+          "description": "control >= 0.5 * value on the ratio basis. A saturated metric is demoted to a smoke check and may not rank backends (plan §1)."
+        },
+        "worst_layer": { "$ref": "#/$defs/slice", "required": ["value", "control", "ratio", "layer"] },
+        "worst_head": { "$ref": "#/$defs/slice", "required": ["value", "control", "ratio", "layer", "head"] },
+        "worst_row": { "$ref": "#/$defs/slice", "required": ["value", "control", "ratio", "layer", "head", "row"] },
+        "per_layer": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/slice", "required": ["value", "control", "ratio", "layer"] } },
+        "gated": { "type": "boolean" },
+        "note": { "type": "string" }
+      }
+    },
+    "reported_metric": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Reported, never gated. `gated` is `const false` so the addendum's rule cannot be quietly reversed by an author who wants a threshold.",
+      "required": ["min", "max", "gated", "per_layer"],
+      "properties": {
+        "min": { "type": "number" },
+        "max": { "type": "number" },
+        "mean": { "type": "number" },
+        "control_min": { "type": "number" },
+        "control_max": { "type": "number" },
+        "gated": { "const": false },
+        "per_layer": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["layer", "value"],
+            "properties": {
+              "layer": { "type": "integer", "minimum": 0 },
+              "layer_name": { "type": "string" },
+              "value": { "type": "number" },
+              "control": { "type": "number" }
+            }
+          }
+        },
+        "note": { "type": "string" }
+      }
+    }
+  }
+}

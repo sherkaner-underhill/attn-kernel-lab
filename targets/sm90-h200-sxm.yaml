@@ -1,0 +1,60 @@
+# SPDX-License-Identifier: Apache-2.0
+schema_version: 1
+id: sm90-h200-sxm
+status: planned
+authority: none
+access: none
+protected: false
+
+device:
+  raw_model: NVIDIA H200 SXM
+  compute_capability: [9, 0]
+  arch_family: hopper
+  sm_count: 132
+  memory_gib: 141.0
+  power_limit_w: 700
+
+capabilities:
+  implementation_family: wgmma
+  mma_families:
+    - wgmma_e4m3
+    - wgmma_bf16
+    - mma_sync_int8
+    - mma_sync_bf16
+  max_shared_memory_per_block_bytes: 232448
+  tma: true
+
+toolchain:
+  gencode: "-gencode=arch=compute_90a,code=sm_90a"
+  cuda: null
+  driver: null
+  torch: null
+  notes:
+    - "Hopper reaches FP8 throughput through warp-group async MMA plus TMA, not
+       through mma.sync. An SM90 implementation is a REWRITE of the mainloop
+       that reuses the operator contract, the transforms, and both oracles — not
+       a port of the mma_sync implementation."
+
+workload_limits:
+  max_workload_profiles:
+    - d256-24x4-446k
+  excluded_workload_profiles: []
+  reason: >-
+    141 GiB comfortably holds the 446k profile. Registered as a candidate second
+    production target; nothing has been run.
+
+promotion_thresholds: {}
+
+verification:
+  state: unverified
+  date: null
+  source: "vendor specifications only; no H200 has been accessed"
+  must_verify:
+    - "Every field. This profile exists to keep the multi-target axis honest and
+       to hold the design decision that SM90 is a separate implementation
+       family. It is not evidence about an H200."
+
+notes:
+  - "Registered as `planned` deliberately: an unimplemented target that is named
+     in the registry costs one file and stops the codebase from silently
+     re-acquiring the assumption that there is only one GPU."

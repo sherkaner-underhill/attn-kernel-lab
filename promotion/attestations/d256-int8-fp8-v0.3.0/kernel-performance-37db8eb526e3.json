@@ -1,0 +1,61 @@
+{
+ "schema_version": 1,
+ "kind": "kernel_performance",
+ "artifact_manifest_sha256": "791df7130c38123d355387fb503aa2a53f3b13691d15ef187682b559e0161d1f",
+ "release_id": "d256-int8-fp8-v0.3.0",
+ "verdict": "pass",
+ "recorded_utc": "2026-08-31T20:45:10+00:00",
+ "approver": {
+  "identity": "session review",
+  "review": "candidate-zero session"
+ },
+ "target": "sm120-rtxpro6000-server",
+ "workload_profile": "d256-24x4-446k",
+ "workload_cases_sha256": "2621651e58b75ef11d6b63f94d18632e5862f16321e3f48d5042fd883867beb0",
+ "environment": {
+  "gpu_uuid_or_run_id": "card-A",
+  "driver": "595.91.07",
+  "cuda": "12.9",
+  "container_digest": "sha256:e35dfb0beaf6b1fb6619ae0dac9474b5cdda24b81cee7202316e371301425e46",
+  "power_limit_w": 600.0,
+  "observed_clock_mhz": 2310.0,
+  "observed_temperature_c": 28.0
+ },
+ "measurement": {
+  "timing_backend": "cuda_events",
+  "l2_policy": "warm",
+  "graph_mode": "eager",
+  "lane": "schedule_replay",
+  "warmups": 3,
+  "independent_blocks": 1,
+  "interleaving": "none: candidate zero IS the baseline being established; paired A/B statistics apply from the first comparison onward",
+  "median_ms": 66711.7,
+  "peak_memory_mib": 5228.544,
+  "raw_samples_sha256": "3681feba1c5e324b6d3b8e69f0746bec021e819b81f0b8676d058648c04e54c3",
+  "baseline_ref": "self (baseline-establishing run)"
+ },
+ "gates": [
+  {
+   "name": "all 14 protected geometries measured, 16 layer seeds each (224 calls)",
+   "result": "pass",
+   "evidence_sha256": "3681feba1c5e324b6d3b8e69f0746bec021e819b81f0b8676d058648c04e54c3"
+  },
+  {
+   "name": "full-size pool (no wrap): deep-prefix gather timing is real",
+   "result": "pass",
+   "evidence_sha256": "3681feba1c5e324b6d3b8e69f0746bec021e819b81f0b8676d058648c04e54c3"
+  },
+  {
+   "name": "second-allocation confirmation",
+   "result": "skipped",
+   "skip_reason": "single allocation this session; required before PRODUCTION qualification, not for the baseline record"
+  }
+ ],
+ "notes": [
+  "Regenerated for public release against a renamed workload profile and a scrubbed source tree; the underlying measurements are unchanged.",
+  "Schedule core: 66.71 s (587.1 TF/s) -- the direct post-rescale deployment measurement replacing the inferred ~610 TF/s.",
+  "Schedule preprocessing: 8.21 s -- resolves the disputed ~0.2-0.3 s claim.",
+  "Schedule inclusive: 74.23 s (527.7 TF/s honest).",
+  "Per-chunk high-repetition view: 120-20260830T003722Z-candidate-zero-perchunk.json (sha256 dff26ad8286669a6...)"
+ ]
+}

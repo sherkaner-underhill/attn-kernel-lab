@@ -1,0 +1,46 @@
+# SPDX-License-Identifier: Apache-2.0
+schema_version: 1
+id: vllm
+status: planned
+
+upstream:
+  repository: https://github.com/vllm-project/vllm
+  pinned_revision: null
+  revision_is_pinned_by: "Not yet integrated."
+
+integration:
+  mechanism: unknown
+  stability: unknown
+  seams: []
+  phase_scope:
+    - prefill
+  notes:
+    - >-
+      Registered as `planned` so the adapter layer, the gate ladder, and the
+      consumer lock schema cannot quietly harden around a single engine. Nothing
+      has been built or run.
+    - >-
+      The operator contract, both correctness oracles, the transforms, and the
+      kernel-performance lanes are engine-independent by construction and carry
+      over unchanged. What does NOT carry over: the adapter, every S-gate
+      result, the dispatch-count assertions, and the paged-KV pool layout
+      assumptions, which are engine-specific.
+    - >-
+      Worth checking early rather than late: whether vLLM's paged KV layout and
+      block size can present the page-size-1 view the v1 contract requires, and
+      how its position-encoding handling compares. Those two answers decide
+      whether integration is an adapter or a contract change.
+
+gates: []
+
+verification:
+  state: unverified
+  date: null
+  source: null
+  must_verify:
+    - "Every field. This profile is a placeholder for the axis, not a claim about vLLM."
+
+notes:
+  - >-
+    Supporting a second engine is the reason the integration and application
+    attestations name an engine explicitly rather than assuming one.

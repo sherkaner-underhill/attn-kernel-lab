@@ -1,0 +1,1707 @@
+{
+ "schema": "candidate-bench/1",
+ "label": "b6-ctrl-b1",
+ "utc": "2026-08-30T02:54:46+00:00",
+ "argv": [
+  "--profile",
+  "d256-24x4-446k",
+  "--layers",
+  "1",
+  "--iters",
+  "10",
+  "--quant-iters",
+  "3",
+  "--warmup",
+  "3",
+  "--control",
+  "flashinfer-bf16",
+  "--control-iters",
+  "5",
+  "--control-warmup",
+  "2",
+  "--seed",
+  "20260831",
+  "--label",
+  "b6-ctrl-b1",
+  "--emit-repro"
+ ],
+ "workload_profile": "d256-24x4-446k",
+ "workload_cases_sha256": "2621651e58b75ef11d6b63f94d18632e5862f16321e3f48d5042fd883867beb0",
+ "measurement": {
+  "timing_backend": "cuda_events",
+  "l2_policy": "warm",
+  "graph_mode": "eager",
+  "process_model": "single",
+  "control": "flashinfer-bf16"
+ },
+ "config": {
+  "layers": 1,
+  "warmup": 3,
+  "iters": 10,
+  "quant_iters": 3,
+  "seed": 20260831,
+  "smoke": false,
+  "control": "flashinfer-bf16",
+  "control_warmup": 2,
+  "control_iters": 5,
+  "control_q_chunk": 256,
+  "control_kv_chunk": 4096,
+  "bootstrap": 10000
+ },
+ "env": {
+  "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "capability": "12.0",
+  "sm_count": 188,
+  "total_mem_gib": 94.97,
+  "free_mem_gib_at_start": 94.43,
+  "torch": "2.13.0+cu129",
+  "cuda": "12.9",
+  "python": "3.12.3",
+  "source_build_id": "9868ac284ec71f56098d6637b925468741749c3b176e5e7087e32a87296d9e4b",
+  "nvidia_smi": {
+   "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+   "driver_version": "595.91.07",
+   "uuid": "card-A",
+   "power.limit": "600.00 W",
+   "power.draw": "94.59 W",
+   "clocks.sm": "2422 MHz",
+   "clocks.max.sm": "2430 MHz",
+   "temperature.gpu": "59",
+   "persistence_mode": "Enabled"
+  },
+  "cublas_workspace_config": ":4096:8"
+ },
+ "geometry": {
+  "head_dim": 256,
+  "kv_dtype": "bfloat16",
+  "kv_heads": 4,
+  "layers": 16,
+  "mask": "bottom_right_causal",
+  "mode": "extend",
+  "page_size": 1,
+  "q_heads": 24,
+  "total_layers": 64
+ },
+ "cases": [
+  {
+   "chunk": 0,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 0,
+   "k_len": 32768,
+   "flops": 13194542186496.0,
+   "preprocessing": {
+    "samples_ms": [
+     13.0235,
+     12.9415,
+     12.9349
+    ],
+    "median_ms": 12.9415,
+    "min_ms": 12.9349,
+    "p5_ms": 12.9349,
+    "p95_ms": 12.9415,
+    "iters": 3
+   },
+   "core": {
+    "samples_ms": [
+     22.838,
+     22.8423,
+     22.8418,
+     22.837,
+     22.8397,
+     22.8497,
+     22.8758,
+     22.91,
+     22.9578,
+     23.12
+    ],
+    "median_ms": 22.846,
+    "min_ms": 22.837,
+    "p5_ms": 22.837,
+    "p95_ms": 22.9578,
+    "iters": 10,
+    "tflops_median": 577.5,
+    "tflops_min_time": 577.8
+   },
+   "inclusive": {
+    "samples_ms": [
+     35.7941,
+     35.767,
+     35.7653
+    ],
+    "median_ms": 35.767,
+    "min_ms": 35.7653,
+    "p5_ms": 35.7653,
+    "p95_ms": 35.767,
+    "iters": 3
+   },
+   "peak_alloc_gib": 2.853,
+   "control": {
+    "kind": "flashinfer-bf16",
+    "interleave": "ABBA",
+    "paired_against": "core (eager, cuda_events)",
+    "available": true,
+    "impl": "flashinfer.BatchPrefillWithPagedKVCacheWrapper, bf16, NHD, page_size 1, causal (bottom-right)",
+    "peak_performance_control": true,
+    "excluded_from_timing": "plan() (done once per case, as a serving stack would)",
+    "candidate": {
+     "samples_ms": [
+      23.0084,
+      23.0725,
+      23.1015,
+      23.1903,
+      23.2309,
+      23.2778,
+      23.3006,
+      23.2711,
+      23.215,
+      23.2328,
+      23.3439,
+      23.2743,
+      23.213,
+      23.1806,
+      23.1488,
+      23.1588,
+      23.1897,
+      23.2043,
+      23.2061,
+      23.1698
+     ],
+     "median_ms": 23.2052,
+     "min_ms": 23.0084,
+     "p5_ms": 23.0084,
+     "p95_ms": 23.3006,
+     "iters": 20
+    },
+    "control": {
+     "samples_ms": [
+      43.6959,
+      43.82,
+      43.8574,
+      43.8717,
+      43.9496,
+      44.0499,
+      44.0121,
+      43.895,
+      43.8313,
+      43.93
+     ],
+     "median_ms": 43.8834,
+     "min_ms": 43.6959,
+     "p5_ms": 43.6959,
+     "p95_ms": 44.0121,
+     "iters": 10
+    },
+    "speedup_median": 1.8911
+   }
+  },
+  {
+   "chunk": 1,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 32768,
+   "k_len": 65536,
+   "flops": 39582821253120.0,
+   "preprocessing": {
+    "samples_ms": [
+     16.6743,
+     16.6518,
+     16.6607
+    ],
+    "median_ms": 16.6607,
+    "min_ms": 16.6518,
+    "p5_ms": 16.6518,
+    "p95_ms": 16.6607,
+    "iters": 3
+   },
+   "core": {
+    "samples_ms": [
+     66.5347,
+     67.2297,
+     67.5041,
+     67.7989,
+     67.703,
+     67.9002,
+     67.9956,
+     67.6919,
+     67.8776,
+     67.9282
+    ],
+    "median_ms": 67.751,
+    "min_ms": 66.5347,
+    "p5_ms": 66.5347,
+    "p95_ms": 67.9282,
+    "iters": 10,
+    "tflops_median": 584.2,
+    "tflops_min_time": 594.9
+   },
+   "inclusive": {
+    "samples_ms": [
+     83.2533,
+     83.1802,
+     83.0536
+    ],
+    "median_ms": 83.1802,
+    "min_ms": 83.0536,
+    "p5_ms": 83.0536,
+    "p95_ms": 83.1802,
+    "iters": 3
+   },
+   "peak_alloc_gib": 3.041,
+   "control": {
+    "kind": "flashinfer-bf16",
+    "interleave": "ABBA",
+    "paired_against": "core (eager, cuda_events)",
+    "available": true,
+    "impl": "flashinfer.BatchPrefillWithPagedKVCacheWrapper, bf16, NHD, page_size 1, causal (bottom-right)",
+    "peak_performance_control": true,
+    "excluded_from_timing": "plan() (done once per case, as a serving stack would)",
+    "candidate": {
+     "samples_ms": [
+      67.5634,
+      67.3258,
+      67.3611,
+      67.4104,
+      67.392,
+      67.8385,
+      68.0632,
+      67.7052,
+      67.934,
+      68.018,
+      67.4292,
+      67.3863,
+      67.4041,
+      67.423,
+      67.4692,
+      67.3368,
+      67.4309,
+      67.4302,
+      67.2952,
+      67.4226
+     ],
+     "median_ms": 67.4261,
+     "min_ms": 67.2952,
+     "p5_ms": 67.2952,
+     "p95_ms": 68.018,
+     "iters": 20
+    },
+    "control": {
+     "samples_ms": [
+      129.6335,
+      129.4692,
+      129.6987,
+      129.4858,
+      129.7348,
+      129.6105,
+      129.5425,
+      129.5755,
+      129.3347,
+      129.6584
+     ],
+     "median_ms": 129.593,
+     "min_ms": 129.3347,
+     "p5_ms": 129.3347,
+     "p95_ms": 129.6987,
+     "iters": 10
+    },
+    "speedup_median": 1.922
+   }
+  },
+  {
+   "chunk": 2,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 65536,
+   "k_len": 98304,
+   "flops": 65971100319744.0,
+   "preprocessing": {
+    "samples_ms": [
+     20.319,
+     20.3186,
+     20.294
+    ],
+    "median_ms": 20.3186,
+    "min_ms": 20.294,
+    "p5_ms": 20.294,
+    "p95_ms": 20.3186,
+    "iters": 3
+   },
+   "core": {
+    "samples_ms": [
+     112.1433,
+     112.5677,
+     112.2786,
+     112.8265,
+     111.9793,
+     112.7073,
+     112.5956,
+     112.1148,
+     112.7261,
+     112.7293
+    ],
+    "median_ms": 112.5817,
+    "min_ms": 111.9793,
+    "p5_ms": 111.9793,
+    "p95_ms": 112.7293,
+    "iters": 10,
+    "tflops_median": 586.0,
+    "tflops_min_time": 589.1
+   },
+   "inclusive": {
+    "samples_ms": [
+     131.0455,
+     130.5415,
+     130.8741
+    ],
+    "median_ms": 130.8741,
+    "min_ms": 130.5415,
+    "p5_ms": 130.5415,
+    "p95_ms": 130.8741,
+    "iters": 3
+   },
+   "peak_alloc_gib": 3.229,
+   "control": {
+    "kind": "flashinfer-bf16",
+    "interleave": "ABBA",
+    "paired_against": "core (eager, cuda_events)",
+    "available": true,
+    "impl": "flashinfer.BatchPrefillWithPagedKVCacheWrapper, bf16, NHD, page_size 1, causal (bottom-right)",
+    "peak_performance_control": true,
+    "excluded_from_timing": "plan() (done once per case, as a serving stack would)",
+    "candidate": {
+     "samples_ms": [
+      111.8503,
+      112.8119,
+      112.6404,
+      112.3363,
+      112.8747,
+      112.5056,
+      112.4764,
+      112.8774,
+      112.258,
+      112.7459,
+      112.4101,
+      112.6577,
+      112.9467,
+      112.2303,
+      112.7946,
+      112.7425,
+      112.4721,
+      112.8855,
+      112.6719,
+      112.5615
+     ],
+     "median_ms": 112.649,
+     "min_ms": 111.8503,
+     "p5_ms": 111.8503,
+     "p95_ms": 112.8855,
+     "iters": 20
+    },
+    "control": {
+     "samples_ms": [
+      216.6641,
+      215.5599,
+      215.0726,
+      215.4092,
+      215.5329,
+      215.777,
+      215.1018,
+      215.4963,
+      215.5956,
+      215.7217
+     ],
+     "median_ms": 215.5464,
+     "min_ms": 215.0726,
+     "p5_ms": 215.0726,
+     "p95_ms": 215.777,
+     "iters": 10
+    },
+    "speedup_median": 1.9134
+   }
+  },
+  {
+   "chunk": 3,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 98304,
+   "k_len": 131072,
+   "flops": 92359379386368.0,
+   "preprocessing": {
+    "samples_ms": [
+     24.2188,
+     24.0784,
+     24.0685
+    ],
+    "median_ms": 24.0784,
+    "min_ms": 24.0685,
+    "p5_ms": 24.0685,
+    "p95_ms": 24.0784,
+    "iters": 3
+   },
+   "core": {
+    "samples_ms": [
+     157.088,
+     157.0898,
+     156.7339,
+     156.8065,
+     156.6115,
+     155.8099,
+     156.0075,
+     156.9772,
+     156.6822,
+     156.7615
+    ],
+    "median_ms": 156.7477,
+    "min_ms": 155.8099,
+    "p5_ms": 155.8099,
+    "p95_ms": 157.088,
+    "iters": 10,
+    "tflops_median": 589.2,
+    "tflops_min_time": 592.8
+   },
+   "inclusive": {
+    "samples_ms": [
+     178.4173,
+     178.5086,
+     178.7685
+    ],
+    "median_ms": 178.5086,
+    "min_ms": 178.4173,
+    "p5_ms": 178.4173,
+    "p95_ms": 178.5086,
+    "iters": 3
+   },
+   "peak_alloc_gib": 3.416,
+   "control": {
+    "kind": "flashinfer-bf16",
+    "interleave": "ABBA",
+    "paired_against": "core (eager, cuda_events)",
+    "available": true,
+    "impl": "flashinfer.BatchPrefillWithPagedKVCacheWrapper, bf16, NHD, page_size 1, causal (bottom-right)",
+    "peak_performance_control": true,
+    "excluded_from_timing": "plan() (done once per case, as a serving stack would)",
+    "candidate": {
+     "samples_ms": [
+      156.0538,
+      155.7844,
+      155.686,
+      155.8359,
+      156.0098,
+      157.192,
+      157.108,
+      156.7729,
+      157.0862,
+      157.1989,
+      155.9418,
+      157.2448,
+      157.5642,
+      157.6766,
+      157.476,
+      157.316,
+      157.1189,
+      157.2615,
+      157.4069,
+      157.5764
+     ],
+     "median_ms": 157.1554,
+     "min_ms": 155.686,
+     "p5_ms": 155.686,
+     "p95_ms": 157.5764,
+     "iters": 20
+    },
+    "control": {
+     "samples_ms": [
+      303.216,
+      302.513,
+      302.1943,
+      302.0867,
+      301.992,
+      302.4605,
+      302.8907,
+      302.8807,
+      302.7217,
+      302.4807
+     ],
+     "median_ms": 302.4968,
+     "min_ms": 301.992,
+     "p5_ms": 301.992,
+     "p95_ms": 302.8907,
+     "iters": 10
+    },
+    "speedup_median": 1.9248
+   }
+  },
+  {
+   "chunk": 4,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 131072,
+   "k_len": 163840,
+   "flops": 118747658452992.0,
+   "preprocessing": {
+    "samples_ms": [
+     27.7613,
+     27.7275,
+     27.752
+    ],
+    "median_ms": 27.752,
+    "min_ms": 27.7275,
+    "p5_ms": 27.7275,
+    "p95_ms": 27.752,
+    "iters": 3
+   },
+   "core": {
+    "samples_ms": [
+     201.4475,
+     201.6552,
+     201.6349,
+     201.8052,
+     201.7178,
+     201.6803,
+     201.4607,
+     201.4307,
+     201.3772,
+     201.1943
+    ],
+    "median_ms": 201.5478,
+    "min_ms": 201.1943,
+    "p5_ms": 201.1943,
+    "p95_ms": 201.7178,
+    "iters": 10,
+    "tflops_median": 589.2,
+    "tflops_min_time": 590.2
+   },
+   "inclusive": {
+    "samples_ms": [
+     226.8939,
+     225.8037,
+     226.088
+    ],
+    "median_ms": 226.088,
+    "min_ms": 225.8037,
+    "p5_ms": 225.8037,
+    "p95_ms": 226.088,
+    "iters": 3
+   },
+   "peak_alloc_gib": 3.604,
+   "control": {
+    "kind": "flashinfer-bf16",
+    "interleave": "ABBA",
+    "paired_against": "core (eager, cuda_events)",
+    "available": true,
+    "impl": "flashinfer.BatchPrefillWithPagedKVCacheWrapper, bf16, NHD, page_size 1, causal (bottom-right)",
+    "peak_performance_control": true,
+    "excluded_from_timing": "plan() (done once per case, as a serving stack would)",
+    "candidate": {
+     "samples_ms": [
+      200.099,
+      200.9973,
+      201.8898,
+      201.9301,
+      201.7563,
+      201.6561,
+      201.5907,
+      201.4042,
+      201.5734,
+      201.907,
+      201.4225,
+      202.0609,
+      202.0047,
+      202.0137,
+      201.8146,
+      201.7214,
+      201.7811,
+      201.9831,
+      202.1141,
+      202.3037
+     ],
+     "median_ms": 201.7978,
+     "min_ms": 200.099,
+     "p5_ms": 200.099,
+     "p95_ms": 202.1141,
+     "iters": 20
+    },
+    "control": {
+     "samples_ms": [
+      395.1722,
+      393.9676,
+      394.4117,
+      394.8062,
+      394.5282,
+      394.055,
+      394.5991,
+      395.0977,
+      393.7149,
+      394.0843
+     ],
+     "median_ms": 394.4699,
+     "min_ms": 393.7149,
+     "p5_ms": 393.7149,
+     "p95_ms": 395.0977,
+     "iters": 10
+    },
+    "speedup_median": 1.9548
+   }
+  },
+  {
+   "chunk": 5,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 163840,
+   "k_len": 196608,
+   "flops": 145135937519616.0,
+   "preprocessing": {
+    "samples_ms": [
+     31.3132,
+     31.3214,
+     31.2961
+    ],
+    "median_ms": 31.3132,
+    "min_ms": 31.2961,
+    "p5_ms": 31.2961,
+    "p95_ms": 31.3132,
+    "iters": 3
+   },
+   "core": {
+    "samples_ms": [
+     245.881,
+     246.1584,
+     246.1038,
+     245.9236,
+     246.3687,
+     246.016,
+     245.4005,
+     246.123,
+     246.1611,
+     245.8229
+    ],
+    "median_ms": 246.0599,
+    "min_ms": 245.4005,
+    "p5_ms": 245.4005,
+    "p95_ms": 246.1611,
+    "iters": 10,
+    "tflops_median": 589.8,
+    "tflops_min_time": 591.4
+   },
+   "inclusive": {
+    "samples_ms": [
+     274.1559,
+     274.0568,
+     274.2063
+    ],
+    "median_ms": 274.1559,
+    "min_ms": 274.0568,
+    "p5_ms": 274.0568,
+    "p95_ms": 274.1559,
+    "iters": 3
+   },
+   "peak_alloc_gib": 3.792,
+   "control": {
+    "kind": "flashinfer-bf16",
+    "interleave": "ABBA",
+    "paired_against": "core (eager, cuda_events)",
+    "available": true,
+    "impl": "flashinfer.BatchPrefillWithPagedKVCacheWrapper, bf16, NHD, page_size 1, causal (bottom-right)",
+    "peak_performance_control": true,
+    "excluded_from_timing": "plan() (done once per case, as a serving stack would)",
+    "candidate": {
+     "samples_ms": [
+      244.2266,
+      245.8995,
+      246.2577,
+      246.6709,
+      246.3517,
+      246.3501,
+      246.7377,
+      246.3372,
+      246.2673,
+      246.7566,
+      243.9585,
+      244.7111,
+      244.8379,
+      244.6738,
+      244.4879,
+      244.7399,
+      244.8412,
+      244.723,
+      244.4651,
+      246.5619
+     ],
+     "median_ms": 245.3703,
+     "min_ms": 243.9585,
+     "p5_ms": 243.9585,
+     "p95_ms": 246.7377,
+     "iters": 20
+    },
+    "control": {
+     "samples_ms": [
+      487.7639,
+      484.0084,
+      485.0922,
+      484.8383,
+      484.1944,
+      483.5789,
+      484.3915,
+      484.6681,
+      484.3867,
+      483.8425
+     ],
+     "median_ms": 484.3891,
+     "min_ms": 483.5789,
+     "p5_ms": 483.5789,
+     "p95_ms": 485.0922,
+     "iters": 10
+    },
+    "speedup_median": 1.9741
+   }
+  },
+  {
+   "chunk": 6,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 196608,
+   "k_len": 229376,
+   "flops": 171524216586240.0,
+   "preprocessing": {
+    "samples_ms": [
+     35.1236,
+     35.1338,
+     35.1066
+    ],
+    "median_ms": 35.1236,
+    "min_ms": 35.1066,
+    "p5_ms": 35.1066,
+    "p95_ms": 35.1236,
+    "iters": 3
+   },
+   "core": {
+    "samples_ms": [
+     290.5285,
+     290.5944,
+     290.5503,
+     290.5983,
+     290.4824,
+     290.7694,
+     290.4543,
+     290.9907,
+     290.5378,
+     290.3676
+    ],
+    "median_ms": 290.5441,
+    "min_ms": 290.3676,
+    "p5_ms": 290.3676,
+    "p95_ms": 290.7694,
+    "iters": 10,
+    "tflops_median": 590.4,
+    "tflops_min_time": 590.7
+   },
+   "inclusive": {
+    "samples_ms": [
+     322.3662,
+     322.4987,
+     322.6782
+    ],
+    "median_ms": 322.4987,
+    "min_ms": 322.3662,
+    "p5_ms": 322.3662,
+    "p95_ms": 322.4987,
+    "iters": 3
+   },
+   "peak_alloc_gib": 3.98,
+   "control": {
+    "kind": "flashinfer-bf16",
+    "interleave": "ABBA",
+    "paired_against": "core (eager, cuda_events)",
+    "available": true,
+    "impl": "flashinfer.BatchPrefillWithPagedKVCacheWrapper, bf16, NHD, page_size 1, causal (bottom-right)",
+    "peak_performance_control": true,
+    "excluded_from_timing": "plan() (done once per case, as a serving stack would)",
+    "candidate": {
+     "samples_ms": [
+      289.7036,
+      291.0507,
+      291.0544,
+      290.9615,
+      291.4736,
+      290.7643,
+      290.4783,
+      290.6494,
+      291.4218,
+      291.0882,
+      288.8105,
+      291.5477,
+      291.3827,
+      291.4992,
+      291.3668,
+      291.415,
+      291.8117,
+      291.2225,
+      291.585,
+      291.3011
+     ],
+     "median_ms": 291.2618,
+     "min_ms": 288.8105,
+     "p5_ms": 288.8105,
+     "p95_ms": 291.585,
+     "iters": 20
+    },
+    "control": {
+     "samples_ms": [
+      576.0403,
+      574.7094,
+      574.3747,
+      573.949,
+      574.5603,
+      575.0317,
+      574.5225,
+      574.3132,
+      574.7454,
+      574.9108
+     ],
+     "median_ms": 574.6349,
+     "min_ms": 573.949,
+     "p5_ms": 573.949,
+     "p95_ms": 575.0317,
+     "iters": 10
+    },
+    "speedup_median": 1.9729
+   }
+  },
+  {
+   "chunk": 7,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 229376,
+   "k_len": 262144,
+   "flops": 197912495652864.0,
+   "preprocessing": {
+    "samples_ms": [
+     38.7395,
+     38.7292,
+     38.7245
+    ],
+    "median_ms": 38.7292,
+    "min_ms": 38.7245,
+    "p5_ms": 38.7245,
+    "p95_ms": 38.7292,
+    "iters": 3
+   },
+   "core": {
+    "samples_ms": [
+     335.4202,
+     335.7021,
+     335.5329,
+     335.2109,
+     335.5351,
+     335.9007,
+     335.5221,
+     335.5859,
+     335.5198,
+     335.7323
+    ],
+    "median_ms": 335.534,
+    "min_ms": 335.2109,
+    "p5_ms": 335.2109,
+    "p95_ms": 335.7323,
+    "iters": 10,
+    "tflops_median": 589.8,
+    "tflops_min_time": 590.4
+   },
+   "inclusive": {
+    "samples_ms": [
+     370.0842,
+     370.6154,
+     370.3645
+    ],
+    "median_ms": 370.3645,
+    "min_ms": 370.0842,
+    "p5_ms": 370.0842,
+    "p95_ms": 370.3645,
+    "iters": 3
+   },
+   "peak_alloc_gib": 4.167,
+   "control": {
+    "kind": "flashinfer-bf16",
+    "interleave": "ABBA",
+    "paired_against": "core (eager, cuda_events)",
+    "available": true,
+    "impl": "flashinfer.BatchPrefillWithPagedKVCacheWrapper, bf16, NHD, page_size 1, causal (bottom-right)",
+    "peak_performance_control": true,
+    "excluded_from_timing": "plan() (done once per case, as a serving stack would)",
+    "candidate": {
+     "samples_ms": [
+      334.2381,
+      335.1379,
+      335.6453,
+      336.2625,
+      335.8863,
+      335.7248,
+      336.0361,
+      336.2567,
+      336.3859,
+      336.1164,
+      334.7183,
+      335.6337,
+      336.4123,
+      336.1385,
+      336.518,
+      336.6107,
+      336.208,
+      336.147,
+      336.57,
+      336.8153
+     ],
+     "median_ms": 336.1428,
+     "min_ms": 334.2381,
+     "p5_ms": 334.2381,
+     "p95_ms": 336.6107,
+     "iters": 20
+    },
+    "control": {
+     "samples_ms": [
+      663.1105,
+      661.9246,
+      662.2895,
+      662.6892,
+      662.6796,
+      662.8087,
+      662.1617,
+      662.0873,
+      661.8535,
+      661.9661
+     ],
+     "median_ms": 662.2256,
+     "min_ms": 661.8535,
+     "p5_ms": 661.8535,
+     "p95_ms": 662.8087,
+     "iters": 10
+    },
+    "speedup_median": 1.9701
+   }
+  },
+  {
+   "chunk": 8,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 262144,
+   "k_len": 294912,
+   "flops": 224300774719488.0,
+   "preprocessing": {
+    "samples_ms": [
+     42.2743,
+     42.2319,
+     42.2277
+    ],
+    "median_ms": 42.2319,
+    "min_ms": 42.2277,
+    "p5_ms": 42.2277,
+    "p95_ms": 42.2319,
+    "iters": 3
+   },
+   "core": {
+    "samples_ms": [
+     380.0193,
+     380.1537,
+     380.1156,
+     380.119,
+     380.2235,
+     380.047,
+     380.2033,
+     380.2915,
+     380.2874,
+     380.0448
+    ],
+    "median_ms": 380.1364,
+    "min_ms": 380.0193,
+    "p5_ms": 380.0193,
+    "p95_ms": 380.2874,
+    "iters": 10,
+    "tflops_median": 590.1,
+    "tflops_min_time": 590.2
+   },
+   "inclusive": {
+    "samples_ms": [
+     418.3891,
+     418.4297,
+     418.6069
+    ],
+    "median_ms": 418.4297,
+    "min_ms": 418.3891,
+    "p5_ms": 418.3891,
+    "p95_ms": 418.4297,
+    "iters": 3
+   },
+   "peak_alloc_gib": 4.355,
+   "control": {
+    "kind": "flashinfer-bf16",
+    "interleave": "ABBA",
+    "paired_against": "core (eager, cuda_events)",
+    "available": true,
+    "impl": "flashinfer.BatchPrefillWithPagedKVCacheWrapper, bf16, NHD, page_size 1, causal (bottom-right)",
+    "peak_performance_control": true,
+    "excluded_from_timing": "plan() (done once per case, as a serving stack would)",
+    "candidate": {
+     "samples_ms": [
+      378.6745,
+      380.8476,
+      381.252,
+      381.3263,
+      381.2883,
+      381.1547,
+      381.1349,
+      381.0853,
+      381.0108,
+      380.9863,
+      378.273,
+      381.2517,
+      381.5744,
+      381.4843,
+      381.4897,
+      381.3378,
+      381.265,
+      381.1031,
+      381.3722,
+      381.3571
+     ],
+     "median_ms": 381.2518,
+     "min_ms": 378.273,
+     "p5_ms": 378.273,
+     "p95_ms": 381.4897,
+     "iters": 20
+    },
+    "control": {
+     "samples_ms": [
+      753.7379,
+      753.1157,
+      752.6874,
+      752.3817,
+      753.4968,
+      756.8832,
+      752.6067,
+      753.5541,
+      753.3003,
+      752.5116
+     ],
+     "median_ms": 753.208,
+     "min_ms": 752.3817,
+     "p5_ms": 752.3817,
+     "p95_ms": 753.7379,
+     "iters": 10
+    },
+    "speedup_median": 1.9756
+   }
+  },
+  {
+   "chunk": 9,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 294912,
+   "k_len": 327680,
+   "flops": 250689053786112.0,
+   "preprocessing": {
+    "samples_ms": [
+     46.0345,
+     46.0291,
+     46.0546
+    ],
+    "median_ms": 46.0345,
+    "min_ms": 46.0291,
+    "p5_ms": 46.0291,
+    "p95_ms": 46.0345,
+    "iters": 3
+   },
+   "core": {
+    "samples_ms": [
+     425.0776,
+     424.8663,
+     424.5248,
+     425.0621,
+     425.1404,
+     425.0309,
+     425.0444,
+     425.1609,
+     425.4954,
+     425.2
+    ],
+    "median_ms": 425.0699,
+    "min_ms": 424.5248,
+    "p5_ms": 424.5248,
+    "p95_ms": 425.2,
+    "iters": 10,
+    "tflops_median": 589.8,
+    "tflops_min_time": 590.5
+   },
+   "inclusive": {
+    "samples_ms": [
+     466.6887,
+     466.4433,
+     467.0332
+    ],
+    "median_ms": 466.6887,
+    "min_ms": 466.4433,
+    "p5_ms": 466.4433,
+    "p95_ms": 466.6887,
+    "iters": 3
+   },
+   "peak_alloc_gib": 4.543,
+   "control": {
+    "kind": "flashinfer-bf16",
+    "interleave": "ABBA",
+    "paired_against": "core (eager, cuda_events)",
+    "available": true,
+    "impl": "flashinfer.BatchPrefillWithPagedKVCacheWrapper, bf16, NHD, page_size 1, causal (bottom-right)",
+    "peak_performance_control": true,
+    "excluded_from_timing": "plan() (done once per case, as a serving stack would)",
+    "candidate": {
+     "samples_ms": [
+      423.816,
+      425.4412,
+      425.6137,
+      425.3785,
+      425.6438,
+      425.8806,
+      425.5801,
+      425.6545,
+      425.9108,
+      425.7252,
+      423.9047,
+      426.0554,
+      425.9691,
+      426.1619,
+      425.8139,
+      423.2621,
+      426.0971,
+      426.2002,
+      426.1127,
+      423.2701
+     ],
+     "median_ms": 425.6898,
+     "min_ms": 423.2621,
+     "p5_ms": 423.2621,
+     "p95_ms": 426.1619,
+     "iters": 20
+    },
+    "control": {
+     "samples_ms": [
+      847.1745,
+      841.3351,
+      841.1164,
+      841.4017,
+      841.486,
+      841.3275,
+      841.2111,
+      841.1303,
+      841.0219,
+      840.4016
+     ],
+     "median_ms": 841.2693,
+     "min_ms": 840.4016,
+     "p5_ms": 840.4016,
+     "p95_ms": 841.486,
+     "iters": 10
+    },
+    "speedup_median": 1.9762
+   }
+  },
+  {
+   "chunk": 10,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 327680,
+   "k_len": 360448,
+   "flops": 277077332852736.0,
+   "preprocessing": {
+    "samples_ms": [
+     49.7884,
+     49.7781,
+     49.7948
+    ],
+    "median_ms": 49.7884,
+    "min_ms": 49.7781,
+    "p5_ms": 49.7781,
+    "p95_ms": 49.7884,
+    "iters": 3
+   },
+   "core": {
+    "samples_ms": [
+     469.3485,
+     469.1662,
+     469.5468,
+     469.2859,
+     469.6269,
+     469.6022,
+     469.6833,
+     469.6198,
+     469.6264,
+     469.7662
+    ],
+    "median_ms": 469.611,
+    "min_ms": 469.1662,
+    "p5_ms": 469.1662,
+    "p95_ms": 469.6833,
+    "iters": 10,
+    "tflops_median": 590.0,
+    "tflops_min_time": 590.6
+   },
+   "inclusive": {
+    "samples_ms": [
+     514.7501,
+     514.8577,
+     514.4423
+    ],
+    "median_ms": 514.7501,
+    "min_ms": 514.4423,
+    "p5_ms": 514.4423,
+    "p95_ms": 514.7501,
+    "iters": 3
+   },
+   "peak_alloc_gib": 4.731,
+   "control": {
+    "kind": "flashinfer-bf16",
+    "interleave": "ABBA",
+    "paired_against": "core (eager, cuda_events)",
+    "available": true,
+    "impl": "flashinfer.BatchPrefillWithPagedKVCacheWrapper, bf16, NHD, page_size 1, causal (bottom-right)",
+    "peak_performance_control": true,
+    "excluded_from_timing": "plan() (done once per case, as a serving stack would)",
+    "candidate": {
+     "samples_ms": [
+      468.0574,
+      470.1612,
+      470.3313,
+      470.1984,
+      470.2072,
+      470.7072,
+      470.1794,
+      470.5987,
+      470.3603,
+      470.6712,
+      469.2954,
+      470.454,
+      470.8721,
+      470.6898,
+      470.8463,
+      470.962,
+      470.9743,
+      470.7945,
+      470.8667,
+      470.9047
+     ],
+     "median_ms": 470.6349,
+     "min_ms": 468.0574,
+     "p5_ms": 468.0574,
+     "p95_ms": 470.962,
+     "iters": 20
+    },
+    "control": {
+     "samples_ms": [
+      931.9505,
+      929.1199,
+      929.8686,
+      929.9823,
+      930.1633,
+      930.0396,
+      930.0733,
+      929.8983,
+      930.196,
+      929.792
+     ],
+     "median_ms": 930.011,
+     "min_ms": 929.1199,
+     "p5_ms": 929.1199,
+     "p95_ms": 930.196,
+     "iters": 10
+    },
+    "speedup_median": 1.9761
+   }
+  },
+  {
+   "chunk": 11,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 360448,
+   "k_len": 393216,
+   "flops": 303465611919360.0,
+   "preprocessing": {
+    "samples_ms": [
+     53.563,
+     53.5383,
+     53.5398
+    ],
+    "median_ms": 53.5398,
+    "min_ms": 53.5383,
+    "p5_ms": 53.5383,
+    "p95_ms": 53.5398,
+    "iters": 3
+   },
+   "core": {
+    "samples_ms": [
+     513.9594,
+     513.546,
+     513.8038,
+     513.9501,
+     513.9708,
+     513.6442,
+     513.9744,
+     514.0729,
+     514.2529,
+     514.2581
+    ],
+    "median_ms": 513.9651,
+    "min_ms": 513.546,
+    "p5_ms": 513.546,
+    "p95_ms": 514.2529,
+    "iters": 10,
+    "tflops_median": 590.4,
+    "tflops_min_time": 590.9
+   },
+   "inclusive": {
+    "samples_ms": [
+     562.8008,
+     562.5148,
+     562.534
+    ],
+    "median_ms": 562.534,
+    "min_ms": 562.5148,
+    "p5_ms": 562.5148,
+    "p95_ms": 562.534,
+    "iters": 3
+   },
+   "peak_alloc_gib": 4.919,
+   "control": {
+    "kind": "flashinfer-bf16",
+    "interleave": "ABBA",
+    "paired_against": "core (eager, cuda_events)",
+    "available": true,
+    "impl": "flashinfer.BatchPrefillWithPagedKVCacheWrapper, bf16, NHD, page_size 1, causal (bottom-right)",
+    "peak_performance_control": true,
+    "excluded_from_timing": "plan() (done once per case, as a serving stack would)",
+    "candidate": {
+     "samples_ms": [
+      513.3871,
+      511.1447,
+      513.6691,
+      514.6873,
+      514.868,
+      514.8536,
+      514.8358,
+      514.8351,
+      514.9953,
+      514.8516,
+      513.2784,
+      515.0859,
+      514.7889,
+      515.4291,
+      515.5515,
+      515.4407,
+      515.2851,
+      515.6812,
+      515.6962,
+      515.5867
+     ],
+     "median_ms": 514.8608,
+     "min_ms": 511.1447,
+     "p5_ms": 511.1447,
+     "p95_ms": 515.6812,
+     "iters": 20
+    },
+    "control": {
+     "samples_ms": [
+      1019.0209,
+      1018.0477,
+      1018.3735,
+      1018.2979,
+      1018.038,
+      1018.0798,
+      1024.1195,
+      1018.7975,
+      1018.4734,
+      1018.4391
+     ],
+     "median_ms": 1018.4063,
+     "min_ms": 1018.038,
+     "p5_ms": 1018.038,
+     "p95_ms": 1019.0209,
+     "iters": 10
+    },
+    "speedup_median": 1.978
+   }
+  },
+  {
+   "chunk": 12,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 393216,
+   "k_len": 425984,
+   "flops": 329853890985984.0,
+   "preprocessing": {
+    "samples_ms": [
+     57.1733,
+     57.1842,
+     57.1563
+    ],
+    "median_ms": 57.1733,
+    "min_ms": 57.1563,
+    "p5_ms": 57.1563,
+    "p95_ms": 57.1733,
+    "iters": 3
+   },
+   "core": {
+    "samples_ms": [
+     557.9854,
+     557.9445,
+     557.9429,
+     558.4344,
+     558.5768,
+     558.7203,
+     558.6927,
+     558.3985,
+     558.6036,
+     558.5754
+    ],
+    "median_ms": 558.5049,
+    "min_ms": 557.9429,
+    "p5_ms": 557.9429,
+    "p95_ms": 558.6927,
+    "iters": 10,
+    "tflops_median": 590.6,
+    "tflops_min_time": 591.2
+   },
+   "inclusive": {
+    "samples_ms": [
+     610.7278,
+     610.6607,
+     610.4521
+    ],
+    "median_ms": 610.6607,
+    "min_ms": 610.4521,
+    "p5_ms": 610.4521,
+    "p95_ms": 610.6607,
+    "iters": 3
+   },
+   "peak_alloc_gib": 5.106,
+   "control": {
+    "kind": "flashinfer-bf16",
+    "interleave": "ABBA",
+    "paired_against": "core (eager, cuda_events)",
+    "available": true,
+    "impl": "flashinfer.BatchPrefillWithPagedKVCacheWrapper, bf16, NHD, page_size 1, causal (bottom-right)",
+    "peak_performance_control": true,
+    "excluded_from_timing": "plan() (done once per case, as a serving stack would)",
+    "candidate": {
+     "samples_ms": [
+      556.928,
+      559.2966,
+      559.2838,
+      559.2181,
+      559.14,
+      559.3991,
+      559.1593,
+      559.2202,
+      559.4105,
+      559.478,
+      558.0864,
+      560.2538,
+      560.1915,
+      560.416,
+      560.3094,
+      560.3851,
+      560.4487,
+      560.4476,
+      560.5397,
+      560.5872
+     ],
+     "median_ms": 559.4442,
+     "min_ms": 556.928,
+     "p5_ms": 556.928,
+     "p95_ms": 560.5397,
+     "iters": 20
+    },
+    "control": {
+     "samples_ms": [
+      1108.1434,
+      1106.8739,
+      1106.4415,
+      1106.889,
+      1106.3657,
+      1106.644,
+      1107.1517,
+      1106.6971,
+      1106.8456,
+      1107.2578
+     ],
+     "median_ms": 1106.8597,
+     "min_ms": 1106.3657,
+     "p5_ms": 1106.3657,
+     "p95_ms": 1107.2578,
+     "iters": 10
+    },
+    "speedup_median": 1.9785
+   }
+  },
+  {
+   "chunk": 13,
+   "layer_seed": 0,
+   "q_len": 20351,
+   "prefix_len": 425984,
+   "k_len": 446335,
+   "flops": 218143756124160.0,
+   "preprocessing": {
+    "samples_ms": [
+     56.5664,
+     56.4625,
+     56.429
+    ],
+    "median_ms": 56.4625,
+    "min_ms": 56.429,
+    "p5_ms": 56.429,
+    "p95_ms": 56.4625,
+    "iters": 3
+   },
+   "core": {
+    "samples_ms": [
+     375.4518,
+     375.0493,
+     375.6316,
+     375.7359,
+     375.4212,
+     375.314,
+     375.8417,
+     375.7936,
+     375.6512,
+     375.5328
+    ],
+    "median_ms": 375.5822,
+    "min_ms": 375.0493,
+    "p5_ms": 375.0493,
+    "p95_ms": 375.7936,
+    "iters": 10,
+    "tflops_median": 580.8,
+    "tflops_min_time": 581.6
+   },
+   "inclusive": {
+    "samples_ms": [
+     428.8434,
+     428.8732,
+     428.8857
+    ],
+    "median_ms": 428.8732,
+    "min_ms": 428.8434,
+    "p5_ms": 428.8434,
+    "p95_ms": 428.8732,
+    "iters": 3
+   },
+   "peak_alloc_gib": 4.442,
+   "control": {
+    "kind": "flashinfer-bf16",
+    "interleave": "ABBA",
+    "paired_against": "core (eager, cuda_events)",
+    "available": true,
+    "impl": "flashinfer.BatchPrefillWithPagedKVCacheWrapper, bf16, NHD, page_size 1, causal (bottom-right)",
+    "peak_performance_control": true,
+    "excluded_from_timing": "plan() (done once per case, as a serving stack would)",
+    "candidate": {
+     "samples_ms": [
+      376.1446,
+      375.7202,
+      376.1738,
+      376.2728,
+      375.991,
+      375.7619,
+      375.9037,
+      376.2622,
+      376.132,
+      375.935,
+      376.6155,
+      376.2444,
+      376.6277,
+      376.6794,
+      376.6154,
+      376.5126,
+      376.6063,
+      376.3471,
+      376.8048,
+      376.67
+     ],
+     "median_ms": 376.2675,
+     "min_ms": 375.7202,
+     "p5_ms": 375.7202,
+     "p95_ms": 376.6794,
+     "iters": 20
+    },
+    "control": {
+     "samples_ms": [
+      733.3987,
+      734.0927,
+      734.2072,
+      734.0209,
+      733.7445,
+      734.2349,
+      734.1561,
+      734.1353,
+      734.6477,
+      734.6057
+     ],
+     "median_ms": 734.1457,
+     "min_ms": 733.3987,
+     "p5_ms": 733.3987,
+     "p95_ms": 734.6057,
+     "iters": 10
+    },
+    "speedup_median": 1.9511
+   }
+  }
+ ],
+ "schedule_aggregate": {
+  "preprocessing": {
+   "schedule_ms": 8194.4,
+   "measured_calls": 14,
+   "extrapolated_calls": 210
+  },
+  "core": {
+   "schedule_ms": 66503.7,
+   "measured_calls": 14,
+   "extrapolated_calls": 210,
+   "schedule_tflops": 588.9
+  },
+  "inclusive": {
+   "schedule_ms": 73974.0,
+   "measured_calls": 14,
+   "extrapolated_calls": 210,
+   "schedule_tflops_honest": 529.5
+  }
+ },
+ "control_aggregate": {
+  "kind": "flashinfer-bf16",
+  "interleave": "ABBA",
+  "available_cases": 14,
+  "total_cases": 14,
+  "unavailable_reason": null,
+  "peak_performance_control": true,
+  "paired_speedup": {
+   "cases": 14,
+   "geomean": 1.954,
+   "ci95_low": 1.9382,
+   "ci95_high": 1.9679,
+   "min": 1.8911,
+   "median": 1.9715,
+   "max": 1.9785,
+   "resamples": 10000,
+   "resample_unit": "case",
+   "seed": 20260831
+  },
+  "candidate_across_cases": {
+   "median_ms": 313.7023,
+   "p5_ms": 23.2052,
+   "p95_ms": 514.8608,
+   "cases": 14
+  },
+  "control_across_cases": {
+   "median_ms": 618.4303,
+   "p5_ms": 43.8834,
+   "p95_ms": 1018.4063,
+   "cases": 14
+  }
+ },
+ "repro_command": "python bench/candidate_bench.py --profile d256-24x4-446k --label b6-ctrl-b1 --layers 1 --warmup 3 --iters 10 --quant-iters 3 --seed 20260831 --lane default --control flashinfer-bf16 --control-warmup 2 --control-iters 5 --control-q-chunk 256 --control-kv-chunk 4096 --bootstrap 10000 --emit-repro"
+}

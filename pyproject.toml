@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "attn-kernel-lab"
+version = "0.0.0"
+description = "Qualification and release system for low-precision fused paged prefill attention kernels"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# The .cu is not an optional extra: kernel.source_build_id() hashes it to state
+# what the process is running, and the JIT path compiles it. An installed
+# package without it can neither build the extension nor report its own source
+# identity, so it ships with the Python surface. The compiled artifact is a
+# separate distribution (attn_kernel_lab_ext, tools/build_wheel.py) -- see
+# kernel.WHEEL_PACKAGE for why the binary does not live inside this package.
+[tool.setuptools.package-data]
+attn_kernel_lab = ["csrc/*.cu", "csrc/*.cuh", "csrc/*.h"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

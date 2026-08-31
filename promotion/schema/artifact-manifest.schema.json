@@ -1,0 +1,447 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://attn-kernel-lab/schema/artifact-manifest/1",
+  "title": "Artifact manifest",
+  "description": "Permanently immutable identity of one kernel candidate: source, binary, toolchain, operator contract, declared target support, and evidence digests. It is a record, never a directory into which source is copied. Application, production, and upstream results are append-only ATTESTATIONS that reference this manifest's digest; they never rewrite it.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "release_id",
+    "operator_contract_version",
+    "layout_version",
+    "package_api_version",
+    "binary_abi",
+    "source",
+    "artifacts",
+    "toolchain",
+    "targets",
+    "contract",
+    "evidence",
+    "limitations"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "release_id": {
+      "type": "string",
+      "pattern": "^d[0-9]+-[a-z0-9-]+-v[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "e.g. d256-int8-fp8-v0.3.0. Deliberately carries NO architecture: the arch belongs in the artifact variant and in the per-target qualification records, because one release may support several targets and be qualified on a subset."
+    },
+    "operator_contract_version": {
+      "type": "integer"
+    },
+    "layout_version": {
+      "type": "integer"
+    },
+    "package_api_version": {
+      "type": "integer"
+    },
+    "binary_abi": {
+      "type": "string"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "candidate_commit",
+        "digest_paths",
+        "source_tree_sha256",
+        "dirty"
+      ],
+      "properties": {
+        "repository": {
+          "type": "string"
+        },
+        "candidate_commit": {
+          "type": "string",
+          "oneOf": [
+            {
+              "pattern": "^[0-9a-f]{40}$"
+            },
+            {
+              "pattern": "^public-snapshot-[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+            }
+          ],
+          "description": "A source commit when the record post-dates that commit, or the dated public-snapshot identity for a single-commit initial publication whose tree cannot self-contain its own Git object id."
+        },
+        "digest_paths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "source_tree_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "Produced ONLY by tools/tree_digest.py, whose algorithm is pinned in that file. Covers the named paths only, so it is not self-referential with the manifest commit."
+        },
+        "dirty": {
+          "const": false
+        },
+        "flashinfer_base": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "flashinfer_bench_commit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "flashinfer_trace_commit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "variant_id",
+        "wheel_sha256",
+        "build_container_digest"
+      ],
+      "properties": {
+        "variant_id": {
+          "type": "string",
+          "description": "Binds Python ABI, PyTorch/CXX11 ABI, glibc floor, CUDA toolkit floor, and exact code-generation targets. Identifies the binary ABI and compiled arch separately from the runtime device capability."
+        },
+        "wheel_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "cubin_sha256": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "stable_locator": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "build_container_digest": {
+          "type": "string"
+        },
+        "build_id": {
+          "type": "string",
+          "description": "Value the loaded module reports at run time. Boot fails closed when it differs from the consumer's lock."
+        }
+      }
+    },
+    "toolchain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cuda",
+        "compiler",
+        "pytorch"
+      ],
+      "properties": {
+        "driver_floor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "cuda": {
+          "type": "string"
+        },
+        "compiler": {
+          "type": "string"
+        },
+        "pytorch": {
+          "type": "string"
+        },
+        "flashinfer": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "targets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "supported",
+        "qualified",
+        "excluded"
+      ],
+      "description": "The multi-target axis. `supported` is what the binary can run; `qualified` is the strict subset that has passed a correctness AND performance gate, evidenced per (target, workload); `excluded` is explicit and must give a reason, because silence reads as untested rather than unsupported.",
+      "properties": {
+        "supported": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^sm[0-9]{2,3}-[a-z0-9-]+$"
+          }
+        },
+        "qualified": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "target",
+              "workload_profile",
+              "attestation_sha256"
+            ],
+            "properties": {
+              "target": {
+                "type": "string"
+              },
+              "workload_profile": {
+                "type": "string"
+              },
+              "attestation_sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            }
+          }
+        },
+        "excluded": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "target",
+              "reason"
+            ],
+            "properties": {
+              "target": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "head_dim",
+        "q_heads",
+        "kv_heads",
+        "page_size",
+        "modes",
+        "masks",
+        "qk_compute",
+        "pv_compute",
+        "quantization_spec_sha256",
+        "cuda_graph"
+      ],
+      "properties": {
+        "head_dim": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "q_heads": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "kv_heads": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "page_size": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "modes": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "extend",
+              "decode",
+              "target_verify"
+            ]
+          }
+        },
+        "masks": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "bottom_right_causal",
+              "noncausal"
+            ]
+          }
+        },
+        "qk_compute": {
+          "enum": [
+            "int8",
+            "fp8_e4m3",
+            "fp4_e2m1",
+            "bf16"
+          ]
+        },
+        "pv_compute": {
+          "enum": [
+            "int8",
+            "fp8_e4m3",
+            "fp4_e2m1",
+            "bf16"
+          ]
+        },
+        "qk_mma_accumulator": {
+          "type": "string"
+        },
+        "pv_mma_accumulator": {
+          "type": "string"
+        },
+        "online_softmax_state": {
+          "type": "string"
+        },
+        "returns_lse": {
+          "type": "boolean"
+        },
+        "quantization_spec_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "workspace_limit_bytes": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "cuda_graph": {
+          "enum": [
+            "supported",
+            "eager_only"
+          ]
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "workload_suite_sha256",
+        "correctness_summary_sha256"
+      ],
+      "properties": {
+        "workload_suite_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "reference_sha256": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "correctness_summary_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "benchmark_summary_sha256": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "profiler_artifact_sha256": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "baseline_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Explicit unsupported cases and caveats. An empty list is a claim of no known limitations and is almost always wrong."
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Free-text disclosures about how this record was produced -- regeneration, resealing, or any digest whose input is not byte-reproducible. Not a place for caveats about the artifact itself; those are `limitations`."
+    },
+    "engines": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Engine integration state for this artifact. Separate from `targets`: an artifact may be qualified on a GPU without being integrated into any engine, and vice versa.",
+      "required": [
+        "integrated"
+      ],
+      "properties": {
+        "integrated": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "engine",
+              "engine_revision",
+              "adapter_files_sha256"
+            ],
+            "properties": {
+              "engine": {
+                "type": "string"
+              },
+              "engine_revision": {
+                "type": "string"
+              },
+              "adapter_files_sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "integration_patch_sha256": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "smoke_attestation_sha256": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

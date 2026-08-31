@@ -1,0 +1,440 @@
+{
+  "cases": [
+    {
+      "layer": 0,
+      "name": "gaussian",
+      "doc": "Q,K,V ~ N(0,1) iid. Baseline: no structure for any transform to exploit.",
+      "seed": 20260830,
+      "depth": 446335,
+      "prefix": 446207,
+      "q_len": 128,
+      "slices": {
+        "row_rel_l2": {
+          "layer_value": 0.0458016149574673,
+          "layer_control": 0.004098435802765404,
+          "head": 9,
+          "head_value": 0.04719986094860808,
+          "head_control": 0.004212337226067592,
+          "row": 5,
+          "row_head": 10,
+          "row_value": 0.05723799472201737,
+          "row_control": 0.004385512434731981
+        },
+        "cos_sim": {
+          "layer_value": 0.9989535497981761,
+          "layer_control": 0.9999916314029127,
+          "head": 9,
+          "head_value": 0.998889396257851,
+          "head_control": 0.9999911647567583,
+          "row": 5,
+          "row_head": 10,
+          "row_value": 0.9983610368143339,
+          "row_control": 0.9999903856322802
+        },
+        "rel_l1": {
+          "layer_value": 0.04559242133867053,
+          "layer_control": 0.004074895578802512,
+          "head": 9,
+          "head_value": 0.04704421287733267,
+          "head_control": 0.004198449489957235,
+          "row": 60,
+          "row_head": 6,
+          "row_value": 0.05679591993917094,
+          "row_control": 0.004517149282717223
+        },
+        "rmse": {
+          "layer_value": 0.00011305675643350956,
+          "layer_control": 1.014132740216515e-05,
+          "head": 11,
+          "head_value": 0.0001142765833654912,
+          "head_control": 1.011148826008127e-05,
+          "row": 24,
+          "row_head": 13,
+          "row_value": 0.00014182038000231707,
+          "row_control": 1.3089440324915555e-05
+        }
+      },
+      "norm_ratio": 0.9966526935776349,
+      "norm_ratio_control": 0.9999868952743579,
+      "nan_count": 0,
+      "inf_count": 0,
+      "control_input_rounding": {
+        "row_rel_l2": 0.002911414328744179,
+        "cos_sim": 0.9999957718571375,
+        "rel_l1": 0.002905702812592145,
+        "rmse": 7.215288018872056e-06
+      },
+      "bitexact_repeat": true,
+      "fixture_hashes": {
+        "q_sha256": "990eeea99206ecf7e87183867ee70eda591e87a8a9b04560f4fd683911326c0c",
+        "k_sha256": "7b607e471db2833779eeafc94572f2ebcdd49473a247a8b3bea9174ef26d58c6",
+        "v_sha256": "1b7e54ac092ab6a8d61094997d292126280570415b5ba796dfa6ad436e0c458b"
+      },
+      "peak_mem_gib": 6.212662696838379,
+      "seconds": 6.178394551000565,
+      "oracle_form": {
+        "lab_p": {
+          "row_rel_l2": 0.0427977940889042,
+          "cos_sim": 0.9990993374854883,
+          "rel_l1": 0.04269615503226853,
+          "rmse": 0.00010563347040090669
+        },
+        "lab_p_row_rel_l2_max": 0.05253419238986072,
+        "candidate_vs_lab_p_rel": 0.07018634797679618,
+        "candidate_vs_lab_p_in_anchor_units": 0.7329188532210957,
+        "anchor_vs_donor_rel": 0.0
+      }
+    },
+    {
+      "layer": 1,
+      "name": "heavy_t3",
+      "doc": "Q,K,V ~ Student-t(df=3) scaled to unit variance, built as z0*sqrt(1/(z1^2+z2^2+z3^2)) so it is deterministic under a seeded generator. Kurtosis is infinite; per-element outliers are the case a fine-grained (per-row / per-64-tile) amax is supposed to contain.",
+      "seed": 20260831,
+      "depth": 446335,
+      "prefix": 446207,
+      "q_len": 128,
+      "slices": {
+        "row_rel_l2": {
+          "layer_value": 0.036085617982734464,
+          "layer_control": 0.008329154743325807,
+          "head": 8,
+          "head_value": 0.03973527652856595,
+          "head_control": 0.009623981867317822,
+          "row": 65,
+          "row_head": 15,
+          "row_value": 0.29931863451519103,
+          "row_control": 0.049124865852451516
+        },
+        "cos_sim": {
+          "layer_value": 0.9993489595859961,
+          "layer_control": 0.9999034747715161,
+          "head": 15,
+          "head_value": 0.9989382198019696,
+          "head_control": 0.9999404014267894,
+          "row": 65,
+          "row_head": 15,
+          "row_value": 0.9541904694391499,
+          "row_control": 0.998916155353545
+        },
+        "rel_l1": {
+          "layer_value": 0.030617346434042934,
+          "layer_control": 0.006841293993669318,
+          "head": 8,
+          "head_value": 0.03398768602212664,
+          "head_control": 0.007909113864749533,
+          "row": 65,
+          "row_head": 15,
+          "row_value": 0.30213111117257735,
+          "row_control": 0.04961226107263747
+        },
+        "rmse": {
+          "layer_value": 0.03309202632496271,
+          "layer_control": 0.01047102610482192,
+          "head": 4,
+          "head_value": 0.037149320106710695,
+          "head_control": 0.01187208084558865,
+          "row": 65,
+          "row_head": 15,
+          "row_value": 0.18929591933628798,
+          "row_control": 0.031067683637116417
+        }
+      },
+      "norm_ratio": 0.9976549059772146,
+      "norm_ratio_control": 0.999967260370546,
+      "nan_count": 0,
+      "inf_count": 0,
+      "control_input_rounding": {
+        "row_rel_l2": 0.007926788601691496,
+        "cos_sim": 0.9999048467579039,
+        "rel_l1": 0.006519720607281614,
+        "rmse": 0.010322485318797727
+      },
+      "bitexact_repeat": null,
+      "fixture_hashes": {
+        "q_sha256": "e49c67b4ab514be501e8f0dc439b8c908ec4867b998926993938dc3f20958c1d",
+        "k_sha256": "076fc8d5fd1088b91973eb502f4e5c63143abdbd282d6edb34c2d7788cd1f0dd",
+        "v_sha256": "6c0c241d62d0d7ad191761db141cdf1dab12a304e8aeb219ec3b11390af865a2"
+      },
+      "peak_mem_gib": 6.212662696838379,
+      "seconds": 5.863406958000269,
+      "oracle_form": {
+        "lab_p": {
+          "row_rel_l2": 0.03604927513426287,
+          "cos_sim": 0.9993500721858656,
+          "rel_l1": 0.03058728186288603,
+          "rmse": 0.03307697104827142
+        },
+        "lab_p_row_rel_l2_max": 0.2992266917422374,
+        "candidate_vs_lab_p_rel": 0.0010081436682495568,
+        "candidate_vs_lab_p_in_anchor_units": 0.004363329724509562,
+        "anchor_vs_donor_rel": 0.0
+      }
+    },
+    {
+      "layer": 2,
+      "name": "rope_like",
+      "doc": "K = randn + 5*channel_bias, channel_bias a fixed randn[256] shared by every position and every KV head; Q,V ~ N(0,1). A large shared per-channel offset is what RoPE'd keys carry, and is the case K mean-centering exists for (contract 3.3). The offset is constant across KV columns, so softmax shift-invariance makes centering exact.",
+      "seed": 20260832,
+      "depth": 446335,
+      "prefix": 446207,
+      "q_len": 128,
+      "slices": {
+        "row_rel_l2": {
+          "layer_value": 0.04733854656458484,
+          "layer_control": 0.009762405664209073,
+          "head": 12,
+          "head_value": 0.04845422257429077,
+          "head_control": 0.009738147999883375,
+          "row": 25,
+          "row_head": 0,
+          "row_value": 0.05972571512512081,
+          "row_control": 0.013658694882005646
+        },
+        "cos_sim": {
+          "layer_value": 0.9988823472886066,
+          "layer_control": 0.9999521846380486,
+          "head": 12,
+          "head_value": 0.9988294864557556,
+          "head_control": 0.999952503009602,
+          "row": 25,
+          "row_head": 0,
+          "row_value": 0.9982148885476843,
+          "row_control": 0.9999067583905618
+        },
+        "rel_l1": {
+          "layer_value": 0.0471403988875837,
+          "layer_control": 0.009758666024511354,
+          "head": 7,
+          "head_value": 0.04834332955749376,
+          "head_control": 0.009969129596134458,
+          "row": 25,
+          "row_head": 0,
+          "row_value": 0.058948791942036054,
+          "row_control": 0.013503795147781581
+        },
+        "rmse": {
+          "layer_value": 0.00011552864859224703,
+          "layer_control": 2.3968386923454764e-05,
+          "head": 17,
+          "head_value": 0.00011747472840595562,
+          "head_control": 2.412778503610125e-05,
+          "row": 9,
+          "row_head": 16,
+          "row_value": 0.00014243507674862834,
+          "row_control": 3.1539124307985974e-05
+        }
+      },
+      "norm_ratio": 0.9965612519890584,
+      "norm_ratio_control": 1.000008802329888,
+      "nan_count": 0,
+      "inf_count": 0,
+      "control_input_rounding": {
+        "row_rel_l2": 0.009315406747379917,
+        "cos_sim": 0.9999564140645983,
+        "rel_l1": 0.009314051679611088,
+        "rmse": 2.2886911749385288e-05
+      },
+      "bitexact_repeat": null,
+      "fixture_hashes": {
+        "q_sha256": "bd632bb59b5885b6c481a2f4ea21b248968f0507bb93acd80bfaef29bcad48b4",
+        "k_sha256": "8ec166f1cd61ccf19593bff7803ad94864ea3c3b7cf639c149e30601f898d815",
+        "v_sha256": "95b435b32bf9423dcfa2f66e19e9937d70234f9c96872475735e438ea97cfc2f"
+      },
+      "peak_mem_gib": 6.212662696838379,
+      "seconds": 5.765168860999438,
+      "oracle_form": {
+        "lab_p": {
+          "row_rel_l2": 0.04431698204203647,
+          "cos_sim": 0.9990345086490341,
+          "rel_l1": 0.0442709834717933,
+          "rmse": 0.00010813838212793333
+        },
+        "lab_p_row_rel_l2_max": 0.05588430009439843,
+        "candidate_vs_lab_p_rel": 0.06818073757103524,
+        "candidate_vs_lab_p_in_anchor_units": 0.3095102402501085,
+        "anchor_vs_donor_rel": 0.0
+      }
+    },
+    {
+      "layer": 3,
+      "name": "v_outlier",
+      "doc": "V has 4 fixed channels multiplied by 50 (zero-mean, huge variance); Q,K ~ N(0,1). The 'a few channels burn the FP8 range' case that per-tile V scales address. HONESTY NOTE: V mean-centering targets large channel MEANS, not large channel VARIANCE -- see v_massive.",
+      "seed": 20260833,
+      "depth": 446335,
+      "prefix": 446207,
+      "q_len": 128,
+      "slices": {
+        "row_rel_l2": {
+          "layer_value": 0.04630171574049461,
+          "layer_control": 0.004372127955792454,
+          "head": 5,
+          "head_value": 0.05917434674548917,
+          "head_control": 0.005097699739687995,
+          "row": 35,
+          "row_head": 6,
+          "row_value": 0.29624975396369413,
+          "row_control": 0.02936653359006293
+        },
+        "cos_sim": {
+          "layer_value": 0.9988908594351218,
+          "layer_control": 0.9999909187676106,
+          "head": 3,
+          "head_value": 0.9981048779791065,
+          "head_control": 0.9999876189893289,
+          "row": 35,
+          "row_head": 6,
+          "row_value": 0.9557191247362937,
+          "row_control": 0.9995835290988093
+        },
+        "rel_l1": {
+          "layer_value": 0.04203985531284397,
+          "layer_control": 0.00398961279879245,
+          "head": 5,
+          "head_value": 0.0474291103839528,
+          "head_control": 0.004265081567529863,
+          "row": 20,
+          "row_head": 21,
+          "row_value": 0.09465730381736735,
+          "row_control": 0.005094018188583316
+        },
+        "rmse": {
+          "layer_value": 0.0006771549804407578,
+          "layer_control": 6.567168914400335e-05,
+          "head": 22,
+          "head_value": 0.0007737802915880503,
+          "head_control": 7.023750138123321e-05,
+          "row": 29,
+          "row_head": 22,
+          "row_value": 0.0016804740288429178,
+          "row_control": 9.274408219564415e-05
+        }
+      },
+      "norm_ratio": 0.9977842866362477,
+      "norm_ratio_control": 0.9997799307355532,
+      "nan_count": 0,
+      "inf_count": 0,
+      "control_input_rounding": {
+        "row_rel_l2": 0.0031185598837074682,
+        "cos_sim": 0.9999950105517732,
+        "rel_l1": 0.0028314070795370967,
+        "rmse": 4.586563498072931e-05
+      },
+      "bitexact_repeat": null,
+      "fixture_hashes": {
+        "q_sha256": "1c62d057ebd125e26aef6927a3e9696b6602cf35f42fe7844e33f44db804b3f4",
+        "k_sha256": "b2463375aee35ba4995ab6768ca89ede2e5544f6e73cc2a2ed387a1abdbb3587",
+        "v_sha256": "e2f18c252fbc3e21f4f83771e6111c2872da070c628a13194219ba6bd682f134"
+      },
+      "peak_mem_gib": 6.212662696838379,
+      "seconds": 5.941738065000209,
+      "oracle_form": {
+        "lab_p": {
+          "row_rel_l2": 0.04322366521589877,
+          "cos_sim": 0.9990301330889607,
+          "rel_l1": 0.03920864857308043,
+          "rmse": 0.0006286856567073721
+        },
+        "lab_p_row_rel_l2_max": 0.2646939274890763,
+        "candidate_vs_lab_p_rel": 0.07121215910823897,
+        "candidate_vs_lab_p_in_anchor_units": 0.7040165694413986,
+        "anchor_vs_donor_rel": 0.0
+      }
+    },
+    {
+      "layer": 4,
+      "name": "v_massive",
+      "doc": "EXTRA (beyond the four requested). V has 4 fixed channels offset by +50: a massive-activation channel, large magnitude and consistent sign; Q,K ~ N(0,1). This is the case V mean-centering actually exists for (contract 3.4), separated from v_outlier on purpose so the centering claim is tested against the right distribution. It is also the only cell whose output norm is dominated by a channel mean, which is the regime real activations live in -- so it calibrates how far the zero-mean cells' absolute levels are from a real-capture number.",
+      "seed": 20260834,
+      "depth": 446335,
+      "prefix": 446207,
+      "q_len": 128,
+      "slices": {
+        "row_rel_l2": {
+          "layer_value": 4.830203096347255e-05,
+          "layer_control": 4.449020382355779e-05,
+          "head": 8,
+          "head_value": 5.585684798038279e-05,
+          "head_control": 5.261454570576539e-05,
+          "row": 20,
+          "row_head": 19,
+          "row_value": 0.00011648679484483971,
+          "row_control": 0.00011497633649005386
+        },
+        "cos_sim": {
+          "layer_value": 0.9999999989794427,
+          "layer_control": 0.9999999991366035,
+          "head": 8,
+          "head_value": 0.9999999985589966,
+          "head_control": 0.9999999987185724,
+          "row": 20,
+          "row_head": 19,
+          "row_value": 0.9999999932910907,
+          "row_control": 0.9999999934658949
+        },
+        "rel_l1": {
+          "layer_value": 0.00014975135562374838,
+          "layer_control": 4.7544703544274614e-05,
+          "head": 8,
+          "head_value": 0.00015781469597733936,
+          "head_control": 5.5118491214847596e-05,
+          "row": 89,
+          "row_head": 14,
+          "row_value": 0.000234363608067132,
+          "row_control": 0.00011354071412059659
+        },
+        "rmse": {
+          "layer_value": 0.0003160926311701107,
+          "layer_control": 0.0002960347342596138,
+          "head": 8,
+          "head_value": 0.0003609488236768242,
+          "head_control": 0.00034324517673175943,
+          "row": 20,
+          "row_head": 19,
+          "row_value": 0.0007280514914033283,
+          "row_control": 0.0007186110096786036
+        }
+      },
+      "norm_ratio": 1.0000018466107818,
+      "norm_ratio_control": 1.0000018471330587,
+      "nan_count": 0,
+      "inf_count": 0,
+      "control_input_rounding": {
+        "row_rel_l2": 3.604311424931221e-06,
+        "cos_sim": 0.9999999999953009,
+        "rel_l1": 1.0064909262831995e-05,
+        "rmse": 2.3745556888656666e-05
+      },
+      "bitexact_repeat": null,
+      "fixture_hashes": {
+        "q_sha256": "227ff0da56ce0abb8ca1b2834e2bf8f293ad773b7751412fb49b8a49af981a3c",
+        "k_sha256": "72f1bcf51e54ac36b8a65e5fdd1e0845320d8c6802181895c7dedaa61ebad67f",
+        "v_sha256": "381d6e138e93887ce5473bb35d2b40a2523700a967ae4ea8b7b557584d0cf3d2"
+      },
+      "peak_mem_gib": 6.212662696838379,
+      "seconds": 5.846446510000533,
+      "oracle_form": {
+        "lab_p": {
+          "row_rel_l2": 1.7201513581450683e-05,
+          "cos_sim": 0.9999999998543473,
+          "rel_l1": 0.0001088742958656152,
+          "rmse": 0.00010772726238813975
+        },
+        "lab_p_row_rel_l2_max": 2.18005701649167e-05,
+        "candidate_vs_lab_p_rel": 1.8080105122585972,
+        "candidate_vs_lab_p_in_anchor_units": 0.6990419173030172,
+        "anchor_vs_donor_rel": 0.0
+      }
+    }
+  ],
+  "oracle": {
+    "shape": {
+      "T": 128,
+      "q_heads": 6,
+      "kv_heads": 1,
+      "N": 512
+    },
+    "max_row_rel_l2_vs_oracle_a": 0.002030888505570627,
+    "floor": "oracle_a returns bf16 (normative final cast); 5b stays fp32"
+  },
+  "elapsed_seconds": 39.09574098600024
+}

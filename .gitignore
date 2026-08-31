@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+build/
+dist/
+*.egg-info/
+
+# Large or machine-local evidence never belongs in Git (see docs/EVIDENCE.md):
+*.ncu-rep
+*.nsys-rep
+*.whl
+*.so
+*.cubin
+/scratch/

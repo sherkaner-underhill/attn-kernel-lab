@@ -1,0 +1,38 @@
+# SPDX-License-Identifier: Apache-2.0
+#
+# Index of published artifacts and their attestations.
+#
+# There is deliberately NO floating production alias here -- no `latest`, no
+# `current`, no `stable`. A consumer names an exact release_id in its own lock
+# file and moves it through a reviewed pin-update pull request. An alias in this
+# file would recreate the automatic-adoption edge the architecture exists to
+# prevent, and would do it invisibly.
+#
+# Entries are append-only. A release record is immutable once published;
+# superseding it means adding a new one, never editing this line.
+
+schema_version: 1
+
+releases:
+  - release_id: d256-int8-fp8-v0.3.0
+    manifest: promotion/releases/d256-int8-fp8-v0.3.0/artifact-manifest.json
+    manifest_sha256: 1519304beee29c3a8570bc7e3bf1d21a93d75247db59bdad6be5bbb38bb4916c
+    published_utc: "2026-08-31T20:45:10+00:00"
+    attestations:
+      - promotion/attestations/d256-int8-fp8-v0.3.0/correctness-63aef20795e0.json
+      - promotion/attestations/d256-int8-fp8-v0.3.0/kernel-performance-37db8eb526e3.json
+      - promotion/attestations/d256-int8-fp8-v0.3.0/kernel-performance-7aec67e13a3b.json
+
+  - release_id: d256-int8-fp8-v0.4.0
+    manifest: promotion/releases/d256-int8-fp8-v0.4.0/artifact-manifest.json
+    manifest_sha256: d74e05d7e54c0140d4c7227ced92d2a464a0d561a993c4ce8ca3a38e8cccbeff
+    published_utc: "2026-08-31T20:45:10+00:00"
+    attestations:
+      - promotion/attestations/d256-int8-fp8-v0.4.0/correctness-64d43d71e806.json
+      - promotion/attestations/d256-int8-fp8-v0.4.0/kernel-performance-e8dadfa8a291.json
+
+# An INTEGRATION CANDIDATE is an artifact holding all four of:
+#   correctness + kernel_performance + build verification + integration_smoke.
+# Application and production qualification are contextual facts recorded as
+# further attestations; they are never a global mutable state of the artifact.
+integration_candidates: []

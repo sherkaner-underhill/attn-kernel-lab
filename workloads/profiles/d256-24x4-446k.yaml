@@ -1,0 +1,63 @@
+# SPDX-License-Identifier: Apache-2.0
+schema_version: 1
+id: d256-24x4-446k
+status: protected
+protected: true
+
+origin:
+  model: <private-model-id>
+  model_revision: null
+  description: >-
+    Head dimension 256, 24 query heads, 4 KV heads, page size 1, bottom-right
+    causal extend attention across 16 of 64 layers. The schedule has 14 chunks
+    of up to 32,768 positions, 446,335 positions total, and 39.17 PFLOP. This
+    shape was taken from a long-context serving deployment whose identity is
+    not published; downstream records use only the geometry.
+  application_repo: null
+  application_commit: null
+  unresolved: []
+  resolved: []
+
+geometry:
+  head_dim: 256
+  q_heads: 24
+  kv_heads: 4
+  page_size: 1
+  mask: bottom_right_causal
+  mode: extend
+  layers: 16
+  total_layers: 64
+  kv_dtype: bfloat16
+
+schedule:
+  generator: chunked_prefill
+  params:
+    total_tokens: 446335
+    chunk_size: 32768
+  cases_sha256: 2621651e58b75ef11d6b63f94d18632e5862f16321e3f48d5042fd883867beb0
+  cases_path: workloads/generated/d256-24x4-446k.cases.json
+
+expected_calls:
+  per_request: 224
+  note: >-
+    14 chunks x 16 full-attention layers. Counters must be reset and scoped
+    after server readiness, compilation/graph capture, and a radix-cache flush;
+    startup, capture, retries, or cache reuse otherwise add or remove calls.
+    Expect ZERO candidate calls in dense decode, target verification, draft
+    execution, and the 48 GDN layers.
+
+flops:
+  formula: "4 * Hq * D * T * (prefix + (T + 1) / 2)   summed over cases, x layers"
+  basis: logically_attended_pairs
+  total_pflop: 39.17
+
+notes:
+  - >-
+    Do not replay one identical buffer 224 times. Use deterministic but distinct
+    layer/chunk seeds, full-depth page mappings, and poisoned/reused workspaces
+    while preserving the exact geometry weights, or cache reuse and
+    value-independent quantization will flatter the result.
+  - >-
+    Across 14 equal chunks the fully-visible prefix is ~92.9% of all attended
+    pairs and the within-chunk causal triangle is ~7.1%. That ratio is what
+    motivates the prefix/triangle decomposition experiment.

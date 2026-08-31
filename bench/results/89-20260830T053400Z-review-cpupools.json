@@ -1,0 +1,135 @@
+{
+ "schema": "candidate-bench/1",
+ "label": "review-cpupools",
+ "utc": "2026-08-30T05:34:00+00:00",
+ "argv": [
+  "--chunks",
+  "12",
+  "--layers",
+  "1",
+  "--iters",
+  "3",
+  "--quant-iters",
+  "2",
+  "--cpu-pools",
+  "--label",
+  "review-cpupools"
+ ],
+ "workload_profile": "d256-24x4-446k",
+ "workload_cases_sha256": "2621651e58b75ef11d6b63f94d18632e5862f16321e3f48d5042fd883867beb0",
+ "measurement": {
+  "timing_backend": "cuda_events",
+  "l2_policy": "warm",
+  "graph_mode": "eager",
+  "process_model": "single"
+ },
+ "config": {
+  "layers": 1,
+  "warmup": 3,
+  "iters": 3,
+  "quant_iters": 2,
+  "seed": 20260829,
+  "smoke": false,
+  "cpu_pools": true
+ },
+ "env": {
+  "device_name": "NVIDIA GeForce RTX 4090",
+  "capability": "8.9",
+  "sm_count": 128,
+  "total_mem_gib": 23.99,
+  "free_mem_gib_at_start": 22.45,
+  "torch": "2.13.0+cu129",
+  "cuda": "12.9",
+  "python": "3.12.14",
+  "source_build_id": "7b7533642f44531b9b09bb95d18dde943b7a19cccbf427115e696814209a8799",
+  "nvidia_smi": {
+   "name": "NVIDIA GeForce RTX 4090",
+   "driver_version": "595.79",
+   "uuid": "local-dev-gpu",
+   "power.limit": "450.00 W",
+   "power.draw": "92.67 W",
+   "clocks.sm": "2715 MHz",
+   "clocks.max.sm": "3120 MHz",
+   "temperature.gpu": "40",
+   "persistence_mode": "Enabled"
+  },
+  "cublas_workspace_config": ":4096:8"
+ },
+ "geometry": {
+  "head_dim": 256,
+  "kv_dtype": "bfloat16",
+  "kv_heads": 4,
+  "layers": 16,
+  "mask": "bottom_right_causal",
+  "mode": "extend",
+  "page_size": 1,
+  "q_heads": 24,
+  "total_layers": 64
+ },
+ "cases": [
+  {
+   "chunk": 12,
+   "layer_seed": 0,
+   "q_len": 32768,
+   "prefix_len": 393216,
+   "k_len": 425984,
+   "flops": 329853890985984.0,
+   "preprocessing": {
+    "samples_ms": [
+     69.4659,
+     68.7329
+    ],
+    "median_ms": 69.0994,
+    "min_ms": 68.7329,
+    "p5_ms": 68.7329,
+    "p95_ms": 68.7329,
+    "iters": 2
+   },
+   "core": {
+    "samples_ms": [
+     1009.8627,
+     1008.2651,
+     1007.0035
+    ],
+    "median_ms": 1008.2651,
+    "min_ms": 1007.0035,
+    "p5_ms": 1007.0035,
+    "p95_ms": 1008.2651,
+    "iters": 3,
+    "tflops_median": 327.1,
+    "tflops_min_time": 327.6
+   },
+   "inclusive": {
+    "samples_ms": [
+     1077.0913,
+     1077.7997
+    ],
+    "median_ms": 1077.4455,
+    "min_ms": 1077.0913,
+    "p5_ms": 1077.0913,
+    "p95_ms": 1077.0913,
+    "iters": 2
+   },
+   "peak_alloc_gib": 5.163
+  }
+ ],
+ "schedule_aggregate": {
+  "preprocessing": {
+   "schedule_ms": 1105.6,
+   "measured_calls": 1,
+   "extrapolated_calls": 15
+  },
+  "core": {
+   "schedule_ms": 16132.2,
+   "measured_calls": 1,
+   "extrapolated_calls": 15,
+   "schedule_tflops": 327.2
+  },
+  "inclusive": {
+   "schedule_ms": 17239.1,
+   "measured_calls": 1,
+   "extrapolated_calls": 15,
+   "schedule_tflops_honest": 306.1
+  }
+ }
+}

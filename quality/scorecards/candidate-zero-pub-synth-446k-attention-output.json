@@ -1,0 +1,472 @@
+{
+  "schema_version": 1,
+  "kind": "fidelity_scorecard",
+  "scorecard_id": "candidate-zero-pub-synth-446k-attention-output",
+  "boundary": "attention_output",
+  "status": "draft",
+  "recorded_utc": "2026-08-31T22:19:14Z",
+  "subject": {
+    "impl": "attn_kernel_lab.ops.prefill_extend",
+    "loaded_from": "jit",
+    "release_id": null,
+    "artifact_manifest_sha256": null,
+    "source_build_id": "5e1693dc172a24e8cfd48408409c9558cf83c853ee847142b81d6a6fe3ad5cb6",
+    "mode": "declared_default_v1",
+    "env_switches": {
+      "qk_i8": true,
+      "rotate": true,
+      "center_k": true,
+      "return_lse": false,
+      "SGLANG_FP8_PREFILL_QK": null,
+      "SGLANG_FP8_PREFILL_K_CENTER": null,
+      "SGLANG_FP8_PREFILL_BF16_HEADS": null,
+      "SGLANG_FP8_PREFILL_ZERO_WS": null,
+      "SGLANG_FP8_PREFILL_MIN_TOKENS": null
+    }
+  },
+  "reference": {
+    "role": "fp32_reference",
+    "impl": "fp32 attention on the fp32 master, explicit bottom-right causal mask",
+    "note": "TF32 is off and the cuBLAS workspace is pinned to the contract \u00a73.1 constant; a TF32-contaminated fp32 reference is not one, and the rotation is not reproducible without the pin."
+  },
+  "controls": [
+    {
+      "role": "implementation_swap",
+      "impl": "bf16 inputs, bf16 P, bf16 output (the donor's bf16_arith scheme)",
+      "primary": true,
+      "note": "The same reference computed in the target dtype with reordered ops -- FlashAttention's own out_pt. Every metric block's `control` is this quantity at that block's slice."
+    },
+    {
+      "role": "input_rounding",
+      "impl": "fp32 attention on bf16-rounded inputs (the donor's bf16 scheme)",
+      "primary": false,
+      "note": "Input rounding alone, kept because the repository's recorded 0.31-0.45% attention-output control band is in this unit. Per-case values are in the run log, not in a metric block, so there is one and only one anchor for the ratios."
+    },
+    {
+      "role": "harness_floor",
+      "assertion": "candidate repeat is bit-identical (same config, same process)",
+      "result": "pass",
+      "note": "The offline path is deterministic by construction, so any movement here is a harness defect and voids the run rather than widening it."
+    },
+    {
+      "role": "oracle",
+      "assertion": "donor P-rounding form (online running-tile-max) vs oracle_a.attention",
+      "result": "pass",
+      "value": 0.002030888505570627,
+      "note": "Floor is oracle_a's own bf16 output cast, not zero. This licenses the P-rounding form the instrument uses; shape {'T': 128, 'q_heads': 6, 'kv_heads': 1, 'N': 512}."
+    },
+    {
+      "role": "oracle",
+      "assertion": "candidate vs the donor's simulated pipeline (lab_p: quant.py operands plus the oracle-checked online E4M3 P rounding at 448*r_t), same seeds, same case; max |candidate - simulation| on row_rel_l2 mean, in implementation-swap units",
+      "result": "pass",
+      "value": 0.7329188532210957,
+      "note": "The offline analogue of the live-vs-offline bit-exactness assertion: it separates 'the kernel is lossy' from 'the kernel is computing something else'. Chain: candidate ~ lab_p ~ oracle_a.attention. Not bit-exact by construction -- the kernel accumulates in the tensor cores, casts its output to bf16 and runs 6,974 online-softmax tiles at this depth, while the simulation is fp32 throughout -- so the bar is 2 implementation-swap units, which is FlashAttention's own forward-output multiplier. Raw relative disagreement at its worst is 180.80%; that number is scale-free and misleading where the base is ~5e-5 (v_massive), which is why the anchor unit is what is gated. OBSERVATION, not a defect: this gap is depth-dependent -- 0.01 anchor units at 4,096 tokens, 0.7-0.8 at 446,335 -- i.e. the kernel's implementation adds error the fp32 restatement of its own contract does not predict, and the amount grows with context. Attributing it (output cast vs online rescale over ~7k tiles) is the session owner's call and needs the private lane to say whether it matters."
+    },
+    {
+      "role": "harness_floor",
+      "assertion": "the implementation-swap anchor reproduces the instrument's own bf16 yardstick on the same case; max relative difference",
+      "result": "pass",
+      "value": 0.0,
+      "note": "Same code, same seeds, so this must be zero to floating point. It is here because a silently mis-wired anchor would rescale every ratio in the record and nothing else would notice."
+    }
+  ],
+  "fixture_set": {
+    "id": "pub-synth-d256-446k-v1",
+    "fixture_set_sha256": "d4dec352859c28fcdf736d2a9a3e3e93da4bba5c67ccc245dcc09a271ac387fd",
+    "lane": "public_synth",
+    "layers": 5,
+    "q_heads": 24,
+    "kv_heads": 4,
+    "head_dim": 256,
+    "q_len": 128,
+    "depths": [
+      446335
+    ],
+    "slice_semantics": {
+      "layer": "fixture_case",
+      "row": "query_row",
+      "note": "This lane has no model, so its layer axis is the fixture case, not a model layer. The worst-layer mandate is preserved -- the worst case in the population is reported and never averaged away -- but a worst-layer number here is a statement about a distribution, not about layer 31 of anything. The private lane sets layer=model_layer over all sixteen full-attention layers."
+    }
+  },
+  "environment": {
+    "device": "NVIDIA GeForce RTX 4090",
+    "capability": "sm_89",
+    "torch": "2.13.0+cu129",
+    "cuda": "12.9",
+    "driver": "595.79",
+    "gpu_uuid_or_run_id": "local-dev-gpu",
+    "allow_tf32_matmul": false,
+    "cublas_workspace_config": ":4096:8",
+    "observed_temperature_c": 48.0,
+    "quant_py_sha256": "02c0d25bd22157764cc0de97a7f7771e72bb8107bdc808f87786248da3a988eb",
+    "donor_sha256": "2bae8fe81d2120330a7619798bcf6062d345cf1dc3b4849254837060ab2f7d2c",
+    "harness_sha256": "5519b13d35accf5602b70f96ddefe41e01f3ffb90339a1ff9f84baf0f234df8b",
+    "python": "3.12.14"
+  },
+  "metrics": {
+    "row_rel_l2": {
+      "direction": "lower_is_better",
+      "ratio_basis": "direct",
+      "mean": 0.035115159455248936,
+      "control": 0.005321322873983259,
+      "ratio": 6.598952983464354,
+      "saturated": false,
+      "worst_layer": {
+        "layer": 2,
+        "layer_name": "rope_like",
+        "value": 0.04733854656458484,
+        "control": 0.009762405664209073,
+        "ratio": 4.849065711143043,
+        "saturated": false
+      },
+      "worst_head": {
+        "layer": 3,
+        "layer_name": "v_outlier",
+        "head": 5,
+        "value": 0.05917434674548917,
+        "control": 0.005097699739687995,
+        "ratio": 11.608048682190715,
+        "saturated": false
+      },
+      "worst_row": {
+        "layer": 1,
+        "layer_name": "heavy_t3",
+        "head": 15,
+        "row": 65,
+        "value": 0.29931863451519103,
+        "control": 0.049124865852451516,
+        "ratio": 6.093016832131541,
+        "saturated": false
+      },
+      "per_layer": [
+        {
+          "layer": 0,
+          "layer_name": "gaussian",
+          "value": 0.0458016149574673,
+          "control": 0.004098435802765404,
+          "ratio": 11.17538913908639,
+          "saturated": false
+        },
+        {
+          "layer": 1,
+          "layer_name": "heavy_t3",
+          "value": 0.036085617982734464,
+          "control": 0.008329154743325807,
+          "ratio": 4.332446580086659,
+          "saturated": false
+        },
+        {
+          "layer": 2,
+          "layer_name": "rope_like",
+          "value": 0.04733854656458484,
+          "control": 0.009762405664209073,
+          "ratio": 4.849065711143043,
+          "saturated": false
+        },
+        {
+          "layer": 3,
+          "layer_name": "v_outlier",
+          "value": 0.04630171574049461,
+          "control": 0.004372127955792454,
+          "ratio": 10.59020143249727,
+          "saturated": false
+        },
+        {
+          "layer": 4,
+          "layer_name": "v_massive",
+          "value": 4.830203096347255e-05,
+          "control": 4.449020382355779e-05,
+          "ratio": 1.0856778978813393,
+          "saturated": true
+        }
+      ]
+    },
+    "cos_sim": {
+      "direction": "higher_is_better",
+      "ratio_basis": "one_minus",
+      "mean": 0.9992151430174687,
+      "control": 0.9999676417433383,
+      "ratio": 24.255230766501885,
+      "saturated": false,
+      "worst_layer": {
+        "layer": 2,
+        "layer_name": "rope_like",
+        "value": 0.9988823472886066,
+        "control": 0.9999521846380486,
+        "ratio": 23.37434384641784,
+        "saturated": false
+      },
+      "worst_head": {
+        "layer": 3,
+        "layer_name": "v_outlier",
+        "head": 3,
+        "value": 0.9981048779791065,
+        "control": 0.9999876189893289,
+        "ratio": 153.0668271946119,
+        "saturated": false
+      },
+      "worst_row": {
+        "layer": 1,
+        "layer_name": "heavy_t3",
+        "head": 15,
+        "row": 65,
+        "value": 0.9541904694391499,
+        "control": 0.998916155353545,
+        "ratio": 42.26577186194035,
+        "saturated": false
+      },
+      "per_layer": [
+        {
+          "layer": 0,
+          "layer_name": "gaussian",
+          "value": 0.9989535497981761,
+          "control": 0.9999916314029127,
+          "ratio": 125.0448780012823,
+          "saturated": false
+        },
+        {
+          "layer": 1,
+          "layer_name": "heavy_t3",
+          "value": 0.9993489595859961,
+          "control": 0.9999034747715161,
+          "ratio": 6.744769468350809,
+          "saturated": false
+        },
+        {
+          "layer": 2,
+          "layer_name": "rope_like",
+          "value": 0.9988823472886066,
+          "control": 0.9999521846380486,
+          "ratio": 23.37434384641784,
+          "saturated": false
+        },
+        {
+          "layer": 3,
+          "layer_name": "v_outlier",
+          "value": 0.9988908594351218,
+          "control": 0.9999909187676106,
+          "ratio": 122.13546766757578,
+          "saturated": false
+        },
+        {
+          "layer": 4,
+          "layer_name": "v_massive",
+          "value": 0.9999999989794427,
+          "control": 0.9999999991366035,
+          "ratio": 1.1820262720425307,
+          "saturated": true
+        }
+      ]
+    },
+    "rel_l1": {
+      "direction": "lower_is_better",
+      "ratio_basis": "direct",
+      "mean": 0.033107954665752976,
+      "control": 0.004942402619863982,
+      "ratio": 6.698757105034096,
+      "saturated": false,
+      "worst_layer": {
+        "layer": 2,
+        "layer_name": "rope_like",
+        "value": 0.0471403988875837,
+        "control": 0.009758666024511354,
+        "ratio": 4.830619140892688,
+        "saturated": false
+      },
+      "worst_head": {
+        "layer": 2,
+        "layer_name": "rope_like",
+        "head": 7,
+        "value": 0.04834332955749376,
+        "control": 0.009969129596134458,
+        "ratio": 4.849302949802051,
+        "saturated": false
+      },
+      "worst_row": {
+        "layer": 1,
+        "layer_name": "heavy_t3",
+        "head": 15,
+        "row": 65,
+        "value": 0.30213111117257735,
+        "control": 0.04961226107263747,
+        "ratio": 6.089847643311927,
+        "saturated": false
+      },
+      "per_layer": [
+        {
+          "layer": 0,
+          "layer_name": "gaussian",
+          "value": 0.04559242133867053,
+          "control": 0.004074895578802512,
+          "ratio": 11.188610961184128,
+          "saturated": false
+        },
+        {
+          "layer": 1,
+          "layer_name": "heavy_t3",
+          "value": 0.030617346434042934,
+          "control": 0.006841293993669318,
+          "ratio": 4.475373586104486,
+          "saturated": false
+        },
+        {
+          "layer": 2,
+          "layer_name": "rope_like",
+          "value": 0.0471403988875837,
+          "control": 0.009758666024511354,
+          "ratio": 4.830619140892688,
+          "saturated": false
+        },
+        {
+          "layer": 3,
+          "layer_name": "v_outlier",
+          "value": 0.04203985531284397,
+          "control": 0.00398961279879245,
+          "ratio": 10.537327162567836,
+          "saturated": false
+        },
+        {
+          "layer": 4,
+          "layer_name": "v_massive",
+          "value": 0.00014975135562374838,
+          "control": 4.7544703544274614e-05,
+          "ratio": 3.149695853804132,
+          "saturated": false
+        }
+      ]
+    },
+    "rmse": {
+      "direction": "lower_is_better",
+      "ratio_basis": "direct",
+      "mean": 0.006862771868319868,
+      "control": 0.0021733684485102313,
+      "ratio": 3.1576660979982756,
+      "saturated": false,
+      "worst_layer": {
+        "layer": 1,
+        "layer_name": "heavy_t3",
+        "value": 0.03309202632496271,
+        "control": 0.01047102610482192,
+        "ratio": 3.1603422619416253,
+        "saturated": false
+      },
+      "worst_head": {
+        "layer": 1,
+        "layer_name": "heavy_t3",
+        "head": 4,
+        "value": 0.037149320106710695,
+        "control": 0.01187208084558865,
+        "ratio": 3.1291330129809887,
+        "saturated": false
+      },
+      "worst_row": {
+        "layer": 1,
+        "layer_name": "heavy_t3",
+        "head": 15,
+        "row": 65,
+        "value": 0.18929591933628798,
+        "control": 0.031067683637116417,
+        "ratio": 6.093016832131541,
+        "saturated": false
+      },
+      "per_layer": [
+        {
+          "layer": 0,
+          "layer_name": "gaussian",
+          "value": 0.00011305675643350956,
+          "control": 1.014132740216515e-05,
+          "ratio": 11.148122129394245,
+          "saturated": false
+        },
+        {
+          "layer": 1,
+          "layer_name": "heavy_t3",
+          "value": 0.03309202632496271,
+          "control": 0.01047102610482192,
+          "ratio": 3.1603422619416253,
+          "saturated": false
+        },
+        {
+          "layer": 2,
+          "layer_name": "rope_like",
+          "value": 0.00011552864859224703,
+          "control": 2.3968386923454764e-05,
+          "ratio": 4.820042707137461,
+          "saturated": false
+        },
+        {
+          "layer": 3,
+          "layer_name": "v_outlier",
+          "value": 0.0006771549804407578,
+          "control": 6.567168914400335e-05,
+          "ratio": 10.311216130833914,
+          "saturated": false
+        },
+        {
+          "layer": 4,
+          "layer_name": "v_massive",
+          "value": 0.0003160926311701107,
+          "control": 0.0002960347342596138,
+          "ratio": 1.067755214470565,
+          "saturated": true
+        }
+      ]
+    },
+    "norm_ratio": {
+      "min": 0.9965612519890584,
+      "max": 1.0000018466107818,
+      "mean": 0.9977309969581875,
+      "gated": false,
+      "per_layer": [
+        {
+          "layer": 0,
+          "layer_name": "gaussian",
+          "value": 0.9966526935776349,
+          "control": 0.9999868952743579
+        },
+        {
+          "layer": 1,
+          "layer_name": "heavy_t3",
+          "value": 0.9976549059772146,
+          "control": 0.999967260370546
+        },
+        {
+          "layer": 2,
+          "layer_name": "rope_like",
+          "value": 0.9965612519890584,
+          "control": 1.000008802329888
+        },
+        {
+          "layer": 3,
+          "layer_name": "v_outlier",
+          "value": 0.9977842866362477,
+          "control": 0.9997799307355532
+        },
+        {
+          "layer": 4,
+          "layer_name": "v_massive",
+          "value": 1.0000018466107818,
+          "control": 1.0000018471330587
+        }
+      ],
+      "note": "Reported, never gated (addendum 2026-08-30 item 2). The plan's \u00a76.3 hard gate of [0.98, 1.02] is withdrawn by that addendum: the instrument measured a systematic E4M3 output-norm drift with depth that never leaves the band, so the gate would never fire while the trend line is informative. Read it as the cheap tell for absent K/V centering, not as a threshold."
+    },
+    "nan_count": 0,
+    "inf_count": 0
+  },
+  "notes": [
+    "Every ratio is against the bf16 implementation swap measured on the same tensors in the same process, evaluated at the SAME slice as the value it anchors -- not against the control's own worst slice.",
+    "Aggregation is over the fixture-case population; see fixture_set.slice_semantics for what a layer is in this lane.",
+    "Wall-clock and memory figures are absent by design. No number in this record is a performance claim.",
+    "The candidate's contract conformance is Oracle A's lane (tests/kernel/test_oracle_a.py) and a failure there is an implementation defect, never a quality result.",
+    "OBSERVATION for the reviewer, recorded rather than resolved: the candidate sits gaussian 0.73, heavy_t3 0.00, rope_like 0.31, v_outlier 0.70, v_massive 0.70 implementation-swap units above the fp32 simulation of its own contract (quality/runs/*.json has the raw pairs). The same comparison at 4,096 tokens is ~0.01 units, so this is a depth-dependent property of the implementation -- output cast, or accumulation across ~7k online-softmax tiles -- and not of the contract. It does not move any gate metric here, because every metric is measured against the kernel, not against the simulation; it is recorded because a later candidate that closed this gap would look better for a reason unrelated to quantization."
+  ],
+  "not_claimed": [
+    "Not a model-quality statement. This is the attention-output boundary on captured or seeded activations. Downstream task outputs, logprobs and task accuracy are separate boundaries and are not measured here; a metric that moves here has not thereby been shown to move anything downstream.",
+    "Not real activations. Seeded synthetic distributions chosen to isolate the failure modes the operator's transforms exist for. Absolute levels do not transfer to a real capture; the private lane owns the production numbers.",
+    "Not a performance result. No timing appears in this record, and the RTX 4090 is a development-authority target that cannot author one.",
+    "Not 'quality-neutral' and not 'lossless', in any form. upstream/CLAIMS.md forbids that wording and this lane does not establish it.",
+    "Not a general-model claim. One contract version, one geometry, one synthetic input distribution, one candidate.",
+    "Not a run of the d256-24x4-446k workload. This fixture set borrows that workload's DEPTH so the depth axis is comparable; it does not replay its data, and the 4090 target excludes that workload for a memory reason this lane does not encounter."
+  ]
+}

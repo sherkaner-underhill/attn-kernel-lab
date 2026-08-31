@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "release_id": "d256-int8-fp8-v0.3.0",
+  "operator_contract_version": 1,
+  "layout_version": 1,
+  "package_api_version": 1,
+  "binary_abi": "cp312-torch2.13-cu129",
+  "source": {
+    "repository": "attn-kernel-lab",
+    "candidate_commit": "0000000000000000000000000000000000000000",
+    "digest_paths": [
+      "src"
+    ],
+    "source_tree_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "dirty": false
+  },
+  "artifacts": {
+    "variant_id": "cp312-torch2.13-cu129-sm120a",
+    "wheel_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "build_container_digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "build_id": "candidate-zero"
+  },
+  "toolchain": {
+    "cuda": "12.9",
+    "compiler": "nvcc-12.9",
+    "pytorch": "2.13.0+cu129"
+  },
+  "targets": {
+    "supported": [
+      "sm120-rtxpro6000-server"
+    ],
+    "qualified": [],
+    "excluded": []
+  },
+  "contract": {
+    "head_dim": [
+      256
+    ],
+    "q_heads": [
+      24
+    ],
+    "kv_heads": [
+      4
+    ],
+    "page_size": [
+      1
+    ],
+    "modes": [
+      "extend"
+    ],
+    "masks": [
+      "bottom_right_causal"
+    ],
+    "qk_compute": "int8",
+    "pv_compute": "fp8_e4m3",
+    "quantization_spec_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "cuda_graph": "supported"
+  },
+  "evidence": {
+    "workload_suite_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "correctness_summary_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "limitations": [
+    "head_dim 256 only"
+  ]
+}

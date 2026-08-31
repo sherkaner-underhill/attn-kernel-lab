@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://attn-kernel-lab/schema/engine-profile/1",
+  "title": "Serving engine profile",
+  "description": "One inference engine the operator can be integrated into. The engine is a separate axis from the GPU target and the workload: an integration or application qualification is a fact about (artifact, engine, target, workload). Registering more than one engine keeps the adapter, the gate ladder, and the consumer lock from silently assuming a single framework.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "id", "status", "integration", "gates", "verification"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+    "status": { "enum": ["active", "planned", "retired"] },
+    "upstream": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "repository": { "type": "string" },
+        "pinned_revision": { "type": ["string", "null"] },
+        "revision_is_pinned_by": {
+          "type": "string",
+          "description": "Where the authoritative pin lives. The lab never owns an engine's revision pin; the consuming deployment does."
+        }
+      }
+    },
+    "integration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mechanism", "stability"],
+      "properties": {
+        "mechanism": {
+          "enum": ["registered_backend", "pinned_patch", "plugin_api", "monkeypatch", "unknown"],
+          "description": "How the operator reaches the engine. `pinned_patch` means a small patch whose file digest and required engine revision are bound into the release evidence."
+        },
+        "stability": {
+          "enum": ["stable_public_api", "stable_in_practice", "unstable", "unknown"],
+          "description": "Whether the touched seams are an API the engine intends to keep. `unstable` obliges the consumer to carry a pinned patch and re-verify on every engine bump."
+        },
+        "seams": {
+          "type": "array", "items": { "type": "string" },
+          "description": "The exact functions, registries, or CLI choice lists the integration touches. Naming them is what makes an engine upgrade reviewable instead of exploratory."
+        },
+        "phase_scope": {
+          "type": "array",
+          "items": { "enum": ["prefill", "decode", "target_verify", "draft"] },
+          "description": "Which execution phases the operator is permitted to serve. Everything else must keep its stock backend and assert zero candidate calls."
+        },
+        "notes": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "gates": {
+      "type": "array",
+      "description": "The integration gate ladder for this engine. Gate identity is per engine: an SGLang scheduler gate is not evidence about vLLM.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "authority"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "authority": {
+            "enum": ["diagnosis", "integration", "application", "operational", "fidelity"],
+            "description": "What a pass licenses. Only `application` and `operational` gates bear on production acceptance. `fidelity` is its own class and licenses neither: a fidelity result is not a routing fact (`integration`), does not license production (`application`), and is more than a `diagnosis` -- it is the model-quality evidence an integration commit rests on, and it never becomes a performance or `quality-neutral` claim."
+          },
+          "implemented": { "type": "boolean" },
+          "requires_target_authority": {
+            "enum": ["production", "development", "any"],
+            "description": "Which tier of hardware this gate must run on. A gate that must run on production hardware cannot be satisfied on the development tier."
+          }
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state"],
+      "properties": {
+        "state": { "enum": ["measured", "declared", "unverified"] },
+        "date": { "type": ["string", "null"] },
+        "source": { "type": ["string", "null"] },
+        "must_verify": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "known_issues": {
+      "type": "array",
+      "description": "Engine defects that affect qualification. Recorded here because they change what a gate result means, not merely as trivia.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "summary", "status"],
+        "properties": {
+          "id": { "type": "string" },
+          "summary": { "type": "string" },
+          "status": { "enum": ["open", "workaround-in-production", "fixed-upstream", "filed"] },
+          "claim_ref": { "type": "string" },
+          "affects_gates": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "notes": { "type": "array", "items": { "type": "string" } }
+  }
+}

@@ -1,0 +1,161 @@
+# SPDX-License-Identifier: Apache-2.0
+schema_version: 1
+id: sglang
+status: active
+
+upstream:
+  repository: https://github.com/sgl-project/sglang
+  pinned_revision: 1cf2b8c54d
+  revision_is_pinned_by: >-
+    The consuming serving deployment records which revision a given integration
+    smoke or application attestation ran against; this repository does not own
+    that deployment's pin.
+
+integration:
+  mechanism: pinned_patch
+  stability: stable_in_practice
+  seams:
+    - attention_registry.py (factory registration)
+    - ATTENTION_BACKEND_CHOICES (CLI parsing, before parse)
+    - FlashInferAttnBackend.forward_extend (subclass override)
+    - HybridAttnBackend (prefill/decode composition)
+    - hybrid-GDN allowlist (Blackwell hybrid path)
+  phase_scope:
+    - prefill
+  notes:
+    - >-
+      A registry-only hook is insufficient on the current hybrid-GDN path: the
+      candidate must be added to the CLI choices before parsing, registered
+      before backend construction, AND added to the hybrid-GDN allowlist.
+    - >-
+      SGLang has two independent routing layers that must not be conflated: the
+      dense prefill/decode splitter selects by forward mode, and
+      HybridLinearAttnBackend independently routes 16 dense vs 48 GDN layers.
+    - >-
+      HybridAttnBackend may route MIXED and SPLIT_PREFILL to the prefill
+      backend. Because the contract declares EXTEND only, mixed-chunk must be
+      disabled and any non-EXTEND mode reaching the candidate must fail closed.
+    - >-
+      There is no independent dense verification-backend flag; under
+      speculative-attention-mode=decode, target verify routes through dense
+      decode.
+
+# The ladder is ordered. The Q rungs run BESIDE S0-S7 rather than inside it --
+# their hardware needs and their authority class differ from the integration
+# gates they sit next to -- but they are listed here, in position, because that
+# is where a gate id has to resolve for an attestation to cite it.
+gates:
+  - id: S0
+    name: artifact and environment attestation
+    authority: integration
+    implemented: false
+    requires_target_authority: any
+  - id: S1
+    name: adapter and dispatch correctness
+    authority: integration
+    implemented: false
+    requires_target_authority: development
+  - id: S2
+    name: static ModelRunner diagnosis
+    authority: diagnosis
+    implemented: false
+    requires_target_authority: development
+  - id: Q1
+    name: >-
+      attention-output fidelity vs BF16 on captured or seeded activations --
+      ENGINE-FREE (recorded with engine null); gates production-target entry,
+      i.e. it is a precondition of S3
+    authority: fidelity
+    implemented: true
+    requires_target_authority: any
+  - id: S3
+    name: scheduler / offline engine replay
+    authority: integration
+    implemented: false
+    requires_target_authority: production
+  - id: S4
+    name: service TTFT and routing
+    authority: application
+    implemented: false
+    requires_target_authority: production
+  - id: S5
+    name: speculative decoding, position encoding, cache and graph behaviour
+    authority: application
+    implemented: false
+    requires_target_authority: production
+  - id: Q2
+    name: >-
+      in-server fidelity vs stock BF16 (residual stream and logits); shares the
+      S5 boot and is required before S6
+    authority: fidelity
+    implemented: false
+    requires_target_authority: production
+  - id: S6
+    name: exact production geometry
+    authority: application
+    implemented: false
+    requires_target_authority: production
+  - id: Q3
+    name: >-
+      long-context retrieval probe (non-perplexity); runs on the S6
+      configuration and is required before downstream application-level tests
+    authority: fidelity
+    implemented: false
+    requires_target_authority: production
+  - id: S7
+    name: load and stability
+    authority: operational
+    implemented: false
+    requires_target_authority: production
+
+known_issues:
+  - id: dflash-verify-mask-capture
+    summary: >-
+      With DFlash speculative decoding, any FlashInfer-family prefill backend
+      corrupts the spec verify path through the spec CUDA graphs -- accept_len
+      collapses and wrong tokens are accepted -- because the verify graph is
+      captured in custom-mask mode with a dummy mask no replay refreshes.
+      Occurs with zero custom code running.
+    status: workaround-in-production
+    claim_ref: B1
+    affects_gates: [S0, S5, S6, S7]
+  - id: fork-position-extend-width
+    summary: >-
+      The stock position-computation path in extend scheduling slices the anchor
+      position table with no width check on session-fork extends.
+    status: workaround-in-production
+    claim_ref: B2
+    affects_gates: [S5]
+
+verification:
+  state: measured
+  date: "2026-08-28"
+  source: >-
+    Measurements and investigation records in the originating application
+    repository; those supporting artifacts are not published here.
+  must_verify:
+    - >-
+      Whether the pinned revision exposes a stable external backend-registration
+      API. Until it does, the consumer carries a pinned patch whose file digest
+      and required engine SHA are bound into the release evidence.
+
+notes:
+  - >-
+    A gate result is per engine. An SGLang scheduler pass is not evidence about
+    any other engine, and neither is its absence.
+  - >-
+    The Q lane is a fidelity ladder that runs beside S0-S7, not inside it. Q0 --
+    schema, validator and harness self-tests -- is CPU-only and has no
+    engine, so it carries no gate id here; it runs in per-commit CI. Q1 is
+    engine-free too and is recorded with `engine: null`; it appears in this
+    ladder only to fix its POSITION, as the precondition of S3. Q2 and Q3 are
+    engine-bound and are cited normally.
+  - >-
+    What a Q pass licenses: an SGLang-level integration commit. What it does not
+    license: production qualification, any performance number, any
+    "quality-neutral" wording (upstream/CLAIMS.md forbids it and this lane does
+    not establish it), or downstream application sign-off, which stays after Q3.
+  - >-
+    Never compare candidate-spec-ON against stock-spec-OFF. Spec decoding is OFF
+    for every cross-kernel comparison at Q2 and Q3; the DFlash losslessness test
+    is same-kernel spec-off vs spec-on and is not part of this lane.
