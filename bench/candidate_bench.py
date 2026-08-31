@@ -136,8 +136,11 @@ LANE_RECORD_KEY = {
 
 
 def _nvidia_smi() -> dict:
+    # No raw GPU UUID: a physical-card serial is a machine fingerprint and
+    # bench records publish. docs/hardware-labels.md names the reviewed
+    # aliases; runs set ATTN_KERNEL_LAB_GPU_LABEL to one of them.
     query = (
-        "name,driver_version,uuid,power.limit,power.draw,clocks.sm,"
+        "name,driver_version,power.limit,power.draw,clocks.sm,"
         "clocks.max.sm,temperature.gpu,persistence_mode"
     )
     try:
@@ -152,7 +155,9 @@ def _nvidia_smi() -> dict:
             .splitlines()[0]
         )
         keys = query.split(",")
-        return dict(zip(keys, [part.strip() for part in out.split(",")]))
+        parsed = dict(zip(keys, [part.strip() for part in out.split(",")]))
+        parsed["gpu_label"] = os.environ.get("ATTN_KERNEL_LAB_GPU_LABEL", "unlabeled-gpu")
+        return parsed
     except Exception as exc:  # noqa: BLE001 -- record the absence, never fail the run
         return {"error": f"nvidia-smi unavailable: {exc}"}
 

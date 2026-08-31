@@ -10,6 +10,7 @@ physical devices.
 | `card-A` | RTX PRO 6000 Blackwell device used for allocation 1 measurements |
 | `card-B` | RTX PRO 6000 Blackwell device used for allocation 2 confirmation |
 | `card-C` | RTX PRO 6000 Blackwell device used for the CUDA Graph schedule |
+| `card-D` | RTX PRO 6000 Blackwell device used for the clean-clone reproduction session |
 | `local-dev-gpu` | Local GeForce RTX 4090 development device |
 
 These aliases preserve the distinct-device evidence without publishing stable
