@@ -13,3 +13,7 @@ dist/
 *.so
 *.cubin
 /scratch/
+
+# Serving-bench outputs: full model completions over third-party datasets;
+# never repository content (engines/sglang/bench/README.md).
+engines/sglang/bench/runs/
