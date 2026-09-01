@@ -103,3 +103,24 @@ framework-free; an integration or application attestation must name it.
 The project is Apache-2.0 except for one MIT-derived NVIDIA probe; [`NOTICE`](NOTICE)
 and [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) record the mixed licence
 and the privacy-preserving `origin-private` provenance alias.
+
+## AI assistance, disclosed up front
+
+The majority of the work in this repository — the kernel, the preprocessing
+pipeline, the test suites, the benchmark harness, the qualification machinery,
+and most of the documentation — was written by **Claude**, Anthropic's AI
+assistant, across many working sessions. The repository owner is not a CUDA
+developer: the project grew incidentally out of a private serving deployment,
+and the owner's role has been direction, review, hardware, and the final call
+on every published claim.
+
+That provenance is precisely why the repository is built the way it is. No
+claim here asks to be trusted on authorship: every number traces to a committed
+record with raw samples and environment fingerprints, correctness is pinned by
+bit-exact goldens reproduced on four distinct devices, digests are recomputed
+by the validator rather than quoted, and a clean-clone session
+([`bench/results/REPRO-CLEANCLONE-20260831.md`](bench/results/REPRO-CLEANCLONE-20260831.md))
+reproduced the headline results on a machine that received nothing but this
+repository. Read the evidence, not the author.
+
+The owner reviews and stands behind what is published here.
