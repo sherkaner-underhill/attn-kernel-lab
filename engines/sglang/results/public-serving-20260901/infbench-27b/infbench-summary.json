@@ -1,0 +1,46 @@
+{
+ "dataset": "xinrongzhang2022/InfiniteBench",
+ "revision": "90f0394333616266d9fe85824ceaf505093cbaa5",
+ "tier": "full",
+ "reference_arm": "reference",
+ "candidate_arm": "candidate",
+ "reference_backend": "flashinfer",
+ "candidate_backend": "fp8_prefill",
+ "bootstrap": {
+  "resamples": 10000,
+  "seed": 20260830,
+  "method": "percentile"
+ },
+ "tasks": {
+  "kv_retrieval": {
+   "n": 30,
+   "reference_mean": 1.0,
+   "candidate_mean": 1.0,
+   "delta_mean": 0.0,
+   "delta_ci95": [
+    0.0,
+    0.0
+   ],
+   "speed": {
+    "reference_mean_e2e_s": 44.8,
+    "candidate_mean_e2e_s": 37.0,
+    "speedup_e2e": 1.211
+   }
+  },
+  "longbook_choice": {
+   "n": 48,
+   "reference_mean": 0.9375,
+   "candidate_mean": 0.9375,
+   "delta_mean": 0.0,
+   "delta_ci95": [
+    0.0,
+    0.0
+   ],
+   "speed": {
+    "reference_mean_e2e_s": 12.9,
+    "candidate_mean_e2e_s": 10.6,
+    "speedup_e2e": 1.222
+   }
+  }
+ }
+}

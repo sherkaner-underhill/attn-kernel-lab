@@ -1,0 +1,14 @@
+{
+ "task": "kv_retrieval",
+ "id": "18",
+ "arm": "candidate",
+ "score": 1.0,
+ "elapsed_s": 37.1,
+ "prompt_tokens": 169184,
+ "completion_tokens": 36,
+ "response_sha256": "7ea69aeea6474b38da2e045129a2c9f336f1d018caae1d8604fa509d5ab10dff",
+ "token_margins": [],
+ "revision": "90f0394333616266d9fe85824ceaf505093cbaa5",
+ "backend": "fp8_prefill",
+ "token_margins_note": "token strings stripped (dataset-derived); numeric top-2 margins retained"
+}

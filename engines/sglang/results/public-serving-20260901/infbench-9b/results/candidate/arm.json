@@ -1,0 +1,12 @@
+{
+ "arm": "candidate",
+ "reference": false,
+ "backend": "fp8_prefill",
+ "tier": "full",
+ "revision": "90f0394333616266d9fe85824ceaf505093cbaa5",
+ "model": "qwen3.5-9b",
+ "server_args": null,
+ "chat_template_kwargs": {
+  "enable_thinking": false
+ }
+}
