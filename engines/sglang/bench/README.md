@@ -108,8 +108,13 @@ stay additive?
 
 | Role | Model | Run label | Why |
 |---|---|---|---|
-| Primary, narrow-margin | NVFP4 weight quantization of `Qwen/Qwen3.8-27B` | `qwen3.8-27b-fp4` | Same geometry as the BF16 primary; restores the discriminative power the byte-equivalence result lacked; compound-quantization evidence. |
-| Control, narrow-margin | NVFP4 weight quantization of `Qwen/Qwen3.5-9B` | `qwen3.5-9b-fp4` | Same role as the BF16 control, in the sensitive regime. |
+| Primary, narrow-margin | `Inferact/Qwen3.8-27B-NVFP4` (public modelopt NVFP4 export of `Qwen/Qwen3.8-27B`; weight-only, no KV-cache quantization baked in) | `qwen3.8-27b-fp4` | Same geometry as the BF16 primary; restores the discriminative power the byte-equivalence result lacked; compound-quantization evidence. |
+| Control, narrow-margin | `ig1/Qwen3.5-9B-NVFP4` (public compressed-tensors NVFP4 export of `Qwen/Qwen3.5-9B`; publishes its own quantization recipe) | `qwen3.5-9b-fp4` | Same role as the BF16 control, in the sensitive regime. |
+
+Exports are config-inspected before trust (rule 4): exact base model,
+unchanged rope parameterization, weight-only quantization with NO KV-cache
+scales baked in. Several otherwise-popular exports fail that last check and
+are unusable for this lane.
 
 Protocol, in addition to every rule above:
 
