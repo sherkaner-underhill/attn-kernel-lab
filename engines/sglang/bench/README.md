@@ -66,6 +66,28 @@ evidence it buys.
 | **Dataset revision pinned and recorded** | MRCR's 2025-12-05 bugfix re-uploaded rows with corrected ground truth. A cached item is only trustworthy against fixed dataset bytes. |
 | **Per-item result cache keyed by (revision, item, arm)** | A run interrupted at hour two resumes instead of restarting, and a tier upgrade reuses every item already paid for. |
 
+## Public models for this lane
+
+The runners are model-agnostic; the lane's REFERENCE models (survey of ~190
+public configs, 2026-09-01) are the two Apache-2.0 checkpoints that land on
+the operator's declared surface:
+
+| Role | Model | Geometry | Why |
+|---|---|---|---|
+| Primary | `Qwen/Qwen3.8-27B` | D256, 24:4, 262k native | The declared production ratio; the committed kernel evidence (24:4 schedule, 14x16 call structure) transfers unchanged. ~79 GiB weights+KV at 446,335 tokens on a 96 GiB card. |
+| Control | `Qwen/Qwen3.5-9B` | D256, 16:4, 262k native | A second declared ratio with ~63 GiB of headroom, so a memory-pressure confound on the primary can be ruled out by construction. |
+
+Two protocol rules that come with them:
+
+- **Depths beyond 262,144 need YaRN at `factor: 2.0`** (not the model card's
+  default 4.0). Scaling is static in current engines, so the factor must be
+  set identically on BOTH arms of a comparison and held constant across every
+  depth in a sweep; native depths need no scaling and should be run without.
+- **Measure the reference arm's retrieval ceiling per depth before reading
+  any candidate number.** At extended depths the model's own ceiling, not the
+  attention kernel, may be the binding constraint; a kernel comparison is
+  meaningful only where the reference arm still scores.
+
 ## Running both arms
 
 Nothing is baked in. The model is a **required** flag, the endpoint and token
