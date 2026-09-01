@@ -43,6 +43,26 @@ thousands of generated tokens. Two readings, both stated:
   runs on a weight-quantized checkpoint (narrower margins) showed nonzero
   per-item deltas at statistical parity, consistent with this picture.
 
+## Decoding-protocol boundary (greedy vs sampling)
+
+Greedy decoding is the reference protocol for these retrieval benchmarks
+(the datasets' own evaluations are deterministic), and it is also the
+LEAST perturbation-sensitive decoding — so byte-identical-under-greedy must
+not be read as distribution-preserving-under-sampling. The right instrument
+for what a sampler (or a beam ranking) would see is per-step logit
+divergence, and this run's paired margin records quantify it: over 77,159
+paired token positions, the absolute top-2-margin delta between arms has
+median 0.125, p99 0.625, max 3.94, with 0.34% of positions above 1.0 —
+i.e., per-step next-token odds shift by roughly e^0.125 ≈ 13% at unit
+temperature for the typical position. Sampled text would therefore diverge
+between arms (as it does between two seeds of the same arm); the
+distributional perturbation per step is small and bounded. A dedicated
+logit-level comparison on a weight-quantized (narrower-margin) checkpoint
+measured mean pre-divergence KL of 0.0115 nats between the kernel and
+stock next-token distributions, consistent with these margins. A sampled
+task-quality study (score distributions over seeds, per arm) remains open
+work; nothing here claims it.
+
 ## Reference-arm observations (the baseline's own ceiling)
 
 - 27B MRCR anchor: five accuracy collapses at extreme depth (scores
