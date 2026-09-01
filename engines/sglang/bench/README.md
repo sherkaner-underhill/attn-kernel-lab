@@ -79,14 +79,70 @@ the operator's declared surface:
 
 Two protocol rules that come with them:
 
-- **Depths beyond 262,144 need YaRN at `factor: 2.0`** (not the model card's
-  default 4.0). Scaling is static in current engines, so the factor must be
-  set identically on BOTH arms of a comparison and held constant across every
-  depth in a sweep; native depths need no scaling and should be run without.
+- **No rope override for these checkpoints.** Their mRoPE parameterization
+  (`rope_theta 1e7`, rope keys under `text_config.rope_parameters`) extends
+  past 262,144 natively; the run of record used an extended
+  `--context-length` with `SGLANG_ALLOW_OVERWRITE_LONGER_CONTEXT_LEN=1` and
+  no YaRN. A YaRN factor would be a posture CHANGE here, not a requirement;
+  if one is ever used it must be identical on both arms and constant across
+  every depth in a sweep.
 - **Measure the reference arm's retrieval ceiling per depth before reading
   any candidate number.** At extended depths the model's own ceiling, not the
   attention kernel, may be the binding constraint; a kernel comparison is
   meaningful only where the reference arm still scores.
+
+## Weight-quantized (NVFP4) arm-pairs
+
+The BF16 run of record (`../results/public-serving-20260901/`) ended in
+byte-equivalence: decision margins on these checkpoints (p5 ~ 7.6 logits) sit
+far above the kernel's per-step perturbation, which is the strong form of a
+serving claim and the weak form of an instrument. A weight-quantized
+checkpoint narrows the margins, so the same paired protocol becomes
+sensitive: argmax flips are possible, `compare`'s bootstrap statistics are
+the expected regime rather than a formality, and the margin records become
+the primary diagnostic. It is also the deployment-realistic regime -- a
+serving stack that wants a faster long-context prefill is usually already
+serving quantized weights -- and it answers the compounding question: do
+attention-quantization errors interact with weight-quantization errors, or
+stay additive?
+
+| Role | Model | Run label | Why |
+|---|---|---|---|
+| Primary, narrow-margin | NVFP4 weight quantization of `Qwen/Qwen3.8-27B` | `qwen3.8-27b-fp4` | Same geometry as the BF16 primary; restores the discriminative power the byte-equivalence result lacked; compound-quantization evidence. |
+| Control, narrow-margin | NVFP4 weight quantization of `Qwen/Qwen3.5-9B` | `qwen3.5-9b-fp4` | Same role as the BF16 control, in the sensitive regime. |
+
+Protocol, in addition to every rule above:
+
+1. **Both arms serve the SAME quantized checkpoint.** Weight quantization is
+   a property of the model under test, never of an arm; the only difference
+   between arms remains the prefill attention backend. BF16-vs-NVFP4 is a
+   cross-RUN comparison (reference arm against reference arm), never a
+   pairing.
+2. **KV stays BF16 at page size 1**, and every posture flag is carried
+   unchanged from the BF16 run of record, so across runs exactly one
+   variable moves: the weights.
+3. **Selections are reused, not regenerated**: copy the run of record's
+   `selection.json` per bench/model into the new `--out-dir`, so per-item
+   cross-regime comparison is exact. If `prepare` is run anyway its output
+   must be byte-identical to the copied file; abort on any diff.
+4. **Checkpoint sourcing, in order**: (a) an official or widely adopted
+   public NVFP4 export of the exact base checkpoint, config-inspected before
+   trust; else (b) a locally produced export with a fully pinned recipe --
+   tool and version, quantization config, calibration dataset + revision +
+   sample count + seed -- recorded next to the results together with the
+   produced weight digests. This repository publishes recipes and digests,
+   not derivative weights.
+5. **Margins on, flips first-class.** A run README must report, beyond the
+   standard tables: flip counts and positions against the REFERENCE arm's
+   top-2 margin at the flip token (flips should concentrate where the
+   baseline was nearly indifferent), the per-step |delta-margin|
+   distribution (directly comparable to the BF16 run's median 0.125 /
+   p99 0.625), and each checkpoint's own margin distribution next to the
+   BF16 one.
+6. **Expected outcome class is statistical parity, not byte-equivalence.**
+   Per-item deltas of either sign with overlapping paired CIs are the
+   predicted behaviour of a faithful kernel under narrowed margins;
+   byte-equivalence here would itself be surprising and worth investigating.
 
 ## Running both arms
 
