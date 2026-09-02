@@ -98,6 +98,14 @@ framework-free; an integration or application attestation must name it.
   compared.
 - Third-party datasets and real activation captures never enter this repository.
 
+## Contributing
+
+Parallel kernel development is supported, including publishing a partially
+qualified artifact and requesting the next rung from someone with the right
+hardware. [`CONTRIBUTING.md`](CONTRIBUTING.md) is the protocol;
+[`docs/ARTIFACT_LIFECYCLE.md`](docs/ARTIFACT_LIFECYCLE.md) is the step-by-step
+runbook from new kernel source to qualified release.
+
 ## Provenance and licence
 
 The project is Apache-2.0 except for one MIT-derived NVIDIA probe; [`NOTICE`](NOTICE)

@@ -6,6 +6,7 @@
 | [`OPERATOR_CONTRACT.md`](OPERATOR_CONTRACT.md) | What the operator *is*, independent of any GPU. Both correctness oracles test this. |
 | [`TARGETS.md`](TARGETS.md) | Why there is a target axis, what an implementation family is, and what the development tier may and may not claim. |
 | [`DECISIONS.md`](DECISIONS.md) | Choices that are expensive to revisit, with the alternatives and why each fails. |
+| [`ARTIFACT_LIFECYCLE.md`](ARTIFACT_LIFECYCLE.md) | The runbook from new kernel source to qualified release: identity axes, the attestation ladder, handoff states, and what the validator enforces. |
 
 Still to be written, in roughly this order:
 
