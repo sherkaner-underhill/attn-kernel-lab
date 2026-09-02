@@ -1,0 +1,18 @@
+{
+ "task": "longbook_choice",
+ "id": "26",
+ "book": "1046b5888766",
+ "arm": "candidate",
+ "score": 1.0,
+ "picked": "B",
+ "correct": "B",
+ "elapsed_s": 1.1,
+ "prompt_tokens": 165869,
+ "completion_tokens": 2,
+ "response_sha256": "df7e70e5021544f4834bbee64a9e3789febc4be81470df629cad6ddb03320a5c",
+ "cold_book": false,
+ "token_margins": [],
+ "revision": "90f0394333616266d9fe85824ceaf505093cbaa5",
+ "backend": "fp8_prefill",
+ "token_margins_note": "token strings stripped (dataset-derived); numeric top-2 margins retained"
+}

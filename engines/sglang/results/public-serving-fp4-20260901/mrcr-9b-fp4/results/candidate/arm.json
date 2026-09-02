@@ -1,0 +1,13 @@
+{
+ "arm": "candidate",
+ "reference": false,
+ "backend": "fp8_prefill",
+ "tier": "full",
+ "config": "2needle",
+ "revision": "f4c69fae7cf81f7ca26b9fee34b392a50f6b8a1d",
+ "model": "qwen3.5-9b-fp4",
+ "server_args": null,
+ "chat_template_kwargs": {
+  "enable_thinking": false
+ }
+}

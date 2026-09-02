@@ -1,0 +1,265 @@
+{
+ "dataset": "xinrongzhang2022/InfiniteBench",
+ "revision": "90f0394333616266d9fe85824ceaf505093cbaa5",
+ "model": "qwen3.5-9b",
+ "tokenizer": "hf:Qwen/Qwen3.5-9B",
+ "max_prompt_tokens": 440000,
+ "tier_counts": {
+  "30min": {
+   "kv": 18,
+   "books": 7
+  },
+  "60min": {
+   "kv": 30,
+   "books": 12
+  },
+  "full": {
+   "kv": 30,
+   "books": 12
+  }
+ },
+ "kv": [
+  {
+   "id": "0",
+   "n_tokens": 169091
+  },
+  {
+   "id": "1",
+   "n_tokens": 169109
+  },
+  {
+   "id": "2",
+   "n_tokens": 169245
+  },
+  {
+   "id": "3",
+   "n_tokens": 169390
+  },
+  {
+   "id": "4",
+   "n_tokens": 168831
+  },
+  {
+   "id": "5",
+   "n_tokens": 169323
+  },
+  {
+   "id": "6",
+   "n_tokens": 169122
+  },
+  {
+   "id": "7",
+   "n_tokens": 169247
+  },
+  {
+   "id": "8",
+   "n_tokens": 169393
+  },
+  {
+   "id": "9",
+   "n_tokens": 169301
+  },
+  {
+   "id": "10",
+   "n_tokens": 169075
+  },
+  {
+   "id": "11",
+   "n_tokens": 169007
+  },
+  {
+   "id": "12",
+   "n_tokens": 169175
+  },
+  {
+   "id": "13",
+   "n_tokens": 168911
+  },
+  {
+   "id": "14",
+   "n_tokens": 169112
+  },
+  {
+   "id": "15",
+   "n_tokens": 169291
+  },
+  {
+   "id": "16",
+   "n_tokens": 169107
+  },
+  {
+   "id": "17",
+   "n_tokens": 169143
+  },
+  {
+   "id": "18",
+   "n_tokens": 169172
+  },
+  {
+   "id": "19",
+   "n_tokens": 169120
+  },
+  {
+   "id": "20",
+   "n_tokens": 169147
+  },
+  {
+   "id": "21",
+   "n_tokens": 169157
+  },
+  {
+   "id": "22",
+   "n_tokens": 169062
+  },
+  {
+   "id": "23",
+   "n_tokens": 168993
+  },
+  {
+   "id": "24",
+   "n_tokens": 169385
+  },
+  {
+   "id": "25",
+   "n_tokens": 169140
+  },
+  {
+   "id": "26",
+   "n_tokens": 169348
+  },
+  {
+   "id": "27",
+   "n_tokens": 169225
+  },
+  {
+   "id": "28",
+   "n_tokens": 169041
+  },
+  {
+   "id": "29",
+   "n_tokens": 169078
+  }
+ ],
+ "books": [
+  {
+   "book": "04868dc2f571",
+   "n_tokens_context": 267899,
+   "question_ids": [
+    "0",
+    "1",
+    "2",
+    "3"
+   ]
+  },
+  {
+   "book": "73e9305914ef",
+   "n_tokens_context": 94056,
+   "question_ids": [
+    "4",
+    "5",
+    "6",
+    "7"
+   ]
+  },
+  {
+   "book": "795c6c0b66c1",
+   "n_tokens_context": 134584,
+   "question_ids": [
+    "16",
+    "17",
+    "18",
+    "19"
+   ]
+  },
+  {
+   "book": "1046b5888766",
+   "n_tokens_context": 165751,
+   "question_ids": [
+    "24",
+    "25",
+    "26",
+    "27"
+   ]
+  },
+  {
+   "book": "683547036e3f",
+   "n_tokens_context": 158260,
+   "question_ids": [
+    "28",
+    "29",
+    "30",
+    "31"
+   ]
+  },
+  {
+   "book": "a176722d8d84",
+   "n_tokens_context": 265944,
+   "question_ids": [
+    "40",
+    "41",
+    "42",
+    "43"
+   ]
+  },
+  {
+   "book": "056395e1edf9",
+   "n_tokens_context": 203366,
+   "question_ids": [
+    "48",
+    "49",
+    "50",
+    "51"
+   ]
+  },
+  {
+   "book": "8fdf6295a6ca",
+   "n_tokens_context": 91395,
+   "question_ids": [
+    "52",
+    "53",
+    "54",
+    "55"
+   ]
+  },
+  {
+   "book": "209033b08ac5",
+   "n_tokens_context": 255078,
+   "question_ids": [
+    "58",
+    "59",
+    "60",
+    "61"
+   ]
+  },
+  {
+   "book": "74122dc810c0",
+   "n_tokens_context": 120578,
+   "question_ids": [
+    "74",
+    "75",
+    "76",
+    "77"
+   ]
+  },
+  {
+   "book": "7d59d302525a",
+   "n_tokens_context": 73658,
+   "question_ids": [
+    "78",
+    "79",
+    "80",
+    "81"
+   ]
+  },
+  {
+   "book": "b856d64d3e29",
+   "n_tokens_context": 126675,
+   "question_ids": [
+    "82",
+    "83",
+    "84",
+    "85"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "task": "kv_retrieval",
+ "id": "20",
+ "arm": "reference",
+ "score": 1.0,
+ "elapsed_s": 33.5,
+ "prompt_tokens": 169159,
+ "completion_tokens": 81,
+ "response_sha256": "3addfe2bd3376958ba4214a6b69dd5922040c5547b04e75ca18bc38c3eb00174",
+ "token_margins": [],
+ "revision": "90f0394333616266d9fe85824ceaf505093cbaa5",
+ "backend": "flashinfer",
+ "token_margins_note": "token strings stripped (dataset-derived); numeric top-2 margins retained"
+}
