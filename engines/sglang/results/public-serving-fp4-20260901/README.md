@@ -185,9 +185,9 @@ python3 -m sglang.launch_server \
 - Served kernel: byte-identical to `src/attn_kernel_lab/` at repo commit
   `5fb9f2f` (`quant.py` sha256 `02c0d25bd221...`, `csrc` `b9062dd066bc...`),
   staged over the engine-integration copy exactly as in the run of record.
-  The SGLang backend glue itself is not yet shipped in this repository;
-  publishing it as a pinned patch set is planned so that this lane is
-  reproducible from public material alone.
+  The SGLang backend glue now ships in this repository:
+  `engines/sglang/integration/fp8_prefill/` (pinned, reversible installer;
+  stages these same canonical kernel files by construction).
 
 ## Reproduction notes
 
