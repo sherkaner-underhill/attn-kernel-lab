@@ -104,7 +104,10 @@ Parallel kernel development is supported, including publishing a partially
 qualified artifact and requesting the next rung from someone with the right
 hardware. [`CONTRIBUTING.md`](CONTRIBUTING.md) is the protocol;
 [`docs/ARTIFACT_LIFECYCLE.md`](docs/ARTIFACT_LIFECYCLE.md) is the step-by-step
-runbook from new kernel source to qualified release.
+runbook from new kernel source to qualified release. Ideas that are not yet
+work — kernel concepts, numerical tricks, competing-design studies — live as
+tracked notes under [`research/`](research/README.md), each declaring its
+kind, status, and numerics impact.
 
 ## Provenance and licence
 

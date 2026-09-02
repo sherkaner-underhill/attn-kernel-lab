@@ -23,6 +23,10 @@ contributor, human or automated.
   comparison, with its build/run instructions and committed records.
 - **Target profiles** for hardware the lab has not seen.
 - **Probes, analysis, and documentation fixes.**
+- **Research notes** — ideas that are not yet work, under
+  [`research/`](research/README.md) and its light header contract (kind,
+  status, numerics impact, cheapest decisive test). A note is not evidence
+  and needs no namespace reservation.
 
 What never enters this repository, from anyone: third-party datasets, real
 activation captures, credentials or signed URLs, large binaries (wheels,
